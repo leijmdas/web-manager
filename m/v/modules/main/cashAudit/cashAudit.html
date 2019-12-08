@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>提现审核</title>
+		<link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+		<script src="../../../../r/lib/jquery.min.js"></script>
+		<script src="../../../../r/lib/vue.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="../../../../r/lib/bootstrap/css/bootstrap-table.min.css">
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+		<script src="../../../../r/lib/layer/layer.js"></script>
+		<script src="../../../../r/js/common.js"></script>
+		<script src="../../../../r/js/public.js"></script>
+		<style type="text/css">
+			.marginTop {
+				margin-top: 30px;
+			}
+			.marginLeft {
+				margin-left: 20px;
+			}
+			.PersonanlRealName {
+				display: inline-block;
+			}
+			.labelLineHeight {
+				padding-left: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container-fluid" id="divMax">
+			<div>当前共有<span class="text-danger" id="auditNum"></span>条认证信息需要审核
+			</div>
+			<div id="content-body">
+
+				<div id="reportTableDiv" class="span10">
+					<table id="reportTable">
+					</table>
+				</div>
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-18
+   	描述：个人实名认证审核-审核模态框
+   -->
+			<div class="modal fade" id="myModalAuditing" tabindex="-1" role="dialog" aria-labelledby="myModalListO" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				<div class="modal-dialog" style="width: 750px;">
+					<div class="modal-content animated bounceInDown">
+						<!-- 窗口顶部 -->
+						<div class="modal-header profile-TextLeft ">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEditInter">
+                            × <!-- 关闭按钮图标 -->
+                        </button>
+						<h4 class="modal-title" id="myModalListO">
+                       		审核 <!-- 窗口标题 -->
+                        </h4>
+						</div>
+						<!-- 窗口中部 -->
+						<div class="modal-body profile-TextLeft ">
+							<div class="body-info row">
+								<form class="form-inline" id="AddRestForm" v-for="item in personalRealInfo">
+									<div class="form-group col-md-4">
+										<label for="">单号：</label>
+										<span v-html="item.tradeId"></span>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="">用户名称：</label>
+										<span v-html="item.realName"></span>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="">公司名称：</label>
+										<span v-html="item.companyName"></span>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="">金额：</label>
+										<span  v-html="item.balance"></span>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="">手续率：</label>
+										<span  v-html="item.fee"> </span>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="">提现方式：</label>
+										<span  v-html="tradeSubtype[item.tradeSubtype]"></span>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="">审核状态：</label>
+										<span  v-html="taskStat[item.taskStat]"></span>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="">真实姓名：</label>
+										<span  v-html="item.cardHolder"></span>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="">账户ID：</label>
+										<span  v-html="item.cardHolderId"></span>
+									</div>
+									<!--<div class="form-group col-md-6   marginTop">-->
+										<!--<label for="" class="col-md-3 labelLineHeight">身份证反面</label>-->
+										<!--<img :src="item.ReverseSideOfIDCard" alt="身份证反面" width="250" height="150" />-->
+									<!--</div>-->
+									<!--<div class="form-group col-md-6 row  marginTop">-->
+										<!--<label for="" class="col-md-3 labelLineHeight">身份证正面</label>-->
+										<!--<img :src="item.IDCardFront" alt="身份证正面" width="250" height="150" />-->
+									<!--</div>-->
+									<div id="" class="text-center form-group marginTop PersonanlRealName col-md-12">
+										<button type="button" class="btn btn-warning " id="passThrough" @click="btnPassThrough">通过</button>
+										<button type="button" class="btn btn-danger marginLeft" id="refuse" @click="refuse">拒绝</button>
+										<button type="button" class="btn btn-primary marginLeft" data-dismiss="modal" id="btnEditClose">取消</button>
+									</div>
+								</form>
+							</div>
+							<!-- 出错提示 -->
+							<div class="error-info"></div>
+						</div>
+						<!-- 窗口底部 -->
+						<div class="modal-footer" style="border-top:none;">
+							<!-- style="border-top:none;" 不显示分隔线 -->
+						</div>
+
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-19
+   	描述：拒绝
+   -->
+			<div class="modal fade in" id="refuseModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 750px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+   				<span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;">提示</h3>
+						</div>
+						<div class="modal-body">
+							<div>
+								<p>请说明拒绝该申请人认证的理由,以便下次再申请时做好准备。</p>
+								<textarea maxlength="500" id="info" placeholder="请填写拒绝理由" style="width:715px; height: 200px;">
+
+							</textarea>
+								<span>剩余字数:<label class="text-danger">500</label>字</span>
+							</div>
+						</div>
+						<div class="modal-footer" style="display: block;border-top: none;">
+							<button type="button" class="btn btn-primary" id="btnDeletePolicy" @click="btnRefuseTrue">确定	</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-19
+   	描述：提示
+   -->
+			<div class="modal fade in" id="TrueModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 400px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+   				<span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;">提示</h3>
+						</div>
+						<div class="modal-body">
+							<div class="center-block text-center">
+								<img src="../../../../r/images/at.png" alt="图片"><br>
+							<div id="text">确定认领吗？</div>
+							</div>
+						</div>
+							<div class="modal-footer" style="display: block;border-top: none;text-align: center;">
+							<button type="button" class="btn btn-primary" id="btnDeletePolicy" @click="btnTrue">确定	</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../../../r/js/modules/main/cashAudit/cashAudit.js"></script>
+
+</html>

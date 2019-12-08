@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>项目服务费</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link href="../../../../r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="../../../../r/lib/layui/css/layui.css">
+		<link rel="stylesheet" href="../../../../r/css/main.css">
+<style>
+</style>
+	</head>
+
+	<body>
+		<div class="container-fluid" id="tabelMain">
+			<div class="row">
+				<div class="col-md-12">
+					<form class="form-inline">
+					<div class="form-group">
+						<label for="exampleInputName2">服务费名称</label>
+						<input type="text" class="form-control" id="" placeholder="输入服务费名称">
+						<input type="date" class="form-control" id="" placeholder="日期选择">
+						<input type="date" class="form-control" id="" placeholder="日期选择">
+
+					</div>
+								<!--<div class="layui-inline">-->
+									<!--<input type="text" class="layui-input test-item" placeholder="请选择">-->
+								<!--</div>-->
+								<!--<div class="layui-inline">-->
+									<!--<input type="text" class="layui-input test-item" placeholder="请选择">-->
+								<!--</div>-->
+						<button type="button" class="btn btn-primary" @click="">查询</button>
+					</form>
+
+					<button type="button" class="btn btn-primary btn-warning" @click="addServiceCharge">添加服务费</button>
+					<button type="button" class="btn btn-primary btn-danger" @click="">批量删除</button>
+
+					<table id="" cellpadding="0" cellspacing="0" class="table table-bordered text-center">
+						<thead class="manager_table_thead">
+							<tr>
+								<th>ID</th>
+								<th>服务费名称</th>
+								<th>服务费描述</th>
+								<th>添加时间</th>
+								<th>状态</th>
+								<th>操作人员</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbody">
+							<tr v-for="item in serviceChargedata">
+								<td v-text="item.feeId"></td>
+								<td v-text="checkTypes[item.projectType]"></td>
+								<td v-text="item.describeText"></td>
+								<td v-text="item.createTime"></td>
+								<td><span v-if="item.state==0">启用</span><span v-else="item.state==1">禁用</span></td>
+								<td v-text="item.createBy"></td>
+								<td>
+									<button type="button" @click="" class="btn  btn-xs del btn-primary">启用
+									</button>
+									<button type="button" @click="" class="btn  btn-xs del btn-primary">禁用
+        </button>
+									<button type="button" class="btn  btn-xs edit  btn-primary" @click="edit">编辑
+        </button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div id="paging" class="pagestyle"></div>
+
+				</div>
+			</div>
+
+
+			<div class="modal fade" id="addServiceCharge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+								&times;
+							</button>
+							<h4 class="modal-title" id="myModalLabel">
+								添加服务费
+							</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-horizontal">
+							<input type="text" class="nones">
+								<div class="form-group form-group-sm">
+									<label class="col-sm-2 control-label" for="formGroupInputSmall">服务器名称</label>
+									<div class="col-sm-5">
+										<input class="form-control" type="text" id="formGroupInputSmall" placeholder="请输入">
+									</div>
+								</div>
+								<div class="form-group form-group-sm">
+									<label class="col-sm-2 control-label" for="formGroupInputSmall">服务器描述</label>
+									<div class="col-sm-5">
+										<textarea class="form-control" id="" placeholder="请输入"></textarea>
+									</div>
+								</div>
+								<div class="form-group form-group-sm">
+								<label class="col-sm-2 control-label" >服务器名称</label>
+								</div>
+							</form>
+							<div class="radio-contrl">
+								<div class="radio-inline">
+									<label>
+										<input type="radio" name="optionsRadios" id="optionsRadios2" value="2">
+										范围收费比例
+									</label>
+								</div>
+								<div class="radio-inline">
+									<label>
+										<input type="radio" name="optionsRadios" id="optionsRadios3" value="3">
+										固定收费比例
+									</label>
+								</div>
+							</div>
+							<form class="form-inline text-center">
+								<div class="row">
+									<div class="form-group">
+										<input type="text" class="form-control" style="width: 100px" id="exampleInputName2" placeholder="填写比例">
+										<label for="exampleInputName2">元--</label>
+									</div>
+									<div class="form-group">
+										<input type="email" class="form-control" style="width: 100px" id="exampleInputEmail2" placeholder="填写比例">
+										<label for="exampleInputEmail2">元</label>
+									</div>
+									<div class="form-group">
+										<label for="exampleInputName2">收取服务费比例</label>
+										<input type="text" class="form-control" style="width: 100px" id="exampleInputName2" placeholder="填写比例">
+										<label for="exampleInputName2">%</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group">
+										<input type="text" class="form-control" style="width: 100px" id="exampleInputName2" placeholder="填写比例">
+										<label for="exampleInputName2">元--</label>
+									</div>
+									<div class="form-group">
+										<input type="email" class="form-control" style="width: 100px" id="exampleInputEmail2" placeholder="填写比例">
+										<label for="exampleInputEmail2">元</label>
+									</div>
+									<div class="form-group">
+										<label for="exampleInputName2">收取服务费比例</label>
+										<input type="text" class="form-control" style="width: 100px" id="exampleInputName2" placeholder="填写比例">
+										<label for="exampleInputName2">%</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group">
+										<input type="text" class="form-control" style="width: 100px" id="exampleInputName2" placeholder="填写比例">
+										<label for="exampleInputName2">%</label>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" id="saveServiceCharge" @click="saveServiceCharge">
+								保存
+							</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+							</button>
+
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal -->
+			</div>
+		</div>
+		<script src="../../../../r/lib/jquery.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+		<script src="../../../../r/lib/vue.js"></script>
+		<script src="../../../../r/js/common.js"></script>
+		<!--<script src="../../../../r/lib/layer/layer.js"></script>-->
+		<!--<script src="../../../../r/lib/layui/layui.js"></script>-->
+		<script src="../../../../r/js/modules/projectTariff/proServiceCharge/proServiceCharge.js"></script>
+	</body>
+
+</html>

@@ -1,0 +1,68 @@
+/* layer */
+body .layui-layer-iframe .layui-layer-content {
+    padding: 10px;
+}
+
+/* nav */
+
+.layui-nav {
+    padding: 0;
+}
+
+/* 导航树间距 */
+.layui-nav.layui-nav-tree .layui-nav-child a {
+    padding-left: 36px;
+}
+
+/* 字体颜色*/
+.layui-nav .layui-nav-item a, .layui-nav .layui-nav-item a:hover, .layui-nav .layui-this a {
+    color: #515055;
+}
+
+.layui-nav.layui-nav-tree a, .layui-nav.layui-nav-tree a:hover {
+    color: #fff;
+}
+
+/* 背景色 */
+.layui-nav .layui-nav-item.layui-this a {
+    background-color: #ECEBF0;
+}
+
+.layui-nav .layui-nav-child dd.layui-this a, .layui-nav-child dd.layui-this {
+    background-color: #457bcd;
+}
+
+.layui-nav.layui-nav-tree .layui-this a {
+    background-color: #457bcd;
+}
+
+.layui-nav-tree .layui-nav-child dd.layui-this,
+.layui-nav-tree .layui-nav-child dd.layui-this a,
+.layui-nav-tree .layui-this,
+.layui-nav-tree .layui-this > a,
+.layui-nav-tree .layui-this > a:hover {
+    color: #fff;
+    background-color: #457bcd;
+}
+
+/* 滑块背景色 */
+.layui-nav .layui-this:after, .layui-nav-bar, .layui-nav-tree .layui-nav-itemed:after, .layui-nav-tree .layui-nav-bar {
+    background-color: #457bcd;
+}
+
+/* form */
+.layui-form .layui-form-label {
+    width: 120px;
+}
+
+.layui-form .layui-input-block {
+    margin-left: 150px;
+}
+.layui-form .layui-input-block > span{
+    line-height: 36px;
+}
+
+
+
+
+

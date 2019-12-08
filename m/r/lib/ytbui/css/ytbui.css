@@ -1,0 +1,740 @@
+.ytb-font-yh {
+    font: 14px "Microsoft YaHei";
+}
+
+a {
+    color: #000;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/* ytb-upload-img */
+.ytb-upload {
+    position: relative;
+}
+
+.ytb-upload, .ytb-img-list, .ytb-img-wrap, .ytb-img-show, .ytb-img-upload-btn {
+    display: inline-block;
+}
+
+.ytb-file-list-upload {
+    display: block;
+}
+
+.ytb-img-list {
+}
+
+.ytb-img-wrap {
+    width: 140px;
+    height: 140px;
+    margin-right: 10px;
+    position: relative;
+}
+
+.ytb-img-own {
+    width: 100%;
+    height: 100%;
+}
+
+.ytb-img-show {
+    width: 140px;
+    height: 140px;
+    background: url(../img/ytb-upload-img-bg.png) no-repeat 0 0;
+}
+
+.ytb-img-upload-btn {
+    width: 30px;
+    height: 30px;
+    background: url(../img/ytb-upload-btn.png) no-repeat 0 0;
+    cursor: pointer;
+    vertical-align: top;
+    margin-left: 10px;
+}
+
+.ytb-upload-input-file-own {
+    display: none !important;
+}
+
+.ytb-img-btn-group-wrap {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    text-align: center;
+    bottom: 0;
+    background-color: #0000007f;
+    line-height: 140px;
+}
+
+.ytb-img-btn-group {
+    display: inline-block;
+    height: 20px;
+}
+
+.ytb-img-btn-group > * {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.ytb-img-btn-group > *:not(:last-child) {
+    margin-right: 10px;
+}
+
+.ytb-img-btn-see {
+    background: url(../img/ytb-image-see-btn.png) no-repeat 0 0;
+}
+
+.ytb-img-btn-remove {
+    background: url(../img/ytb-image-remove-btn.png) no-repeat 0 0;
+}
+
+.ytb-file-upload-wrap {
+
+}
+
+.ytb-upload-file-desc {
+
+}
+
+.ytb-upload-file-name {
+    padding: 0 10px;
+}
+
+.ytb-file-upload-btn {
+    display: inline-block;
+    width: 60px;
+    height: 26px;
+    background: #457bcd;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 26px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.ytb-file-upload-btn:hover {
+    background: #336dcd;
+}
+
+/* ytb-bang-bang */
+.ytb-bang-bang-wrap {
+    position: fixed;
+    right: 41px;
+    bottom: 90px;
+    z-index: 99999;
+}
+
+.ytb-bang-bang-wrap li {
+    cursor: pointer;
+    position: relative;
+}
+
+.ytb-bang-bang-logo {
+    display: block;
+    width: 95px;
+    height: 46px;
+    background: url(../img/bangbang-logo.png) no-repeat 0 0;
+}
+
+.ytb-bang-bang-menu {
+    position: absolute;
+    right: 0;
+    top: -120px;
+    background-color: #E9E9E9;
+    border: 1px solid #DEDEDE;
+}
+
+.ytb-bang-bang-menu li {
+    padding: 0 5px;
+}
+
+.ytb-bang-bang-menu-item {
+    display: block;
+    width: 40px;
+    height: 50px;
+    color: #457BCD;
+    text-align: center;
+    text-decoration: none !important;
+    border-bottom: 1px solid #fff;
+}
+
+.ytb-bang-bang-menu-item:hover {
+    color: #3376dc;
+    font-weight: bold;
+}
+
+.ytb-bang-bang-menu-item span {
+    vertical-align: middle;
+}
+
+.ytb-bang-bang-menu-child-last {
+    text-align: center;
+}
+
+.ytb-bang-bang-menu-arrow-up {
+    display: inline-block;
+    width: 14px;
+    height: 8px;
+    vertical-align: middle;
+    background: url(../img/bangbang-arrow-up.png) no-repeat 0 0;
+}
+
+/* dialog */
+
+.ytb-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2019;
+    background: #000;
+    opacity: .2;
+}
+
+.ytb-dialog-wrap {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: auto;
+    z-index: 2020;
+}
+
+.ytb-dialog {
+    position: relative;
+    margin: 100px auto 50px;
+    background: #fff;
+    box-sizing: border-box;
+    border: 1px solid #999999;
+}
+
+.ytb-dialog-header {
+    padding: 8px 10px 10px;
+    background: #F5F6FA;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+.ytb-dialog-title {
+    line-height: 22px;
+    font-size: 16px;
+    color: #263237;
+    font-weight: bold;
+}
+
+.ytb-dialog-header-btn-group {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+.ytb-dialog-body {
+    padding: 5px 10px 10px;
+    font-size: 14px;
+    color: #263237;
+}
+
+.ytb-dialog-wrap {
+    /*display: block!important;*/
+}
+
+/* ytb-invite-friend */
+.ytb-invite-friend {
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.ytb-friend, .ytb-friend-control, .ytb-friend-select {
+    height: 404px;
+    position: relative;
+}
+
+.ytb-friend {
+    width: 290px;
+}
+
+.ytb-friend-control {
+    width: 22px;
+}
+
+.ytb-friend-select {
+    width: 240px;
+}
+
+.ytb-input-box, .ytb-sel-info {
+    height: 28px;
+}
+
+.ytb-sel-info {
+    position: relative;
+    font-size: 12px;
+}
+
+.ytb-sel-info > .selected-msg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+.ytb-sel-info > .all-remove {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.ytb-input-box {
+    position: relative;
+    border: 1px solid #AAAAAA;
+}
+
+.ytb-input-box .ytb-label {
+    float: left;
+    display: block;
+    width: 50px;
+    height: 26px;
+    line-height: 26px;
+    border-right: 1px solid #AAAAAA;
+    margin: 0;
+    text-align: center;
+}
+
+.ytb-input-wrap {
+    position: absolute;
+    left: 50px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.ytb-input-box .ytb-input {
+    width: 100%;
+    border: 0;
+    padding: 0 0 0 6px;
+    outline: 0;
+    height: 26px;
+}
+
+.ytb-friend-wrap, .ytb-friend-select-wrap {
+    margin-top: 6px;
+    height: 370px;
+    border: 1px solid #AAAAAA;
+}
+
+
+/* btn */
+.ytb-btn {
+    display: inline-block;
+    width: 70px;
+    height: 26px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 26px;
+}
+
+
+.ytb-btn-ok {
+    background-image: linear-gradient(0deg, #3C6DB8 0%, #437ACE 33%, #9AC0FB 100%);
+    border: 1px solid #6E8CB9;
+    color: #FFFFFF;
+}
+
+.ytb-btn-ok:hover {
+    color: #FFFFFF;
+}
+
+.ytb-btn-cancel {
+    background-image: linear-gradient(-1deg, #BBBBBB 8%, #EFEFEF 55%, #FFFFFF 100%);
+    border: 1px solid #D5D5D5;
+    color: #474747;
+}
+
+.ytb-btn-cancel:hover {
+    color: #474747;
+}
+
+.ytb-dialog-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    text-align: left;
+}
+
+.ytb-dialog-footer .ytb-btn {
+    margin-left: 10px;
+}
+
+.ytb-btn-right {
+    text-align: right;
+}
+
+
+.nav-btn-group-wrap {
+    width: 50px;
+    height: 368px;
+    border-right: 1px solid #AAAAAA;
+    position: relative;
+    background: #F5F6FA;
+}
+
+.nav-btn-group {
+    position: absolute;
+    top: 131px;
+    left: 0;
+}
+
+.nav-btn-wrap {
+    text-align: center;
+    cursor: pointer;
+    width: 50px;
+    font-size: 12px;
+}
+
+.nav-btn-wrap .txl-icon, .nav-btn-wrap .group-icon {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+}
+
+.nav-btn-wrap .txl-icon {
+    background: url(../img/friend-icon.png) no-repeat 0 0;
+}
+
+.nav-btn-wrap .txl-icon-active {
+    background: url(../img/friend-icon-active.png) no-repeat 0 0;
+}
+
+.nav-btn-wrap .group-icon {
+    background: url(../img/group-icon.png) no-repeat 0 0;
+}
+
+.nav-btn-wrap .group-icon-active {
+    background: url(../img/group-icon-active.png) no-repeat 0 0;
+}
+
+.nav-btn-wrap > p {
+    font-size: 12px;
+}
+
+.ytb-friend-control > .control-arrow {
+    display: block;
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    top: 191px;
+    left: 0;
+    text-align: center;
+}
+
+.ytb-friend-list {
+    width: 238px;
+    height: 368px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.ytb-friend-select-wrap {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.ytb-friend-list > .item-friend, .ytb-friend-select-wrap > .item-friend {
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    position: relative;
+    padding-left: 10px;
+}
+
+.item-friend .user-icon, .ytb-friend-list .group-item .user-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url(../img/address.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.item-friend .user-name, .ytb-friend-list .group-item .user-name {
+    padding-left: 10px;
+}
+
+.remove-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: none;
+    width: 10px;
+    height: 10px;
+    background: url(../img/del_icon.png) no-repeat;
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
+.ytb-input-box .ytb-input-search-btn {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    display: block;
+    width: 14px;
+    height: 14px;
+    background: url(../img/magnifying_glass.png);
+    background-size: 100% 100%;
+}
+
+.ytb-friend-list .group-item {
+    position: relative;
+}
+
+.ytb-friend-list .group-item .title {
+    line-height: 30px;
+    border-bottom: 1px solid #AAAAAA;
+    padding-left: 10px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.ytb-friend-list .group-item .user-item {
+    padding-left: 20px;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.ytb-friend-list .group-item .user-list {
+    border-bottom: 1px solid #AAAAAA;
+    display: none;
+}
+
+.ytb-friend-list .group-item .arrow {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.ytb-friend-list .group-item .arrow-open {
+    background: url(../img/arrow-open.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.ytb-friend-list .group-item .arrow-close {
+    background: url(../img/arrow-close.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+/**/
+.btnBlue {
+    background-image: linear-gradient(-1deg, #3967AC 3%, #4D82D2 44%, #95BEFD 100%);
+    border: 1px solid #6E8CB9;
+    border-radius: 1px;
+    color: #FFFFFF;
+    width: 44px;
+    height: 26px;
+}
+
+.search-box {
+    border: 1px solid #AAAAAA;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.search-box input {
+    border: 0;
+}
+
+.search-font {
+    height: 100%;
+    display: inline-block;
+    border-right: 1px solid #aaa;
+    padding: 5px 10px;
+}
+
+.search-btn {
+    width: 14px;
+    height: 14px;
+    background: url(../img/magnifying_glass.png);
+    display: inline-block;
+    float: right;
+    background-size: 100% 100%;
+    margin: 8px;
+}
+
+.p0 {
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.p0 li {
+    list-style: none;
+    line-height: 30px;
+}
+
+.communicationList .p0 p {
+    /*border-top: 1px solid #aaa;*/
+    margin-bottom: 0;
+
+}
+
+.borbotm {
+    border-bottom: 1px solid #aaa;
+}
+
+.selectClass {
+    width: 50px;
+    float: left;
+    border: 1px solid #AAAAAA;
+    height: 380px;
+    padding-top: 130px;
+    text-align: center;
+    background: #F5F6FA;
+}
+
+.selectClass span {
+    cursor: pointer;
+}
+
+.selectClass p {
+    font-size: 10px;
+}
+
+.communicationList {
+    width: 229px;
+    float: left;
+    border: 1px solid #AAAAAA;
+    border-left: 0;
+    height: 380px;
+    overflow-y: scroll;
+}
+
+.communicationList li {
+    cursor: pointer;
+}
+
+.selectbImg {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background: url(../img/lowerarrow.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.selectrImg {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background: url(../img/rightarrow.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.listhade {
+    width: 20px;
+    height: 20px;
+    border-radius: 100px;
+}
+
+.leve2 {
+    padding-left: 10px;
+}
+
+.flr {
+    float: right
+}
+
+.cleanUser {
+    width: 10px;
+    height: 10px;
+    background: url(../img/del_icon.png) no-repeat;
+    display: inline-block;
+    background-size: 100% 100%;
+    cursor: pointer;
+    float: right;
+    margin: 10px;
+}
+
+.selectuserlist li {
+    background: #D1D2D3;
+}
+
+.cur {
+    cursor: pointer;
+}
+
+.pl20 {
+    padding-left: 20px;
+}
+
+.mtb10 {
+    margin: 10px 0;
+}
+
+/*聊天记录*/
+.fileListContont {
+    display: inline-block;
+}
+
+.ppt {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    background: url(../img/chatLog/P.png);
+    background-size: 100% 100%;
+}
+
+.docx {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    background: url(../img/chatLog/W.png);
+    background-size: 100% 100%;
+}
+
+.xlsx {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    background: url(../img/chatLog/X.png);
+    background-size: 100% 100%;
+}
+
+.null {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    background: url(../img/chatLog/n.png);
+    background-size: 100% 100%;
+}
+
+.browse, .filedownload, .filedel {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    float: right;
+    background-size: 100% 100% !important;
+    margin: 15px 5px 0 0;
+    cursor: pointer;
+}
+
+.browse {
+    background: url(../img/chatLog/que_icon.png)
+}
+
+.filedownload {
+    background: url(../img/chatLog/down_icon.png)
+}
+
+.filedel {
+    background: url(../img/chatLog/del_icon.png)
+}
+
+
+

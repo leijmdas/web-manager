@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>工作流模板</title>
+		<link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../r/css/main.css" />
+		<script src="../../../../r/lib/jquery.min.js"></script>
+	    <script src="../../../../r/lib/layer/layer.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+		<script src="../../../../r/lib/jquery.form.js"></script>
+		<script src="../../../../r/lib/vue.min.js"></script>
+		<script src="../../../../r/js/common.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+	</head>
+
+	<body>
+		<div id="divMax" class="container-fluid">
+			<div>
+				<button @click="btnAdd" type="button" class="btn btn-primary user_line_height User_margin" id="add" >新增</button>
+			</div>
+			<div class="devices-conten devices-conten-table" id="table">
+				<table class="table table-bordered text-center " id="addTable" cellpadding="0" cellspacing="0">
+					<thead class="manager_table_thead ">
+						<tr>
+							<th>记录标识</th>
+							<th>文件名称</th>
+							<th>模板流程KEY</th>
+							<th>模板类型</th>
+							<th>流程状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+						<template v-for="(item,index) in showRecords">
+							<tr @click="trClick($event,item)"  @dblclick="btnEdit($event,item)"  :class="index==0?'warning':''" >
+								<td v-html="item.proc_id"></td>
+								<td v-html="item.proc_file"></td>
+								<td v-html="item.proc_code"></td>
+								<td v-html="procTypes[item.proc_type]"></td>
+								<td>{{status[item.status]}}
+									<button @click="modifyStatus($event,item)"  type="button" class="btn  btn-xs forShow btn-primary" name="user" v-html="btnStatus[item.status]"></button>
+								</td>
+								<td>
+									<button @click="uploadFile($event,item)" type="button" class="btn btn-primary user_line_height User_margin" id="uploadFileBtn" >上传文件</button>
+									<button @click="btnEditFile($event,item)" type="button" class="btn btn-primary user_line_height User_margin" id="editFileBtn" >修改文件</button>
+									<button @click="btnEdit($event,item)" type="button" class="btn btn-primary user_line_height User_margin" id="edit" >修改</button>
+									<button @click="btnDel($event,item)" type="button" class="btn btn-primary user_line_height User_margin" id="delete" >删除</button>
+								</td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+				<div class="devices-topRight">
+					<div class="SimPoolMgr_top_ex pull-left">
+						第<span id="countTot">1</span> 到
+						<span class="devices-span" id="pageIndex">20</span>条记录,共<span id="totle">20</span>条
+					</div>
+					<div class="devices-rightDiv pull-right">
+						<button type="button" id="lastPage" class="btn  btn-default btn-xs">上一页</button>
+						<button type="button" class="btn btn-default btn-xs" id="next">下一页</button>
+						<input type="text" class="search-page">
+						<button type="button" class="btn  btn-default btn-xs" id="skip">跳转</button>
+					</div>
+				</div>
+			</div>
+			<!--  描述:工作流模板-新增  -->
+			<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="UserModalLabel"
+				 aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				<div class="modal-dialog">
+					<div class="modal-content animated bounceInDown">
+						<div class="modal-header profile-TextLeft workflowTemActive">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+									id="btnEditUser">
+								×
+							</button>
+							<h4 class="modal-title" id="UserModalLabel">
+								工作流模板
+							</h4>
+						</div>
+						<div class="modal-body profile-TextLeft ">
+							<div class="body-info">
+								<div class="row">
+									<form class="form-horizontal" id="userFormH">
+									<template>
+											<div class="form-group">
+												<label for="proc_file" class="col-sm-3 col-xs-4 control-label"><span
+														class="manager_font_red">*</span>标识</label>
+												<div class="col-sm-8 col-xs-7">
+													<input readonly :value="record.proc_id"  type="text"
+														   class="form-control" name="proc_id" id="proc_id"
+														   placeholder="标识">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="proc_file" class="col-sm-3 col-xs-4 control-label"><span
+														class="manager_font_red">*</span>文件名称</label>
+												<div class="col-sm-8 col-xs-7">
+													<input :value="record.proc_file" type="text" class="form-control"
+														   name="proc_file" id="proc_file" placeholder="请输入文件名称">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="proc_code" class="col-sm-3 col-xs-4 control-label"><span
+														class="manager_font_red">*</span>流程模板Key</label>
+												<div class="col-sm-8 col-xs-7">
+													<input  :value="record.proc_code" type="text"
+														    class="form-control"
+														   name="proc_code" id="proc_code" placeholder="请输入KEY"
+														   data-validate="required:请输入KEY">
+												</div>
+											</div>
+
+											<div class="form-group">
+												<label for="proc_type" class="col-sm-3 col-xs-4 control-label"><span
+														class="manager_font_red">*</span>模板类型</label>
+												<div class="col-sm-8 col-xs-7">
+													<select class="form-control"
+															name="proc_type" id="proc_type" hidden>
+														<option v-for="(value,key) in procTypes" :value="key"
+																v-html="value" :selected="key==record.proc_type"></option>
+													</select>
+												</div>
+											</div>
+
+											<div class="form-group text-center">
+												<!--<button @click="uploadFile" type="button" class="btn btn-primary workflowTemMargin" id="btnSave" >保存</button>-->
+												<button @click="btnSave" type="button"
+														class="btn btn-primary workflowTemMargin"
+														id="btnSave">保存
+												</button>
+												<button type="button" class="btn btn-default margin-right"
+														data-dismiss="modal"
+														id="btnCloseUser">取消
+												</button>
+											</div>
+									</template>
+									</form>
+								</div>
+							</div>
+							<div class="error-info"></div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+
+			<div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 400px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">	
+   				<span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;" id="deleText">删除</h3>
+						</div>
+						<div class="modal-body">
+							<div class="center-block text-center">
+								<div id="" style="display: inline;">
+									<img src="../../../../r/images/at.png" alt="图片">
+								</div>
+								<div id="text" style="display: inline;">您确认删除吗？</div>
+							</div>
+						</div>
+						<div class="modal-footer" style="display: block;">
+							<button @click="deleteInfo" type="button" class="btn btn-primary" id="btnTrue">确定</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="UserModalLabel"
+				 aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				<div class="modal-dialog">
+					<div class="modal-content animated bounceInDown">
+						<div class="modal-header profile-TextLeft workflowTemActive">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+									id="btnEditUser11">
+								×
+							</button>
+							<h4 class="modal-title" id="UserModalLabel11">
+								工作流模板
+							</h4>
+						</div>
+						<div class="modal-body profile-TextLeft ">
+							<div class="body-info">
+								<div class="row">
+									<form class="form-horizontal" id="userFormUpload">
+										<template>
+
+											<div class="form-group">
+												<label for="uploadProc_file" class="col-sm-3 col-xs-4 control-label"><span
+														class="manager_font_red">*</span>文件名称</label>
+												<div class="col-sm-8 col-xs-7">
+													<input :value="record.proc_file" type="text" class="form-control"
+														   name="proc_file" id="uploadProc_file" placeholder="输入文件名称">
+												</div>
+											</div>
+											<div class="form-group">
+												<label  v-show="false" for="proc_id" class="col-sm-3 col-xs-4 control-label"><span
+														class="manager_font_red"></span>proc_id</label>
+												<div class="col-sm-8 col-xs-7">
+													<input v-show="false" :value="record.proc_id" type="text" class="form-control"
+														   name="proc_id" id="proc_id" placeholder="input proc_id">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="filename" class="col-sm-3 col-xs-4 control-label"><span
+														class="manager_font_red">*</span>上传文件</label>
+												<div class="col-sm-8 col-xs-7">
+													<input  type="file" name="filename"  id="filename" accept="application/xml" placeholder="选择文件">
+												</div>
+											</div>
+											<div class="form-group text-center">
+												<button type="submit"
+														class="btn btn-primary workflowTemMargin"
+														id="btnSave1">保存
+												</button>
+												<button type="button" class="btn btn-default margin-right"
+														data-dismiss="modal"
+														id="btnCloseUser1">取消
+												</button>
+											</div>
+										</template>
+									</form>
+
+									<!--<form name="uploadForm" action="http:/rest/uploadActiviti" method="post"  enctype="multipart/form-data">-->
+										<!--<h4>采用流的方式上传文件</h4>-->
+										<!--<label>file</label>-->
+										<!--<input type="text" name="msgBody" value="eyJjbWR0eXBlIjoidGVtcGxhdGVEb2N1bWVudCIsInNlcW5vIjoxNTQzNDIxOTA5NjU4LCJyZXF0aW1lIjoxNTQzNDIxOTA5NjU4LCJjbWQiOiJ1cGxvYWQiLCJtc2dCb2R5Ijp7InJldiI6MCwic2F2ZU1vZGUiOjIsInBpY1R5cGUiOiIiLCJkb2NUeXBlIjoyLCJuYW1lIjoiaW5pLmpzb24iLCJkb2N1bWVudElkIjowLCJkb2NQYXRoIjoiL3Rlc3RmaWxlL2luaS5qc29uIn0sInRva2VuIjoiZDU4OGJhNjI4NTFiNDA0Mjg0ZWVjYTc2MDcyMDE1NDAifQ==" >-->
+										<!--<input type="text" name="proc_id" id="proc_id" :value=269 placeholder="input proc_id">-->
+										<!--<input type="file" accept="application/xml" name="file">-->
+										<!--<input type="submit" value="上传文件"/>-->
+									<!--</form>-->
+								</div>
+							</div>
+							<div class="error-info"></div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+
+			<div class="modal fade" id="editFileModal" tabindex="-1" role="dialog" aria-labelledby="UserModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
+				<div class="modal-dialog" style="width:1100px;height: 800px;">
+					<div class="modal-content animated bounceInDown">
+
+						<div class="modal-header profile-TextLeft workflowTemActive">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEdit">
+								×
+							</button>
+							<h4 class="modal-title"> 修改工作流模板 </h4>
+						</div>
+						<div class="modal-body profile-TextLeft ">
+							<div class="body-info">
+								<div class="row">
+									<form class="form-horizontal" id="editFile1">
+										<div class=" col-sm-12">
+											<textarea :value="record.proc_content" class="col-sm-12 workflowTemText" id="editProc_content" style="height: 600px;"></textarea>
+										</div>
+										<div class="form-group text-center">
+											<button @click="btnSaveContent($event)" type="button" class="btn btn-primary workflowTemMargin" id="btnSaveUserMgr1" >保存</button>
+											<button type="button" class="btn btn-default margin-right" data-dismiss="modal" id="btnCloseUser12">取消</button>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div class="error-info"></div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+		</div>
+		<script src="../../../../r/js/public.js"></script>
+		<script src="../../../../r/js/modules/workflowTemplate/workflowTemplate/workflowTemplate.js"></script>
+	</body>
+
+</html>

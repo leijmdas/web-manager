@@ -1,0 +1,443 @@
+<!DOCTYPE >
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>菜单管理</title>
+	<link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+	<script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+	  <script src="../../../../r/lib/layer/layer.js"></script>
+	<script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../../../r/css/main.css" />
+	<script type="text/javascript" src="../../../../r/lib/vue.min.js"></script>
+	<script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+	<!--
+        	作者：offline
+        	时间：2018-08-22
+        	描述：树形图插件
+        -->
+	<link rel="stylesheet" type="text/css" href="../../../../r/plugins/zTree/zTreeStyle.css" />
+	<script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+	<script src="../../../../r/js/common.js"></script>
+		<script src="../../../../r/plugins/validate/jquery.validate.min.js"></script>
+		<script src="../../../../r/plugins/validate/messages_zh.js"></script>
+</head>
+
+<body>
+	<div id="maxdiv" class="container-fluid">
+		<div>
+			<!-- Nav tabs -->
+			<ul class="nav nav-pills" role="tablist">
+				<li role="presentation" id="interface">
+					<a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" class="btn-default btn btn-xs" @click="loadRestTree">接口列表</a>
+				</li>
+				<li role="presentation" class="active">
+					<a href="#home" aria-controls="home" role="tab" data-toggle="tab" class="btn-default btn btn-xs" @click="loadMenuTree">菜单列表</a>
+				</li>
+
+			</ul>
+
+			<!-- Tab panes -->
+			<div class="tab-content MenuManagement_Tab">
+				<div role="tabpanel" class="tab-pane" id="profile">
+					<button type="button" class="btn btn-primary" id="Add_list" @click="Addlist">新增</button>
+					<button type="button" class="btn btn-primary" id="edit_RestManagement" @click="editRestManagement">编辑</button>
+					<button type="button" class="btn btn-primary" id="dele_RestManagement" @click="deleRestManagement">删除</button>
+					<div id="roleTree2" style="margin-top: 30px;">
+						<div class="zTreeDemoBackground left pull-left roleTree">
+							<p>接口权限</p>
+							<ul id="treeDemoRest" class="ztree"></ul>
+						</div>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane active" id="home">
+					<button type="button" class="btn btn-primary" id="Add_MenuManagement" @click="AddMenuManagement">新增</button>
+					<button type="button" class="btn btn-primary" id="edit_MenuManagement" @click="editMenuManagement">编辑</button>
+					<button type="button" class="btn btn-primary" id="dele_MenuManagement" @click="deleMenuManagement">删除</button>
+					<div id="roleTree1" style="margin-top: 30px;">
+						<div class="zTreeDemoBackground left pull-left roleTree">
+							<p>菜单权限</p>
+							<ul id="treeDemo1" class="ztree"></ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<!--
+   	作者：yuan
+   	时间：2017-09-01
+   	描述：删除
+   -->
+		<div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog " role="document" style="width: 400px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">	
+   				<span aria-hidden="true">×</span></button>
+						<h3 class="modal-title" style="font-weight: normal;">删除</h3>
+					</div>
+					<div class="modal-body">
+						<div class="center-block text-center">
+							<img src="../../../../r/images/at.png" alt="图片"><br>
+							<div id="text">您确认删除吗？</div>
+						</div>
+					</div>
+					<div class="modal-footer" style="display: block;">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary" id="btnDeletePolicy" @click="btnDeletePolicy">确定	</button></div>
+				</div>
+			</div>
+		</div>
+<!--
+   	作者：yuan
+   	时间：2018-08-22
+   	描述：权限管理 -菜单列表-编辑
+   -->
+		<div class="modal fade" id="EditmyModal" tabindex="-1" role="dialog" aria-labelledby="EditModalInter" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog">
+				<div class="modal-content animated bounceInDown">
+					<!-- 窗口顶部 -->
+					<div class="modal-header profile-TextLeft ">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEditInter">
+                            × <!-- 关闭按钮图标 -->
+                        </button>
+						<h4 class="modal-title" id="EditModalInter">
+                           编辑 <!-- 窗口标题 -->
+                        </h4>
+					</div>
+					<!-- 窗口中部 -->
+					<div class="modal-body profile-TextLeft ">
+						<div class="body-info">
+							 	<form class="form-horizontal" id="editMenuForm" >
+								<div class="form-group">
+									<label for="editmenuId" class="col-sm-2 control-label">ID</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="editmenuId" placeholder="请输入ID" name="menuId" readonly="" >
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="editmenuName" class="col-sm-2 control-label">菜单名称</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="editmenuName" placeholder="请输入菜单名称" name="menuName">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="editmenuUrl" class="col-sm-2 control-label">菜单URL</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="editmenuUrl" placeholder="请输入菜单URL" name="menuUrl">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="editmenuCode" class="col-sm-2 control-label">菜单标识</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="editmenuCode" placeholder="请输入菜单标识" name="menuCode">
+									</div>
+									</div>
+                                  <div class="form-group">
+									<label for="editorderNum" class="col-sm-2 control-label">排序号</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="editorderNum" placeholder="请输入排序号" name="orderNum">
+									</div>
+                            </div>
+							</form>
+							</div>
+							<!-- 出错提示 -->
+							<div class="error-info"></div>
+
+						</div>
+
+						<!-- 窗口底部 -->
+						<div class="modal-footer">
+							<!-- style="border-top:none;" 不显示分隔线 -->
+							<button type="button" class="btn btn-default" data-dismiss="modal" id="btnEditClose">取消</button>
+							<button type="submit" class="btn btn-primary " id="btnEditSave" @click="btnEditSave">保存</button>
+						</div>
+
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+
+		<!--
+     	作者：yuan
+     	时间：2018-08-21
+     	描述：权限管理-菜单列表-新增
+     -->
+		<div class="modal fade" id="myModalMenuMana" tabindex="-1" role="dialog"  >
+			<div class="modal-dialog">
+				<div class="modal-content animated bounceInDown">
+					<!-- 窗口顶部 -->
+					<div class="modal-header profile-TextLeft ">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEditMan">
+                            × <!-- 关闭按钮图标 -->
+                        </button>
+						<h4 class="modal-title" id="manModalLabel">
+                        新增<!-- 窗口标题 -->
+                        </h4>
+					</div>
+
+					<!-- 窗口中部 -->
+					<div class="modal-body profile-TextLeft ">
+						<div class="body-info">
+							<!-- Nav tabs -->
+							<form class="form-horizontal" id="managerRa">
+								<div class="form-group">
+									<label for="menuname" class="col-sm-3 control-label"><span class="manager_font_red">*</span>菜单名称</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" id="menuname" placeholder="请输入菜单名称" name="menuName"  >
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="nextmenu" class="col-sm-3 control-label"><span class="manager_font_red">*</span>上级菜单</label>
+									<div class="col-sm-8">
+										<input type="number" class="form-control" id="nextmenu" onkeyup="value=value.replace(/[^\d]/g,'')"  placeholder="请输入上级菜单" name="parentId">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="menuRouter" class="col-sm-3 control-label">菜单URL</label>
+									<div class="col-sm-8">
+										<input type="url" class="form-control" id="menuRouter" placeholder="请输入菜单URL" name="menuUrl">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="sortnumber" class="col-sm-3 control-label">排序号</label>
+									<div class="col-sm-8">
+										<input type="number" class="form-control" id="sortnumber"   placeholder="请输入排序号" name="orderNum">
+									</div>
+								</div>
+								<div class="form-group text-center">
+									<button type="button" class="btn btn-default" data-dismiss="modal"
+											id="btnCloseUser">取消</button>
+									<button type="submit" class="btn btn-primary" id="btnSaveUserMgr"
+											@click="btnSaveMenuMgr">提交</button>
+								</div>
+							</form>
+
+						</div>
+						<!-- 出错提示 -->
+						<div class="error-info"></div>
+					</div>
+					<!-- 窗口底部 -->
+					<div class="modal-footer">
+						<!-- style="border-top:none;" 不显示分隔线 -->
+
+					</div>
+
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+		<!--
+               作者：yuan
+               时间：2018-08-22
+               描述：权限管理 -接口列表-新增
+           -->
+		<div class="modal fade" id="myModalList" tabindex="-1" role="dialog" aria-labelledby="myModalListO"
+			 aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog">
+				<div class="modal-content animated bounceInDown">
+					<!-- 窗口顶部 -->
+					<div class="modal-header profile-TextLeft ">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEditInter">
+							× <!-- 关闭按钮图标 -->
+						</button>
+						<h4 class="modal-title" id="myModalListO">
+							新增 <!-- 窗口标题 -->
+						</h4>
+					</div>
+					<!-- 窗口中部 -->
+					<div class="modal-body profile-TextLeft ">
+						<div class="body-info">
+							<form class="form-horizontal" id="AddRestForm">
+								<div class="form-group">
+									<label for="ins_id" class="col-sm-2 control-label">ID</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="ins_id" name="parentId"
+											   readonly="">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="ins_restName" class="col-sm-2 control-label">接口名称</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="ins_restName"
+											   placeholder="请输入接口名称" name="restName">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="ins_url" class="col-sm-2 control-label">接口URL</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="ins_url"
+											   placeholder="请输入接口URL" name="url">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="ins_cmdType" class="col-sm-2 control-label">命令类型</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="ins_cmdType" placeholder="请输入命令类型"
+											   name="cmdType">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="ins_cmd" class="col-sm-2 control-label">命令字</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="ins_cmd" placeholder="请输入命令字"
+											   name="cmd">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="ins_orderNum" class="col-sm-2 control-label">排序</label>
+									<div class="col-sm-10">
+										<input type="number" class="form-control" id="ins_orderNum"
+											   placeholder="请输入排序" name="orderNum">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="ins_systemType" class="col-sm-2 control-label">子系统</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="ins_systemType"
+											   placeholder="请输入子系统" name="systemType">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="ins_memo" class="col-sm-3 control-label">接口样例</label>
+									<div class="col-sm-10">
+										<textarea id="ins_memo" name="memo" class="form-control">
+
+										</textarea>
+									</div>
+
+								</div>
+							</form>
+						</div>
+						<!-- 出错提示 -->
+						<div class="error-info"></div>
+
+					</div>
+
+					<!-- 窗口底部 -->
+						<div class="modal-footer">
+							<!-- style="border-top:none;" 不显示分隔线 -->
+							<button type="button" class="btn btn-default" data-dismiss="modal" id="btnEditClose1">取消</button>
+							<button type="submit" class="btn btn-primary " id="btnEditRestSave" @click="btnSaveRestMgr">保存</button>
+						</div>
+
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+		<!--
+   	作者：yuan
+   	时间：2018-08-22
+   	描述：权限管理 -接口列表-编辑
+   -->
+		<div class="modal fade" id="EditInterModal" tabindex="-1" role="dialog" aria-labelledby="EditModalInter" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog">
+				<div class="modal-content animated bounceInDown">
+					<!-- 窗口顶部 -->
+					<div class="modal-header profile-TextLeft ">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEditInter1">
+                            × <!-- 关闭按钮图标 -->
+                        </button>
+						<h4 class="modal-title" id="EditModalInter2">
+                           编辑 <!-- 窗口标题 -->
+                        </h4>
+					</div>
+					<!-- 窗口中部 -->
+					<div class="modal-body profile-TextLeft ">
+						<div class="body-info">
+							<form class="form-horizontal" id="editRestFrom">
+
+								<div class="form-group">
+									<label for="list_input_id" class="col-sm-3 control-label">ID</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" id="list_input_id" placeholder="请输入ID" readonly="" name="restId">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="list_input_name" class="col-sm-3 control-label">接口名称</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" id="list_input_name" placeholder="请输入接口名称" name="restName">
+									</div>
+								</div>
+								<!--<div class="form-group">-->
+									<!--<label for="list_input_model" class="col-sm-3 control-label">模块名称</label>-->
+									<!--<div class="col-sm-8">-->
+										<!--<input type="text" class="form-control" id="list_input_model" placeholder="请输入模块名称" name="model">-->
+									<!--</div>-->
+								<!--</div>-->
+								<div class="form-group">
+									<label for="list_input_url" class="col-sm-3 control-label">接口URL</label>
+									<div class="col-sm-8">
+										<input type="url" class="form-control" id="list_input_url" placeholder="请输入接口URL" name="url">
+									</div>
+                                 </div>
+                                   <div class="form-group">
+									<label for="list_input_cmdType" class="col-sm-3 control-label">命令类型</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" id="list_input_cmdType" placeholder="请输入命令类型" name="cmdType">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="list_input_cmd" class="col-sm-3 control-label">命令字</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" id="list_input_cmd" placeholder="请输入命令字" name="cmd">
+									</div>
+                                </div>
+                                 <div class="form-group">
+									 <label for="list_input_orderNum" class="col-sm-3 control-label">排序</label>
+									 <div class="col-sm-8">
+										 <input type="number" class="form-control" id="list_input_orderNum"
+												placeholder="请输入排序" name="orderNum">
+									 </div>
+								 </div>
+								<div class="form-group">
+									<label for="list_input_systemType" class="col-sm-3 control-label">子系统</label>
+										<div class="col-sm-8">
+											<input type="number" class="form-control" id="list_input_systemType"
+												   placeholder="请输入子系统" name="systemType">
+										</div>
+								</div>
+								<div class="form-group">
+									<label for="list_input_memo" class="col-sm-3 control-label">接口样例</label>
+									<div class="col-sm-8">
+										<textarea id="list_input_memo" name="memo" class="form-control">
+
+										</textarea>
+									</div>
+								</div>
+							</form>
+						</div>
+							<!-- 出错提示 -->
+							<div class="error-info"></div>
+
+						</div>
+
+						<!-- 窗口底部 -->
+						<div class="modal-footer">
+							<!-- style="border-top:none;" 不显示分隔线 -->
+							<button type="button" class="btn btn-default" data-dismiss="modal" id="btnEditClose2">取消</button>
+							<button type="submit" class="btn btn-primary " id="btnEditSave2" @click="btnEditRestList">保存</button>
+						</div>
+
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+
+
+	</div>
+	<script src="../../../../r/js/public.js"></script>
+	<script type="text/javascript" src="../../../../r/js/modules/sysUser/menu/manager.js"></script>
+
+</body>
+</html>

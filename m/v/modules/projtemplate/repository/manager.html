@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="../../../../r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../r/lib/bootstrap/css/bootstrap-table.min.css" rel="stylesheet">
+    <link href="../../../../r/css/boostrap-custom.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="../../../../r/lib/html5shiv.min.js"></script>
+    <script src="../../../../r/lib/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .tpl-repository-wrap {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            overflow: auto;
+            left: 0;
+            width: 280px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="list-group tpl-repository-wrap">
+                    <a v-for="e in repositoryList" href="javascript:;" @click="clickRepositoryItem(e.repositoryId)"
+                       class="list-group-item">{{e.no}}-{{e.name}}</a>
+                </div>
+            </div>
+            <div class="col-lg-10">
+                <ul class="nav nav-pills" id="tab1" @click="tab1Click">
+                    <li class="active"><a href="#repository" data-toggle="pill">模板仓库</a></li>
+                    <li><a href="#all-document-template" data-toggle="pill">所有文档模板</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="repository">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <button type="button" class="btn btn-primary" @click="ensureRelation">确认关系</button>
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#modal-add-repository">添加
+                                </button>
+                                <button type="button" class="btn btn-warning" @click="repositoryEdit"
+                                        :disabled="!curRepository || curRepository.repositoryId===0">编辑
+                                </button>
+                                <button type="button" class="btn btn-danger" @click="repositoryRemove"
+                                        :disabled="!curRepository || curRepository.repositoryId===0">删除
+                                </button>
+                            </div>
+                            <div class="panel-body">
+                                <div id="repository-content">
+                                    <form class="form-horizontal" v-if="curRepository && actionType===0">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">模板编号</label>
+                                            <div class="col-sm-4">
+                                                <p class="form-control-static">{{curRepository.no}}</p>
+                                            </div>
+                                            <label class="col-sm-2 control-label">模板名称</label>
+                                            <div class="col-sm-4">
+                                                <p class="form-control-static">{{curRepository.name}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">关联岗位类别</label>
+                                            <div class="col-sm-4">
+                                                <p class="form-control-static">{{repositoryWorkJobTypeName}}</p>
+                                            </div>
+                                            <label class="col-sm-2 control-label">发布状态</label>
+                                            <div class="col-sm-4">
+                                                <p class="form-control-static">{{repositoryState}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">创建者</label>
+                                            <div class="col-sm-4">
+                                                <p class="form-control-static">{{curRepository.createBy}}</p>
+                                            </div>
+                                            <label class="col-sm-2 control-label">更新时间</label>
+                                            <div class="col-sm-4">
+                                                <p class="form-control-static">{{curRepository.createTime}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">批次</label>
+                                            <div class="col-sm-4">
+                                                <p class="form-control-static">{{curRepository.uuid}}</p>
+                                            </div>
+                                            <label class="col-sm-2 control-label">排序</label>
+                                            <div class="col-sm-4">
+                                                <p class="form-control-static">{{curRepository.orderNo}}</p>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <form class="form-horizontal" v-if="curRepository && actionType===1"
+                                          @submit.prevent="repositorySave">
+                                        <input type="hidden" name="repositoryId" :value="curRepository.repositoryId">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">模板编号</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" name="no"
+                                                       :value="curRepository.no">
+                                            </div>
+                                            <label class="col-sm-2 control-label">模板名称</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" name="name"
+                                                       :value="curRepository.name">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">关联岗位类别</label>
+                                            <div class="col-sm-4">
+                                                <select name="workJobType" class="form-control">
+                                                    <option v-for="workJobType in workJobTypeList"
+                                                            :value="workJobType.workJobTypeId"
+                                                            :selected="workJobType.workJobTypeId===curRepository.workJobType">
+                                                        {{workJobType.workJobTypeName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <label class="col-sm-2 control-label">发布状态</label>
+                                            <div class="col-sm-4">
+                                                <select name="state" class="form-control">
+                                                    <option v-for="(e,index) in stateNameArr"
+                                                            :value="index"
+                                                            :selected="index===curRepository.state">
+                                                        {{e}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button type="submit" class="btn btn-primary">保存</button>
+                                                <button type="button" class="btn btn-default" @click="repositoryCancel">
+                                                    取消
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="document-template-content">
+                                    <ul class="nav nav-pills" id="tab2" @click="tab2Click">
+                                        <li class="active"><a href="#xqs-tpl" data-toggle="pill">需求说明书模板</a></li>
+                                        <li><a href="#gzz-tpl" data-toggle="pill">工作计划书模板</a></li>
+                                        <li><a href="#jc-tpl" data-toggle="pill">集成文档模板</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="xqs-tpl">
+                                            <div class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="btn-toolbar" id="xqs-tpl-table-toolbar">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-primary"
+                                                                    data-toggle="modal"
+                                                                    data-target="#modal-add-doc-template">添加
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <table id="xqs-tpl-table"></table>
+
+                                                </div>
+                                            </div>
+
+                                            <ul class="nav nav-pills" id="tab3" @click="tab3Click">
+                                                <li class="active"><a href="#xqyz" data-toggle="pill">需求因子</a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <div class="tab-pane active" id="xqyz">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-body">
+                                                            <table id="xqyz-tpl-table"></table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="gzz-tpl">
+                                            <div class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="btn-toolbar" id="gzz-tpl-table-toolbar">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-primary"
+                                                                    data-toggle="modal"
+                                                                    data-target="#modal-add-doc-template">添加
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <table id="gzz-tpl-table"></table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="jc-tpl">
+                                            <div class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="btn-toolbar" id="jc-tpl-table-toolbar">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-primary"
+                                                                    data-toggle="modal"
+                                                                    data-target="#modal-add-doc-template">添加
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <table id="jc-tpl-table"></table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="all-document-template">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"></div>
+                            <div class="panel-body">
+                                <div class="btn-toolbar" id="all-tpl-table-toolbar">
+                                    <div class="btn-group">
+                                        <!--<button type="button" class="btn btn-primary"
+                                                data-toggle="modal"
+                                                data-target="#modal-add-doc-template">添加
+                                        </button>-->
+                                    </div>
+                                </div>
+                                <table id="all-tpl-table"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-add-repository">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">添加模板仓库</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="repositoryAdd">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">模板编号</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="no">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">模板名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">关联岗位类别</label>
+                            <div class="col-sm-10">
+                                <select name="workJobType" class="form-control">
+                                    <option v-for="workJobType in workJobTypeList" :value="workJobType.workJobTypeId">
+                                        {{workJobType.workJobTypeName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">发布状态</label>
+                            <div class="col-sm-10">
+                                <select name="state" class="form-control">
+                                    <option v-for="(e,index) in stateNameArr" :value="index">
+                                        {{e}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--文档模板添加-->
+    <div class="modal fade" id="modal-add-doc-template">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">添加{{curTab1Name}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="docTemplateAdd">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">模板名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="title">
+                            </div>
+                        </div>
+                        <!--
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">别名</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="alias">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">文档模板状态</label>
+                            <div class="col-sm-10">
+                                <select name="state" class="form-control">
+                                    <option v-for="(e,index) in stateNameArr" :value="index">{{e}}</option>
+                                </select>
+                            </div>
+                        </div>-->
+                        <div class="form-group" v-if="docTypeModalObj">
+                            <label class="col-sm-2 control-label">模板类型</label>
+                            <div class="col-sm-10">
+                                <select name="docType" class="form-control">
+                                    <option v-for="(value,key) in docTypeModalObj" :value="key">{{value}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">添加</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--需求岗位真值约束添加-->
+    <div class="modal fade" id="modal-add-xqs-workJob" v-if="curXqsData">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">添加{{curTab2Name}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="xqsWorkJobAdd">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">需求书模板名称</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{{curXqsData.title}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">需求因子</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="reqItemId">
+                                    <option v-for="e in reqItemList" :value="e.itemId">
+                                        {{e.reqItemNo}}{{e.reqItemDesc}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">导出岗位</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="workJobId">
+                                    <option v-for="e in workJobList" :value="e.workJobId">{{e.title}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">添加</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--文档模板修改-->
+    <div class="modal fade" id="modal-modify-doc-template">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改{{curTab1Name}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="docTemplateModify">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">模板名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="title" :value="docTplModifyData.title">
+                            </div>
+                        </div>
+                        <!--<div class="form-group">
+                            <label class="col-sm-2 control-label">别名</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="alias" :value="docTplModifyData.alias">
+                            </div>
+                        </div>-->
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--需求岗位真值约束修改-->
+    <div class="modal fade" id="modal-modify-xqs-workJobCheck" v-if="curXqsData && curWorkJobCheck">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改{{curTab2Name}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="xqsWorkJobModify">
+                        <input type="hidden" name="checkId" value="curWorkJobCheck.checkId">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">需求书模板名称</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{{curXqsData.title}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">需求因子</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="reqItemId">curWorkJobCheck
+                                    <option v-for="e in reqItemList" :value="e.itemId"
+                                            :selected="e.itemId==curWorkJobCheck.reqItemId">
+                                        {{e.reqItemNo}}{{e.reqItemDesc}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">导出岗位</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="workJobId">
+                                    <option v-for="e in workJobList" :value="e.workJobId"
+                                            :selected="e.workJobId==curWorkJobCheck.workJobId">{{e.title}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">修改</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--需求因子修改-->
+    <div class="modal fade" id="modal-modify-req-item" v-if="curReqItem">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改{{curTab2Name}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="reqItemModify">
+                        <input type="hidden" name="itemId" :value="curReqItem.itemId">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">需求书模板名称</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{{curReqItem.templateName}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">需求因子项</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{{curReqItem.reqItemNo}}.{{curReqItem.reqItemDesc}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">导出岗位</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="workJobId">
+                                    <option v-for="e in workJobList" :value="e.workJobId">{{e.title}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">修改</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="../../../../r/lib/jquery.min.js"></script>
+<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../../r/lib/bootstrap/js/bootstrap-table.js"></script>
+<script src="../../../../r/lib/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../../../r/lib/bs-extend/modal.js"></script>
+<script src="../../../../r/lib/vue.js"></script>
+<script src="../../../../r/lib/layer/layer.js"></script>
+<script src="../../../../r/lib/base64.js"></script>
+<script src="../../../../r/js/common.js"></script>
+<script src="../../../../r/js/modules/projtemplate/repository/manager.js"></script>
+</body>
+</html>

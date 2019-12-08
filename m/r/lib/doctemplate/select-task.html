@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="select-task-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">选择岗位任务</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" @submit.prevent="submitResource">
+                    <div class="form-group">
+                        <!--<label class="col-sm-1 control-label"></label>-->
+                        <div class="col-sm-12">
+                            <div>默认任务：</div>
+                            <div v-for="taskItem in work_task_json_obj_page.defaultTaskList">
+                                <label><input type="checkbox" checked disabled></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <!--<label class="col-sm-1 control-label"></label>-->
+                        <div class="col-sm-12">
+                            <div>可选任务：</div>
+                            <div v-for="taskItem in work_task_json_obj_page.optionalTaskList">
+                                <label><input type="checkbox" :checked="taskItem.checked"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <!--<label class="col-sm-1 control-label"></label>-->
+                        <div class="col-sm-12">
+                            <div>自定义任务：</div>
+                            <div v-for="taksItem in work_task_json_obj_page.customTaskList">
+                                <label><input type="text" placeholder="请输入自定义任务名称"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

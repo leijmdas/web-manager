@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页内容管理页面</title>
+    <link href="../../../r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../r/lib/bootstrap/css/bootstrap-table.min.css" rel="stylesheet">
+    <link href="../../../r/css/boostrap-custom.css" rel="stylesheet">
+    <link href="../../../r/lib/ytbui/css/ytbui.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="../../../r/lib/html5shiv.min.js"></script>
+    <script src="../../../r/lib/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<div id="app">
+
+    <div class="wrap">
+        <ul class="nav nav-pills" id="tab1" @click="tabClick">
+            <li class="active"><a href="#tab-panel-1" data-toggle="pill">顶部轮播图</a></li>
+            <li><a href="#tab-panel-1" data-toggle="pill">项目协作介绍</a></li>
+            <li><a href="#tab-panel-1" data-toggle="pill">成功案例</a></li>
+            <li><a href="#tab-panel-1" data-toggle="pill">找项目</a></li>
+            <li><a href="#tab-panel-1" data-toggle="pill">发需求</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab-panel-1">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="btn-toolbar" id="pw-se-table-toolbar">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" @click="showResourceModalAdd">添加
+                                </button>
+                            </div>
+                        </div>
+                        <table id="pw-se-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-resource">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{resourceModalObj.panelTitle}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="submitResource">
+                        <template v-if="resourceModalObj.resType!==3">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">标题</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="title"
+                                           v-model="resourceModalObj.title"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group" v-if="showContent(resourceModalObj.resType)">
+                                <label class="col-sm-2 control-label">内容</label>
+                                <div class="col-sm-10">
+                                    <ytb-rich-textarea v-if="isTextArea(resourceModalObj.resType)" :id="'content'"
+                                                       v-model="resourceModalObj.content"></ytb-rich-textarea>
+                                   <!-- <input v-else type="text" class="form-control" name="content"
+                                           v-model="resourceModalObj.content" autocomplete="off">-->
+                                    <textarea v-else class="form-control" name="content"
+                                              v-model="resourceModalObj.content" autocomplete="off" style="resize: none; height: 300px;"></textarea>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">上传图片</label>
+                            <div class="col-sm-10">
+                                <ytb-upload :upload-type="'img-list'"
+                                            :img-src-arr="imgSrcArr(resourceModalObj.imgDocId)"
+                                            :msg-body="uploadImgMsgBody"
+                                            :accept="'image/png,image/jpg,image/jpeg'"
+                                            :size="10*1024*1024"
+                                            :limit="1"
+                                            :on-verify-fail="uploadImgVerifyFail" :on-success="uploadImgSuccess"
+                                            :on-fail="uploadImgFail"
+                                            :on-remove="uploadImgRemove">
+                                    <span style="color: #f00;">{{uploadImgFailMsg}}</span>
+                                </ytb-upload>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">排序</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="sortNo" v-model="resourceModalObj.sortNo"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../r/lib/jquery.min.js"></script>
+<script src="../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../r/lib/bootstrap/js/bootstrap-table.js"></script>
+<script src="../../../r/lib/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../../r/lib/vue.js"></script>
+<!--<script src="../../../r/lib/layer/layer.js"></script>-->
+<script src="../../../r/lib/layer/layer.js"></script>
+<script src="../../../r/lib/base64.js"></script>
+<script src="../../../r/js/common.js"></script>
+<script src="../../../r/lib/ytbui/js/ytbui.js"></script>
+<script src="../../../r/lib/ueditor/utf8-jsp/ueditor.config.js"></script>
+<script src="../../../r/lib/ueditor/utf8-jsp/ueditor.all.js"></script>
+<script src="../../../r/js/modules/webPageMng/home-page-mng.js"></script>
+</body>
+</html>

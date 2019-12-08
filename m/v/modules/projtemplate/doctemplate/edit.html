@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../../../../r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="../../../../r/lib/html5shiv.min.js"></script>
+    <script src="../../../../r/lib/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        body {
+        }
+
+        #app {
+            position: relative;
+        }
+
+        #operate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 100px;
+            background-color: #E6E6E6;
+            border-bottom: 10px solid #c3c3c3;
+        }
+
+        .dirs-wrap {
+            position: fixed;
+            top: 84px;
+            left: 0;
+            bottom: 0;
+            overflow: scroll;
+            width: 260px;
+            background-color: #fff;
+        }
+
+        #doc-template-container {
+            position: fixed;
+            top: 84px;
+            left: 270px;
+            bottom: 0;
+            right: 0;
+            overflow: scroll;
+        }
+    </style>
+    <link rel="stylesheet" href="../../../../r/lib/ytbui/css/ytbui.css">
+    <link rel="stylesheet" href="../../../../r/lib/doctemplate/css/doctemplate.css">
+</head>
+<body>
+
+<div id="app">
+    <div id="operate">
+        <div class="btn-toolbar">
+            <!--<div class="btn-group">
+                <label>
+                    <input type="checkbox" @change="showDirs"> 显示目录
+                </label>
+            </div>-->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" @click="save">保存</button>
+            </div>
+            <!--&lt;!&ndash;<div class="btn-group">
+                <button type="button" class="btn btn-default" @click="print">打印</button>
+            </div>&ndash;&gt;-->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" @click="cancel">取消</button>
+            </div>
+
+        </div>
+    </div>
+    <!--
+    <div id="doc-template-container" :style="{left:isShowDirs?'':0}">
+        <doc-template-core :template-model="templateModel" :mode="mode"></doc-template-core>
+    </div>
+    <div class="dirs-wrap" v-show="isShowDirs">
+        <doc-template-dirs :dirs="tags"></doc-template-dirs>
+    </div>-->
+    <doc-template :template-model="templateModel" :mode="mode" :style-container="styleContainer"></doc-template>
+</div>
+
+<script src="../../../../r/lib/jquery.min.js"></script>
+<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../../r/lib/layer/layer.js"></script>
+<script src="../../../../r/js/common.js"></script>
+<script src="../../../../r/lib/vue.js"></script>
+<script src="../../../../r/lib/vuex.js"></script>
+<script src="../../../../r/lib/ytbui/js/ytbui.js"></script>
+<script src="../../../../r/lib/base64.min.js"></script>
+<script src="../../../../r/lib/doctemplate/js/doctemplate-vue.js"></script>
+<script src="../../../../r/lib/ueditor/ueditor.config.js"></script>
+<script src="../../../../r/lib/ueditor/ueditor.all.js"></script>
+
+<script>
+    $(function () {
+
+        var URL_ADMIN = '';
+
+        var store = new Vuex.Store({
+            modules: $DocTemplateVue.storeModule
+        });
+
+        var vm = new Vue({
+            el: '#app',
+            store: store,
+            data: {
+                mode: 'edit',//编辑模式
+                templateModel: null,//文档
+                isShowDirs: false
+            },
+            methods: {
+                /*print: function () {
+                    var cssPathArr = ['../../../../r/lib/bootstrap/css/bootstrap.min.css',
+                        '../../../../r/lib/ytbui/css/ytbui.css',
+                        '../../../../r/lib/doctemplate/css/doctemplate.css'];
+                    YTBUI.utils.print('#doc-template-container', cssPathArr);
+                },*/
+                showDirs: function (e) {
+                    var target = e.target;
+                    this.isShowDirs = $(target).prop('checked');
+                },
+                cancel: function (e) {
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                    // parent.OUTER_API && parent.OUTER_API.renderPage();
+                },
+                save: function (e) {
+                    var that = this;
+                    var exportAllTableData = function (documentId) {
+                        $.ajaxPost({
+                            url: URL_ADMIN + '/rest/tagTableService/manager',
+                            cmdtype: 'tagTableServiceManager',
+                            cmd: 'exportAllTables',
+                            data: {
+                                documentId: documentId,
+                                projectId: 0
+                            },
+                            success: function () {
+                                /*layer.alert('导表成功！', function (index) {
+                                    layer.close(index);
+                                });*/
+                                that.init();
+                            }
+                        });
+                    };
+
+                    var documentId = this.templateModel.documentModel.documentId;
+                    $.ajaxPost({
+                        url: URL_ADMIN + '/rest/template',
+                        cmdtype: 'templateDocument',
+                        cmd: 'modifyReDocument',
+                        data: {
+                            documentId: documentId,
+                            document: Base64.encode(JSON.stringify(this.docNewModelDocument))
+                        },
+                        success: function () {
+                            layer.alert('保存成功！', function (index) {
+                                layer.close(index);
+                            });
+                            exportAllTableData(documentId);
+                        }
+                    });
+
+                },
+                reset: function (e) {
+                    var that = this;
+                    layer.confirm('确认重置？', function (index) {
+                        $.ajaxPost({
+                            url: URL_ADMIN + '/rest/template',
+                            cmdtype: 'repository',
+                            cmd: 'getDocTemplateDetails',
+                            data: {
+                                templateId: U.urlParamObj['templateId'],
+                                workJobId: U.urlParamObj['workJobId'],
+                                repositoryId: U.urlParamObj['repositoryId']
+                            },
+                            success: function (data) {
+                                layer.close(index);
+                                that.templateModel = data;
+                            }
+                        });
+                    });
+                },
+                init: function () {
+                    var that = this;
+                    $.ajaxPost({
+                        url: URL_ADMIN + '/rest/template',
+                        cmdtype: 'repository',
+                        cmd: 'getDocTemplateDetails',
+                        data: {
+                            templateId: U.urlParamObj['templateId'],
+                            workJobId: U.urlParamObj['workJobId'],
+                            repositoryId: U.urlParamObj['repositoryId']
+                        },
+                        success: function (data) {
+                            that.templateModel = data;
+                        }
+                    });
+                }
+            },
+            computed: {
+                docNewModelDocument: function () {
+                    return this.$store.getters[this.mode + 'DocTemplate/docNewModelDocument'];
+                },
+                tags: function () {
+                    return this.$store.getters[this.mode + 'DocTemplate/tags'];
+                },
+                styleContainer: function () {
+                    return {
+                        height: ($(document).height() - 84) + 'px',
+                        marginTop: '84px'
+                    };
+                }
+            },
+            mounted: function () {
+                this.init();
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/ytbui.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="app">
+
+    <button type="button" @click="dialogVisible = true">打开对话框</button>
+    <ytb-dialog title="邀请好友" width="580px" :visible.sync="dialogVisible">
+        <ytb-invite-friend :data-obj="dataObj()" :result="result" :limit="20"></ytb-invite-friend>
+        <span slot="header">
+            <button type="button" class="btnBlue" @click="ok">确定</button>
+            <button type="button" @click="cancel">取消</button>
+        </span>
+    </ytb-dialog>
+
+</div>
+
+<script src="../../jquery.js"></script>
+<script src="../../layer/layer.js"></script>
+<script src="../../bootstrap/js/bootstrap.js"></script>
+<script src="../../vue.js"></script>
+<script src="../../base64.js"></script>
+<script src="../../../js/common.js"></script>
+<script src="../js/ytbui.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            dialogVisible: false,
+            result: []
+        },
+        computed: {},
+        methods: {
+            dataObj: function () {
+                var data = {
+                    friends: [],
+                    groups: []
+                };
+                for (var i = 1; i <= 20; i++) {
+                    data.friends.push({
+                        id: i,
+                        username: '张三' + i
+                    });
+                }
+                return data;
+            },
+            ok: function () {
+                this.dialogVisible = false;
+            },
+            cancel: function () {
+                this.dialogVisible = false;
+            },
+            getFriendList: function () {
+                var self = this;
+                var reqOps = {
+                    "cmdtype": "projectRelease",
+                    "cmd": "getUserFriendList",
+                    "url": "//project.youtobon.com/rest/projectCenter",
+                };
+                //成功回调函数d
+                reqOps.success = function (data) {
+                    self.friendList = data.list;
+                };
+                //失败回调函数
+                reqOps.fail = function (retcode) {
+                    minAlert(retcode);
+                };
+                //调用
+                $.ajaxPost(reqOps);
+            }
+        },
+        mounted: function () {
+
+        }
+
+    });
+</script>
+</body>
+</html>

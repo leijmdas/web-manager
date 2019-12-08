@@ -1,0 +1,464 @@
+/* 编辑模式样式 */
+.doc-template-edit, .doc-template-preview {
+    height: 100%;
+    overflow: auto;
+}
+
+/* 预览模式样式 */
+.doc-template-preview {
+}
+
+.doc-template-wrap {
+    font: normal 14px/1.15 simsun;
+    width: 22cm;
+    margin: 0 auto;
+    padding: 10px 120px;
+    background-color: #fff;
+}
+
+.doc-template-container {
+    position: relative;
+    background-color: #E3E3E3;
+}
+
+.dt-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+/*.dt-header-disabled::before {
+    content: ' ';
+    background-color: #0000000f;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: not-allowed;
+}*/
+
+/* 文档title */
+.dt-title {
+    height: 40px;
+    background-color: #474747;
+}
+
+.dt-title, .dt-toolbar {
+    padding-left: 20px;
+}
+
+.dt-menu {
+    height: 40px;
+    padding: 10px 0;
+}
+
+.dt-menu span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.dt-icon-save {
+    background: url(../img/icon-save.png);
+    background-size: 100% 100%;
+}
+
+.dt-icon-undo {
+    background: url(../img/icon-undo.png);
+    background-size: 100% 100%;
+}
+
+.dt-icon-redo {
+    background: url(../img/icon-redo.png);
+    background-size: 100% 100%;
+}
+
+.dt-icon-print {
+    background: url(../img/icon-print.png);
+    background-size: 100% 100%;
+}
+
+
+.dt-toolbar-item {
+    display: inline-block;
+    width: 74px;
+    height: 52px;
+    border: 1px solid transparent;
+    border-right: 1px solid #E4E4E4;
+    text-align: center;
+    cursor: pointer;
+    padding: 4px 0;
+    box-sizing: content-box;
+}
+
+.dt-toolbar-item:hover {
+    background-color: #acacac;
+    border: 1px solid #acacac;
+}
+
+.dt-toolbar-item .icon {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+}
+
+.dt-toolbar-item .title {
+    text-align: center;
+    margin: -2px 0 0;
+}
+
+
+.dt-icon-paste {
+    background: url(../img/icon-paste.png);
+    background-size: 100% 100%;
+}
+
+.dt-icon-copy {
+    background: url(../img/icon-copy.png);
+    background-size: 100% 100%;
+}
+
+.dt-icon-cut {
+    background: url(../img/icon-cut.png);
+    background-size: 100% 100%;
+}
+
+.dt-icon-upimg {
+    background: url(../img/icon-upimg.png);
+    background-size: 100% 100%;
+}
+
+
+.doc-template-container .dt-toolbar {
+    height: 70px;
+    background: #F4F4F4;
+    border-bottom: 1px solid #BFBFBF;
+    padding: 5px 0 5px 10px;
+}
+
+/* 侧栏目录 */
+.dt-dir-wrap {
+    position: absolute;
+    background-color: #FAFAFA;
+    border-right: 1px solid #BFBFBF;
+    padding: 10px;
+    top: 110px;
+    bottom: 0;
+    left: 0;
+    width: 300px;
+}
+
+.dt-dir-wrap .title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+.dt-dir-wrap .content {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 280px;
+    position: absolute;
+    top: 42px;
+    bottom: 0;
+    padding: 10px;
+    border: 1px solid #BFBFBF;
+    border-radius: 2px;
+}
+
+/* 右侧文档内容区域 */
+.dt-content-wrap {
+    position: absolute;
+    top: 110px;
+    left: 300px;
+    bottom: 0;
+    right: 0;
+    padding-top: 20px;
+}
+
+
+/* tagText */
+.doc-template-edit .tagText {
+
+}
+
+.doc-template-edit .tagText > .title {
+    position: relative;
+}
+
+.doc-template-edit .tagText > .title .tagText-num .num-item {
+    display: inline-block;
+    width: 24px;
+    border-bottom: 3px solid #fff;
+    text-align: center;
+    height: 20px;
+    cursor: default;
+    margin-right: 4px;
+}
+
+.doc-template-edit .tagText > .title .tagText-num .num-item-click {
+    cursor: pointer;
+    border-bottom: 3px solid yellow;
+}
+
+.doc-template-edit .tagText > .title .tagText-num {
+    display: inline-block;
+}
+
+.doc-template-edit .tagText > .title > .item {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.doc-template-edit .tagText > .title > .del-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 12px;
+    height: 12px;
+    background: url(../img/del_icon.png) no-repeat 0 0;
+}
+
+.doc-template-edit .tagText > .value {
+
+}
+
+.doc-template-edit .tagText > .value > .default-value {
+
+}
+
+.doc-template-edit .tagText > .value > .default-value > input {
+    display: block;
+    width: 100%;
+    height: 30px;
+}
+
+.doc-template-edit .tagText > .value > .default-value > .tw {
+    width: 100%;
+    padding: 0;
+    resize: none;
+    box-sizing: content-box;
+    /*min-height: 100px;*/
+}
+
+/* tagTable */
+.doc-template-edit .tagTable {
+
+}
+
+.doc-template-edit .tagTable .own-tagTable, .doc-template-preview .tagTable .own-tagTable {
+    border: none;
+    border-top: 1px solid #6f6f6f;
+    border-left: 1px solid #6f6f6f;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.doc-template-edit .tagTable .own-tagTable tr {
+
+}
+
+.doc-template-edit .tagTable .own-tagTable th {
+    cursor: pointer;
+}
+
+.doc-template-edit .tagTable .own-tagTable td, .doc-template-edit .tagTable .own-tagTable th,
+.doc-template-preview .tagTable .own-tagTable td, .doc-template-preview .tagTable .own-tagTable th {
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+    border-right: 1px solid #6f6f6f;
+    border-bottom: 1px solid #6f6f6f;
+    position: relative;
+}
+
+.doc-template-edit .tagTable .own-tagTable td span, .doc-template-edit .tagTable .own-tagTable th span,
+.doc-template-preview .tagTable .own-tagTable td span, .doc-template-preview .tagTable .own-tagTable th span {
+    display: block;
+    width: 100%;
+    position: relative;
+}
+
+.doc-template-preview .tagTable .own-tagTable td, .doc-template-preview .tagTable .own-tagTable th {
+    min-width: 100px;
+}
+
+.doc-template-edit .tagTable select, .doc-template-preview .tagTable select {
+    width: 100%;
+}
+
+.doc-template-edit .tagTable input, .doc-template-preview .tagTable input {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+
+.doc-template-edit .tagTable .own-tagTable .title-hint {
+    position: absolute;
+    border: 4px solid red;
+    display: block;
+    top: 0;
+    right: 0;
+    width: 0;
+    border-left: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+}
+
+.doc-template-edit .tagTable .own-tagTable .title-hint-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #000000;
+    background-color: #ffffe2;
+    z-index: 1;
+    width: 200px;
+    display: none;
+}
+
+.doc-template-edit .tagTable .own-tagTable .title-hint-panel .title-hint-panel-line {
+    position: absolute;
+}
+
+/** tagTable 前面工具栏*/
+body .tagTable-toolbar-pre {
+    position: fixed;
+    z-index: 1000;
+    width: 100px;
+    background-color: aquamarine;
+    text-align: right;
+}
+
+/** tagTable 后面工具栏*/
+body .tagTable-toolbar-suf {
+    position: fixed;
+    z-index: 1000;
+    width: 100px;
+    background-color: aquamarine;
+}
+
+/** tagFile image */
+
+/*.doc-template-edit .tagFile .item-column,*/
+/*.doc-template-edit .tagFile .image-wrap,*/
+.doc-template-edit .tagFile .image-list-wrap {
+    display: inline-block;
+}
+
+.doc-template-edit .tagFile .upload-btn {
+    display: inline-block;
+    width: 130px;
+    height: 100px;
+    text-align: center;
+    border: 1px solid #656565;
+    position: relative;
+    overflow: hidden;
+}
+
+.doc-template-edit .tagFile .image-item {
+    display: inline-block;
+    width: 130px;
+    height: 100px;
+    border: 1px solid #656565;
+    position: relative;
+    overflow: hidden;
+}
+
+.doc-template-edit .tagFile .image-item .btn-del {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    border: 1px solid #f00;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+}
+
+.doc-template-edit .tagFile .image-item .btn-del:hover {
+    display: block;
+}
+
+.doc-template-edit .tagFile .desc {
+}
+
+.doc-template-edit .tagFile .upload-btn .own-file {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 130px;
+    height: 100px;
+}
+
+.doc-template-edit .tagFile .own-image {
+    width: 100%;
+    height: 100%;
+}
+
+/** tagFile file */
+.doc-template-edit .tagFile .file-wrap .upload-btn {
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    position: relative;
+    overflow: hidden;
+    background-color: #457bcd;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.doc-template-edit .tagFile .upload-btn .own-file,
+.doc-template-edit .tagFile .upload-btn .desc,
+.doc-template-edit .tagFile .file-wrap .upload-btn .own-file,
+.doc-template-edit .tagFile .file-wrap .upload-btn .upload-btn-text {
+    cursor: pointer;
+}
+
+.doc-template-edit .tagFile .file-wrap .own-file {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 30px;
+}
+
+.doc-template-edit .tagFile .container-fluid .row {
+    margin-top: 10px;
+}
+
+/* 行间距 */
+.tagText > .title, .tagText > .value > .default-value,
+.tagTextBox > .value > .default-value,
+.tagRadio > .value > .default-value,
+.tagCheck > .value > .default-value,
+.tagFile > .value > .default-value {
+    margin: 10px 0;
+}
+
+.tagTable {
+    margin: 10px 0 0;
+}
+
+.tagTableSum {
+    margin-top: 0;
+}
+
+
+
+
+

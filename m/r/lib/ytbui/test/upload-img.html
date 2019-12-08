@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/ytbui.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="app">
+    <!-- 图片上传案例 -->
+    <ytb-upload style="margin-left: 200px; margin-top: 200px;" :upload-type="'img-list'" :img-src-arr="imgSrcArr"
+                :msg-body="uploadImgMsgBody"
+                :accept="'image/png,image/jpg,image/jpeg'"
+                :size="3*1024*1024"
+                :on-verify-fail="uploadImgVerifyFail" :on-success="uploadImgSuccess" :on-fail="uploadImgFail"
+                :on-remove="uploadImgRemove">
+        <span style="color: #f00;">{{uploadImgFailMsg}}</span>
+    </ytb-upload>
+
+    <!-- 文件上传案例 -->
+    <ytb-upload style="margin-left: 200px; " :upload-type="'file'" :file-data="fileData"
+                :msg-body="uploadFileMsgBody"
+                :accept="'zip,txt'"
+                :on-verify-fail="uploadFileVerifyFail" :on-success="uploadFileSuccess" :on-fail="uploadFileFail">
+        <span style="color: #f00;">{{uploadFileFailMsg}}</span>
+    </ytb-upload>
+
+    <!-- 文件多次上传案例 -->
+    <ytb-upload style="margin-left: 200px; " :upload-type="'file-list'" :file-data="fileDataMul"
+                :msg-body="uploadFileMsgBody"
+                :accept="'zip,txt'"
+                :size="3*1024*1024"
+                :on-verify-fail="onVerifyFailMul"
+                :on-success="uploadFileSuccessMul"
+                :on-remove="uploadFileRemoveMul">
+        <span style="color: #f00;">{{uploadFileFailMsgMul}}</span>
+    </ytb-upload>
+
+</div>
+
+<script src="../../jquery.js"></script>
+<script src="../../layer/layer.js"></script>
+<script src="../../base64.js"></script>
+<script src="../../../js/common.js"></script>
+<script src="../../bootstrap/js/bootstrap.js"></script>
+<script src="../../vue.js"></script>
+<script src="../js/ytbui.js"></script>
+<script>
+    $(function () {
+        new Vue({
+            el: '#app',
+            data: {
+                uploadImgMsgBody: {
+                    url: '/rest/upload',
+                    cmdtype: 'templateDocument',
+                    cmd: 'uploadPIC',
+                    data: {}
+                },
+                uploadFileMsgBody: {
+                    url: '/rest/upload',
+                    cmdtype: 'templateDocument',
+                    cmd: 'upload',
+                    data: {}
+                },
+                documentIdArr: [],
+                uploadImgFailMsg: '',
+                uploadFileFailMsg: '',
+                fileData: {
+                    desc: '请上传文件：',
+                    filename: '',
+                    downloadUrl: '#'
+                },
+                uploadFileFailMsgMul: '',
+                fileDocumentInfo: []
+            },
+            computed: {
+                fileDataMul: function () {
+                    var arr = [];
+                    for (i = 0; i < this.fileDocumentInfo.length; i++) {
+                        var obj = this.fileDocumentInfo[i];
+                        var restApi = '/rest/template/download';
+                        var reqMsgBody = $.paramsToBase64({
+                            cmdtype: 'templateDocument',
+                            cmd: 'download',
+                            data: {
+                                documentId: obj.documentId
+                            }
+                        });
+                        var downloadUrl = restApi + '?msgBody=' + reqMsgBody;
+                        var filename = obj.filename;
+                        arr.push({
+                            filename: filename,
+                            downloadUrl: downloadUrl
+                        });
+                    }
+                    return {
+                        desc: '请上传文件',
+                        fileInfoArr: arr
+                    };
+                },
+                imgSrcArr: function () {
+                    var srcArr = [];
+                    var restApi = '/rest/template/previewImage';
+                    var msgBody, i;
+                    for (i = 0; i < this.documentIdArr.length; i++) {
+                        msgBody = $.paramsToBase64({
+                            cmdtype: 'templateDocument',
+                            cmd: 'previewJson',
+                            data: {
+                                documentId: this.documentIdArr[i]
+                            }
+                        });
+                        srcArr.push(restApi + '?msgBody=' + msgBody);
+                    }
+                    return srcArr;
+                }
+            },
+            methods: {
+                uploadImgVerifyFail: function (obj) {
+                    if (obj.failType === 'accept') {
+                        this.uploadImgFailMsg = '类型必须是：' + obj.accept + ' , 当前文件的类型：' + obj.type + '。';
+                    } else if (obj.failType === 'size') {
+                        this.uploadImgFailMsg = '大小必须限制在：' + U.fileSizeToString(obj.size) + '内 , 当前文件的大小：' + U.fileSizeToString(obj.curFileSize) + '。';
+                    }
+                },
+                uploadImgSuccess: function (msgBody) {
+                    this.documentIdArr.push(msgBody.documentId);
+                },
+                uploadImgFail: function (retcode, retmsg) {
+                    this.uploadImgFailMsg = '上传失败！';
+                },
+                uploadImgRemove: function (index) {
+                    var that = this;
+                    $.ajaxPost({
+                        url: '/rest/template',
+                        cmdtype: 'templateDocument',
+                        cmd: 'delReDocument',
+                        data: {
+                            documentId: this.documentIdArr[index]
+                        },
+                        success: function (msgBody) {
+                            that.documentIdArr.splice(index, 1);
+                        }
+                    });
+                },
+
+                uploadFileVerifyFail: function (obj) {
+                    if (obj.failType === 'accept') {
+                        this.uploadFileFailMsg = '类型必须是：' + obj.accept + ' , 当前文件的类型：' + obj.type + '。';
+                    } else if (obj.failType === 'size') {
+                        this.uploadFileFailMsg = '大小必须限制在：' + U.fileSizeToString(obj.size) + '内 , 当前文件的大小：' + U.fileSizeToString(obj.curFileSize) + '。';
+                    }
+                },
+                uploadFileSuccess: function (msgBody) {
+                    this.fileData.filename = msgBody.fileName;
+                    var restApi = '/rest/template/download';
+                    var reqMsgBody = $.paramsToBase64({
+                        cmdtype: 'templateDocument',
+                        cmd: 'download',
+                        data: {
+                            documentId: msgBody.documentId
+                        }
+                    });
+                    this.fileData.downloadUrl = restApi + '?msgBody=' + reqMsgBody;
+                },
+                uploadFileFail: function (retcode, retmsg) {
+                    this.uploadFileFailMsg = '上传失败！';
+                },
+
+                uploadFileSuccessMul: function (msgBody) {
+                    this.uploadFileFailMsgMul = '';
+                    this.fileDocumentInfo.push({
+                        documentId: msgBody.documentId,
+                        filename: msgBody.fileName
+                    })
+                },
+                onVerifyFailMul: function (obj) {
+                    var vm = this;
+                    if (obj.failType === 'accept') {
+                        vm.uploadFileFailMsgMul = '类型必须是：' + obj.accept + ' , 当前文件的类型：' + obj.type + '。';
+                    } else if (obj.failType === 'size') {
+                        vm.uploadFileFailMsgMul = '大小必须限制在：' + U.fileSizeToString(obj.size) + '内 , 当前文件的大小：' + U.fileSizeToString(obj.curFileSize) + '。';
+                    }
+                },
+                uploadFileRemoveMul: function (index) {
+                    var that = this;
+                    layer.confirm('确认删除文件吗？', function (layerIndex) {
+                        $.ajaxPost({
+                            url: '/rest/template',
+                            cmdtype: 'templateDocument',
+                            cmd: 'delReDocument',
+                            data: {
+                                documentId: that.fileDocumentInfo[index].documentId
+                            },
+                            success: function (msgBody) {
+                                layer.closeAll(layerIndex);
+                                that.fileDocumentInfo.splice(index, 1);
+                            }
+                        });
+                    });
+
+                }
+
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>通知模板</title>
+		<link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../r/css/main.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../r/css/admin.css" />
+		<script src="../../../../r/lib/jquery.min.js"></script>
+		<script src="../../../../r/lib/vue.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="../../../../r/lib/bootstrap/css/bootstrap-table.min.css">
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+		<script src="../../../../r/js/common.js"></script>
+		<script src="../../../../r/js/const.js"></script>
+		<script src="../../../../r/js/public.js"></script>
+		<style type="text/css">
+			.marginTop {
+				margin-top: 30px;
+			}
+			
+			.marginLeft {
+				margin-left: 20px;
+			}
+			
+			.PersonanlRealName {
+				display: inline-block;
+			}
+			
+			.labelLineHeight {
+				padding-left: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container-fluid" id="taskTimerBody">
+			<div>
+				<ul class="nav nav-pills" role="tablist">
+					<li role="presentation"   id="ptagtav" class="active">
+						<a @click="isTabPageIndex($event,true)" href="#ltag" aria-controls="profile" role="tab" data-toggle="tab" class="btn-default btn btn-xs"
+						>发布管理</a>
+					</li>
+					<li role="presentation"   id="stagtav">
+						<a @click="isTabPageIndex($event,false)" href="#ltag" aria-controls="home" role="tab" data-toggle="tab" class="btn-default btn btn-xs"
+						>定期执行</a>
+					</li>
+				</ul>
+			</div>
+			<p id="toolbar">
+			<div id="subsysIdq" class="col-md-2">
+				<select   v-show="true" class="form-control" name="subsysIdq"
+						v-model="subsysIdSelect" id="select-subsysIdq">
+					<option :selected="subsysIdSelect==0" value=0>0--选择子系统</option>
+					<option v-for="(value,key) in subsysList"
+							:selected="key==recordEdit.subsysId" :value=key
+							v-html="key+'--'+value"></option>
+				</select>
+			</div>
+			<button v-show="!isTabPageIndex0" @click="btnStartSch($event)" type="button"
+					class="btn btn-default user_line_height User_margin" id="btnStartAll">启动
+			</button>
+			<button v-show="!isTabPageIndex0" @click="btnStopSch($event)" type="button"
+					class="btn btn-warning user_line_height User_margin" id="btnStopAll">终止
+			</button>
+			<button v-show="!isTabPageIndex0" @click="btnExeAll($event)" type="button"
+					class="btn btn-default user_line_height User_margin" id="btnExeAll">立即执行
+			</button>
+			<button v-show="!isTabPageIndex0" @click="btnRefreshAll($event)" type="button"
+					class="btn btn-default user_line_height User_margin" id="btnRefresh">刷新状态
+			</button>
+			<button v-show="isTabPageIndex0" @click="btnAdd" type="button"
+					class="btn btn-primary user_line_height User_margin" id="btnAdd">新增
+			</button>
+
+
+			</p>
+			<div id="content-body">
+				<div id="reportTableDiv" class="span10">
+					<table class="table table-bordered text-center" id="A22" cellpadding="0" cellspacing="0">
+						<thead class="manager_table_thead">
+						<tr>
+							<th v-show="!isTabPageIndex0" >
+								<input  @click="onchangeSelectAll" v-model="isSelect" type="checkbox">
+							</th>
+							<th @click="clickSort($event,'taskId')"  >任务标识</th>
+							<th @click="clickSort($event,'subsysId')" >子系统</th>
+							<th v-show="false">系统用户</th>
+							<th @click="clickSort($event,'taskName')" >任务名称</th>
+							<th @click="clickSort($event,'exeType')"  >执行类型</th>
+							<th>执行对象</th>
+							<th>参数定义</th>
+							<th>首次执行(号)</th>
+							<th>执行周期(天)</th>
+							<th>执行时间点</th>
+							<th>失败重试次数</th>
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="tbody">
+						<template v-for="(item,index) in taskList">
+							<tr v-show="subsysIdSelect==0||item.subsysId==subsysIdSelect" @click="clickTr" @dblclick="btnEdit($event,item)" :class="index==0?'warning':''">
+								<div class="row">
+							<td v-show="!isTabPageIndex0" ><input v-model="item.isSelect" type="checkbox"></td>
+								<td  v-html="index+1"></td>
+								<td  v-html="item.subsysId + '--' + subsysList[item.subsysId]"></td>
+								<td  v-show="false" v-html="item.userId"></td>
+								<td  v-html="item.taskName"></td>
+								<td  v-html="exeTypes[item.exeType]"></td>
+								<td v-html="item.exeObject"></td>
+								<td v-html="item.params"></td>
+								<td v-html="item.exeFirstday"></td>
+								<td v-html="item.exePeriod"></td>
+								<td v-html="item.exeTime"></td>
+								<td v-html="item.retryTimes"></td>
+									<td> <span :class="item.status==2?'manager_font_red':''">{{status[item.status]}}</span>
+									<button v-show="isTabPageIndex0"  @click="btnModifyStatus($event,item)" type="button" class="btn btn-primary btn-xs">{{statusBtnCaption[item.status]}}</button>
+								</td>
+								<td class="th">
+									<button v-show="!isTabPageIndex0"  @click="btnExeOnce($event,item)" type="button" name="btnExeOnce" class="btn btn-primary btn-xs">执行</button>
+									<button v-show="!isTabPageIndex0"  @click="btnStartStopJob($event,item)"   type="button" name="btnStart" class="btn btn-info btn-xs">
+										{{runStatusList[item.taskId]?'终止':'启动'}}</button>
+									<button v-show="isTabPageIndex0&&item.status!=1"  @click="btnEdit($event,item)"type="button" class="btn btn-primary btn-xs " :a="index"
+								    >修改
+									</button>
+									<button v-show="isTabPageIndex0&&item.status!=1"  @click="btnDel($event,item)"  type="button" class="btn btn-danger btn-xs " name="btnDel" :a="index">删除
+									</button>
+								</td>
+								</div>
+							</tr>
+						</template>
+						</tbody>
+					</table>
+
+
+				</div>
+			</div>
+
+			<div class="modal fade  " id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalListO"
+				 aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				<div class="modal-dialog" style="width: 750px;">
+					<div class="modal-content animated bounceInDown">
+						<div class="modal-header profile-TextLeft ">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+									id="btnEditInter">×
+							</button>
+							<h4 class="modal-title" id="myModalList"> 定时任务 </h4>
+						</div>
+						<div class="modal-body profile-TextLeft ">
+							<div class="body-info row">
+								<form class="form-horizontal" id="editTask">
+									<div class="form-group ">
+										<label for="task_id" class="control-label col-md-3">任务标识</label>
+										<div  class="col-md-8">
+											<input readonly  type="text" class="form-control" placeholder="任务标识"
+												   id="task_id" name="taskId" v-model="recordEdit.taskId"/>
+										</div>
+									</div>
+
+									<div class="form-group ">
+										<label for="subsysId" class="control-label col-md-3">子系统</label>
+										<div id="subsysId" class="col-md-8">
+											<select v-show="true" class="form-control" name="docType"
+													v-model="recordEdit.subsysId" id="select-subsysId">
+												<option v-for="(value,key) in subsysList"
+														:selected="key==recordEdit.subsysId" :value=key
+														v-html="key+'--'+value"></option>
+											</select>
+										</div>
+									</div>
+									<div v-show="false" class="form-group ">
+										<label for="userId" class="control-label col-md-3">系统用户</label>
+										<div  class="col-md-8">
+											<input readonly type="text" class="form-control" placeholder="系统用户"
+												   id="userId" name="userId" v-model="recordEdit.userId"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="taskName" class="control-label col-md-3"><span class="manager_font_red">*</span>任务名称</label>
+										<div id="taskName" class="col-md-8">
+											<input  type="text" v-model="recordEdit.taskName"class="form-control" placeholder="请输入任务名称"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="exeType" class="control-label col-md-3">执行类型</label>
+										<div id="exeType" class="col-md-8">
+											<select v-show="true" class="form-control" name="docType"
+													v-model="recordEdit.exeType" id="select-exeType">
+												<option v-for="(value,key) in exeTypes"
+														:selected="key==recordEdit.exeType" :value=key
+														v-html="value"></option>
+											</select></div>
+									</div>
+									<div class="form-group ">
+										<label for="exeObject" class="control-label col-md-3"><span class="manager_font_red">*</span>执行对象</label>
+										<div id="exeObject" class="col-md-8">
+											<input  type="text" v-model="recordEdit.exeObject"class="form-control" placeholder="请输入执行对象"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="params" class="control-label col-md-3">参数定义</label>
+										<div id="params" class="col-md-8">
+											<input  type="text" v-model="recordEdit.params"class="form-control" placeholder="请输入参数"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="exeFirstday" class="control-label col-md-3">首次执行(号)</label>
+										<div id="exeFirstday" class="col-md-8">
+											<input  type="number" v-model="recordEdit.exeFirstday"
+													min="1" max="28"  class="form-control" placeholder="请输入首次执行"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="exePeriod" class="control-label col-md-3">执行周期(天)</label>
+										<div id="exePeriod" class="col-md-8">
+											<input  type="number" v-model="recordEdit.exePeriod"class="form-control"
+													placeholder="请输入执行周期"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="exeTime" class="control-label col-md-3">执行时间点</label>
+										<div id="exeTime" class="col-md-8">
+											<input  type="time" v-model="recordEdit.exeTime" class="form-control" placeholder="请输入执行时间点"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="retryTimes" class="control-label col-md-3">失败重试次数</label>
+										<div id="retryTimes" class="col-md-8">
+											<input type="number" v-model="recordEdit.retryTimes" class="form-control" placeholder="请输入失败重试次数"/>
+										</div>
+									</div>
+
+									<div id="button1"
+										 class="form-group marginTop PersonanlRealName col-md-12 text-center">
+										<button @click="btnSave" type="button" class="btn btn-primary " id="btnSave"
+										>保存
+										</button>
+										<button type="button" class="btn btn-default marginLeft" data-dismiss="modal">
+											取消
+										</button>
+									</div>
+								</form>
+							</div>
+							<div class="error-info"></div>
+						</div>
+						<div class="modal-footer" style="border-top:none;">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 400px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">	
+   				<span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;">提示</h3>
+						</div>
+						<div class="modal-body">
+							<div class="center-block text-center">
+								<img src="../../../../r/images/at.png" alt="图片"><br>
+								<div id="text">您确认删除吗？</div>
+							</div>
+						</div>
+						<div class="modal-footer" style="display: block;border-top: none;text-align: center;">
+							<button type="button" class="btn btn-primary" id="btnDeletePolicy" @click="btnDeleteConfirm">确定	</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript"  src="../../../../r/js/modules/workflowTemplate/timerTask/timerTask.js"></script>
+	</body>
+
+</html>

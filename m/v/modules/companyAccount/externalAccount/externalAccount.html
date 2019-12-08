@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>外部账户</title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../../../r/lib/ytbui/css/ytbui.css">
+    <link rel="stylesheet" href="../../../../r/css/main.css">
+
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../../../r/lib/layer/layer.js"></script>
+    <script src="../../../../r/lib/layui/layui.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/vue.min.js"></script>
+    <script src="../../../../r/lib/base64.js"></script>
+    <script src="../../../../r/js/common.js"></script>
+    <script src="../../../../r/lib/ytbui/js/ytbui.js"></script>
+    <script src="../../../../r/js/modules/companyAccount/externalAccount/externalAccount.js"></script>
+    <style>
+        .clean {
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+<div id="mainDiv">
+    <div class="container-fluid">
+        <h4>外部账户</h4>
+        <span class="addCardBtn" @click="addCar">
+								添加外部账户
+								</span>
+        <!--<div class="table-responsive">-->
+            <!--<table cellpadding="0" cellspacing="0" class="table table-bordered text-center  table-hover">-->
+                <!--<thead class="manager_table_thead ">-->
+                <!--<tr>-->
+                    <!--<th>账户余额</th>-->
+                    <!--<th>入账时间</th>-->
+                    <!--<th>原金额</th>-->
+                    <!--<th>明细账户</th>-->
+                    <!--<th>交易金额</th>-->
+                    <!--<th>交易ID</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<tr v-for="item in bankCardData">-->
+                    <!--<td v-text="item.bankName"></td>-->
+                    <!--<td v-text="$options.filters.formatDate(item.inTime)"></td>-->
+                    <!--<td v-text="item.accountNo"></td>-->
+                    <!--<td v-text="item.pfDetailId"></td>-->
+                    <!--<td v-text="item.tradeBalance"></td>-->
+                    <!--<td v-text="item.tradeId"></td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</div>-->
+        <div class="table-responsive">
+            <div id="bankCard" class="divx label-lh" style="border: none;">
+                <div class="">
+                    <div class="padding-box2">
+								<span class="bankCard" v-for="item in bankCardData">
+								<p><span v-text="item.bankName"></span></p>
+								<p>Bank Card</p>
+								<p class="numfont">尾号</p>
+								<p v-text="item.accountNo"></p>
+								<p>
+									<a class="mouseover cardname" @click="untie(item.pfOutId)">解绑</a>
+								</p>
+								</span>
+
+                    </div>
+                    <div class="clean"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="untie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        解绑
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <h4>确定解绑？</h4>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="untieOk" type="button" class="btn btn-primary"  @click="untieOk">
+                        确定
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <div class="modal fade" id="addCar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        添加外部账户
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <label for="formGroupInputSmall" class="col-sm-3 control-label">银行卡号</label>
+                            <div class="col-sm-5">
+                                <input type="text" id="formGroupInputSmall" placeholder="请输入" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="formGroupInputSmall" class="col-sm-3 control-label">开户行</label>
+                            <div class="col-sm-5">
+                                <input type="text" id="formGroupInputSmall" placeholder="请输入" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="formGroupInputSmall" class="col-sm-3 control-label">持卡人</label>
+                            <div class="col-sm-5">
+                                <input type="text" id="formGroupInputSmall" placeholder="请输入" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="formGroupInputSmall" class="col-sm-3 control-label">身份证</label>
+                            <div class="col-sm-5">
+                                <input type="text" id="formGroupInputSmall" placeholder="请输入" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="formGroupInputSmall" class="col-sm-3 control-label">银行预留手机号</label>
+                            <div class="col-sm-5">
+                                <input type="text" id="formGroupInputSmall" placeholder="请输入" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="formGroupInputSmall" class="col-sm-3 control-label">短信验证码</label>
+                            <div class="col-sm-2">
+                                <input type="text" id="formGroupInputSmall" placeholder="请输入" class="form-control">
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-primary" id="" @click="">
+                                    获取验证码
+                                </button>
+                            </div>
+                        </div>
+                        <div class="clean"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="untieOk" type="button" class="btn btn-primary"  @click="untieOk">
+                        确定
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+
+</div>
+</body>
+
+</html>

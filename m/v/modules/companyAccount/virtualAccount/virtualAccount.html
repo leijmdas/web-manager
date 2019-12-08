@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>虚拟账户</title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../../../r/lib/ytbui/css/ytbui.css">
+    <link rel="stylesheet" href="../../../../r/css/main.css">
+
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../../../r/lib/layer/layer.js"></script>
+    <script src="../../../../r/lib/layui/layui.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/vue.min.js"></script>
+    <script src="../../../../r/lib/base64.js"></script>
+    <script src="../../../../r/js/common.js"></script>
+    <script src="../../../../r/lib/ytbui/js/ytbui.js"></script>
+    <script src="../../../../r/js/modules/companyAccount/virtualAccount/virtualAccount.js"></script>
+    <style>
+        .clean {
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+<div id="mainDiv">
+    <div class="container-fluid">
+        <h4>虚拟账户</h4>
+        <div class="table-responsive">
+            <button type="button" class="btn btn-primary" @click="outAccount">出账</button>
+            <button type="button" class="btn btn-primary" @click="inAccount">入账</button>
+
+            <table cellpadding="0" cellspacing="0" class="table table-bordered text-center  table-hover">
+                    <thead class="manager_table_thead ">
+                    <tr>
+                        <th>账户类型</th>
+                        <th>余额</th>
+                        <th>收入</th>
+                        <th>支出</th>
+                        <th>账户状态</th>
+                        <!--<th>账期</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in tabelData" @click="selectLine(item,event)">
+                        <td v-text="checkAcType[item.acType]"></td>
+                        <td v-text="item.balance"></td>
+                        <td v-text="item.balanceIn"></td>
+                        <td v-text="item.balanceOut"></td>
+                        <td v-text="checkStatus[item.status]"></td>
+                        <!--<td v-text="item.termId"></td>-->
+                    </tr>
+                    </tbody>
+                </table>
+                <div id="pageTable" class="pagestyle" style="float: right;"></div>
+            </div>
+    </div>
+    <div class="modal fade in" id="refuseModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog " role="document" style="width: 750px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h3 class="modal-title" style="font-weight: normal;">出账</h3>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group ">
+                            <label for="" class="control-label col-md-3">金额：</label>
+                            <div id="" class="col-md-8">
+                                <input type="text" class="form-control" id="money" placeholder="请输入数额" :value="item.templateName" />
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="" class="control-label col-md-3">交易类型：</label>
+                            <div class="col-md-8">
+                                <select class="form-control" id="tradeType">
+                                    <option value="10">充值</option>
+                                    <option value="20">提现</option>
+                                    <option value="30">收入</option>
+                                    <option value="31">收入退款</option>
+                                    <option value="40">支出</option>
+                                    <option value="41">支出退款</option>
+                                    <option value="50">转帐</option>
+                                    <option value="51">转帐退款</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="" class="control-label col-md-3">交易子类型：</label>
+                            <div class="col-md-8">
+                                <select class="form-control" id="tradeType2">
+                                    <option value="1">银行</option>
+                                    <option value="2">微信</option>
+                                    <option value="3">支付宝</option>
+                                    <option value="101">余额与冻结款</option>
+                                    <option value="102">冻结款与冻结款</option>
+                                    <option value="103">余额与余额</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="display: block;border-top: none;">
+                    <button type="button" class="btn btn-primary" id="outAccount" @click="outAccountSave">出账确定</button>
+                    <button type="button" class="btn btn-primary" id="inAccount" @click="inAccountSave">入账确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>元数据字典</title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/medic.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/main.css"/>
+
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+    <script src="../../../../r/lib/layer/layer.js"></script>
+    <script src="../../../../r/lib/vue.min.js"></script>
+    <script src="../../../../r/js/const.js"></script>
+    <script src="../../../../r/js/common.js"></script>
+    <style type="text/css">
+        #AdddicForm label {
+            line-height: 35px;
+        }
+
+        #AdddicForm ul li {
+            float: left;
+            margin: 10px 5px;
+            text-align: right;
+            width: 300px;
+            list-style-type: none;
+        }
+
+        #AdddicForm input,
+        #AdddicForm select {
+            width: 200px !important;
+        }
+
+        #AdddicForm input[type=radio] {
+            width: 15px !important;
+        }
+
+        #AdddicForm .col-md-6 {
+            margin-bottom: 20px;
+        }
+
+        .radioClass {
+            padding-left: 70px;
+            text-align: left !important;
+            height: 34px;
+            line-height: 34px;
+        }
+
+        #leftList li {
+            cursor: pointer;
+        }
+
+        .bg-blue {
+            background-color: blanchedalmond;
+        }
+    </style>
+</head>
+
+<body>
+<div id="metadataBody" class="container-fluid">
+    <div id="div_left" class="pull-left" style="overflow: scroll;">
+        <div id="subsystem" class="form-group">
+            <select @change="clickSelect" class="form-control" v-model="subsysId" id="selectId">
+                <option :selected="subsysId" v-for="item in selectList" :value="item.subsysId"
+                        v-html="item.subsysId+ '--'+item.subsysName"></option>
+            </select>
+        </div>
+        <div class="btn-group form-group ">
+            <button @click="watchTable($event,key)" v-for="(value,key) in metadataTypes"
+                    type="button" :class="key==1?'btn focus  btn-info btn-lg':'btn btn-info btn-lg'"
+                    v-html="value"></button>
+
+        </div>
+        <div class="zTreeDemoBackground left text-left" style="padding-left: 10px;">
+            <ul id="leftList">
+                <template v-for="(item,index) in getTreeList">
+                    <li :id="item.metadataId"
+                        @click="clickLeft($event,item)" v-html="item.metadataAlias"></li>
+                </template>
+            </ul>
+        </div>
+
+    </div>
+    <div id="div_rigth" class="pull-right">
+        <ul class="nav nav-pills" role="tablist">
+            <li @click="loadTableRecord($event,1)" role="presentation" class="active">
+                <a href="#home" aria-controls="home" role="tab" data-toggle="tab"
+                   class="btn-default btn btn-xs">元数据结构</a>
+            </li>
+            <li @click="loadTableRecord($event,2)" role="presentation" id="interface">
+                <a href="#profile" aria-controls="showrecord" role="tab" data-toggle="tab"
+                   class="btn-default btn btn-xs">元数据记录</a>
+            </li>
+            <li @click="loadTableRecord($event,3)" role="presentation" id="metadataCheck">
+                <a href="#mcheck" aria-controls="showrecord" role="tab" data-toggle="tab"
+                   class="btn-default btn btn-xs">元数据检查</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <button @click="btnAddMaster" type="button" class="btn btn-primary" id="btnAddMaster">新增</button>
+                <button @click="btnCopyMaster" type="button" class="btn btn-default" id="btnCopyMaster">拷贝</button>
+                <button   type="button" class="btn btn-default" id="btnGenSql">生成SQL语句</button>
+                <div class="devices-conten devices-conten-table" id="table">
+                    <table class="table table-bordered text-center" id="addTable" cellpadding="0" cellspacing="0">
+                        <thead class="manager_table_thead">
+                        <tr>
+                            <th>表操作</th>
+                            <th>排序</th>
+                            <th>元数据类型</th>
+                            <th>中文名称</th>
+                            <th>元数据名称</th>
+                            <th>归属数据库</th>
+                            <th>是否缓存</th>
+                            <th>元数据标识</th>
+                            <th>表格排序字段</th>
+                            <th>表格唯一索引</th>
+                            <th>允许创建</th>
+                            <th>说明</th>
+                            <th>描述</th>
+                            <th>关联元数据</th>
+                            <th>子系统</th>
+                            <th>创建脚本</th>
+                            <th>数据来源</th>
+                            <th>关联对象</th>
+                            <th>关联参数</th>
+                            <th>只读表</th>
+                            <th>增删行</th>
+                            <th>字典操作</th>
+                         </tr>
+                        </thead>
+                        <tbody id="mainTbody">
+                        <tr @click="clickTr" @dblclick="btnEditMaster($event,item)"
+                            v-for="(item,index) in  getMasterList"  :class="index==0?'bg-blue':''">
+                            <td class="th">
+                                <button v-show="editMetadataMaster.metadataType!=4" @click="btnCreateMaster($event,item)" type="button"
+                                        class="btn btn-info btn-xs setUp_MenuManagement" name="createMaster">建表
+                                </button>
+                                <button @click="btnDpMaster($event,item)"  v-show="editMetadataMaster.metadataType!=4" type="button"
+                                        class="btn btn-danger btn-xs  " name="dpMaster">删表
+                                </button>
+                            </td>
+                            <td v-text="item.metadataOrder"></td>
+                            <td v-text="metadataTypes[item.metadataType]"></td>
+                            <td v-text="item.metadataAlias"></td>
+                            <td v-text="item.metadataName"></td>
+                            <td v-text="item.metadataDb"></td>
+                            <td v-text="item.metadataCached"></td>
+                            <td v-text="item.metadataId"></td>
+                            <td v-text="item.metadataSortFields"></td>
+                            <td v-text="item.metadataIndex"></td>
+                            <td v-text="item.metadataAutocreate"></td>
+                            <td v-text="item.metadataRemark"></td>
+                            <td v-text="item.metadataMemo"></td>
+                            <td v-text="getMetadatRef[item.metadataParentid]"></td>
+                            <td v-text="selectSubsysLst[item.subsysId]"></td>
+                            <td v-text="item.metadataStmt"></td>
+                            <td v-text="item.refSrc"></td>
+                            <td v-text="item.refObject"></td>
+                            <td v-text="item.refParam"></td>
+                            <td v-text="item.metadataReadonly"></td>
+                            <td v-html="item.metadataAddDel"></td>
+                            <td class="th">
+                                <button @click="btnEditMaster($event,item)" type="button"
+                                        class="btn btn-info btnMargin btn-xs edit_MenuManagement">修改
+                                </button>
+                                <button @click="btnDelMaster($event,item)" type="button"
+                                        class="btn btn-danger btnMargin btn-xs del delete_MenuManagement"
+                                        name="deleteMain">删除
+                                </button>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <button v-show="getMasterList.length>0" @click="btnAddDicField"
+                        type="button" class="btn btn-primary" id="addDic">新增</button>
+                <button v-show="getMasterList.length>0" @click="btnSortDisplayField($event)"
+                        type="button" class="btn btn-info" id="btnSort">排序</button>
+                <button v-show="getMasterList.length>1" @click="btnDelDicFields"
+                        type="button" class="btn btn-default" id="delFields">删除所有字段</button>
+                <button  @click="btnSortDisplayField($event)"
+                        type="button" class="btn btn-info" id="btnDefineIndex">定义索引</button>
+
+                <div v-show="getMasterList.length>0"  class="devices-conten devices-conten-table" id="f1" style="min-height: 500px;">
+                    <table class="table table-bordered text-center" id="f2" cellpadding="0" cellspacing="0">
+                        <thead class="manager_table_thead">
+                        <tr>
+                            <th class="hide">元数据主表ID</th>
+                            <th>字段标识</th>
+                            <th>排序</th>
+                            <th>字段名称</th>
+                            <th>中文名称</th>
+                            <th>是否主键</th>
+                            <th>字段类型</th>
+                            <th>字段长度</th>
+                            <th>是否显示</th>
+                            <th>显示长度</th>
+                            <th>显示格式</th>
+                            <th>是否只读</th>
+                            <th>是否计算</th>
+                            <th>自动生成</th>
+                            <th>是否为空</th>
+                            <th>默认值</th>
+                            <th>数据来源</th>
+                            <th>关联对象</th>
+                            <th>关联字段</th>
+                            <th>关联显示字段</th>
+                            <th>关联参数</th>
+                            <th>关联条件字段</th>
+                            <th>说明</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="tbody">
+                        <tr @click="clickTr" @dblclick="btnEditDicField($event,item)" v-for="(item,index) in getSubList"
+                            :class="index==0?'bg-blue':''">
+                            <td v-html="item.metadataId" class="hide"></td>
+                            <td v-html="item.fieldId"></td>
+                            <td v-html="item.fieldOrder"></td>
+                            <td v-html="item.fieldName"></td>
+                            <td v-html="item.fieldMemo"></td>
+                            <td v-html="item.fieldPk "></td>
+                            <td v-html="item.fieldType"></td>
+                            <td v-html="item.fieldSize"></td>
+                            <td v-html="item.fieldVisible "></td>
+                            <td v-html="item.fieldDisplaysize"></td>
+                            <td v-html="fieldFormats[item.fieldFormat]"></td>
+                            <td v-html="item.fieldReadonly"></td>
+                            <td v-html="item.fieldIscal"></td>
+                            <td v-html="item.fieldAuto"></td>
+                            <td v-html="item.fieldIsnull"></td>
+                            <td v-html="item.fieldDefault"></td>
+                            <td v-html="fieldSrcMap[item.fieldSrc]"></td>
+                            <td v-html="item.refObject"></td>
+                            <td v-html="item.refField "></td>
+                            <td v-html="item.refDisplayid "></td>
+                            <td v-html="item.refParameter "></td>
+                            <td v-html="item.refFilter "></td>
+                            <td v-html="item.fieldRemark"></td>
+                            <td class="th">
+                                <button @click="btnEditDicField($event,item)" type="button"
+                                        class="btn btn-info btnMargin editDicField btn-xs">修改
+                                </button>
+
+                                <button @click="btnDelSub($event,item)" type="button"
+                                        class="btn btn-danger del deleteDic btn-xs" name="btnDelSub">删除
+                                </button>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="profile">
+                <div v-show="selectRecords.length>=0">
+                    <table class="table table-bordered text-center" id="gentagTable" cellpadding="0"
+                           cellspacing="0">
+                        <thead class="manager_table_thead">
+                        <tr>
+                            <th v-show="field.fieldVisible" v-for="field in fieldNames"
+                                v-html="field.fieldMemo"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbodySelect">
+                        <template v-for="(item,index) in selectRecords">
+                            <tr @click="clickTr($event,item)" :class="index==0?'bg-blue':''">
+                                <td v-show="field.fieldVisible" v-for="field in fieldNames"
+                                    v-html="U.datetimeFormatString(field.fieldType,item[field.fieldName])"></td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="mcheck">
+                <div v-show="selectRecords.length>=0">
+                    <table class="table table-bordered text-center" id="gentagTable1" cellpadding="0"
+                           cellspacing="0">
+                        <thead class="manager_table_thead">
+                        <tr>
+                            <th v-show="field.fieldVisible" v-for="field in fieldNames"
+                                v-html="field.fieldMemo"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbodySelect1">
+                        <template v-for="(item,index) in selectRecords">
+                            <tr :class="item.dict_field_name!=item.db_field_name?'manager_font_red':''" @click="clickTr($event,item)" :class="index==0?'bg-blue':''">
+                                <td v-show="field.fieldVisible" v-for="field in fieldNames"
+                                    v-html="U.datetimeFormatString(field.fieldType,item[field.fieldName])"></td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="myModalMaster" tabindex="-1" role="dialog" name="myModalMaster"
+         aria-labelledby="UserModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="width:980px">
+            <div class="modal-content animated bounceInDown">
+                <div class="modal-header profile-TextLeft ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                            id="btnEditList">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="UserModalLabel"> 新增
+                    </h4>
+                </div>
+
+                <div class="modal-body profile-TextLeft ">
+                    <div class="body-info">
+                         <form class="form-horizontal row  text-right mainTable" id="formAdd">
+                        <!--<form class="form-inline row  text-right" id="formAdd">-->
+                        <div class="form-group col-sm-6">
+                                <label for="metadataSubsys" class="col-sm-3 control-label">子系统</label>
+                                <div class="col-sm-9">
+                                    <input readonly type="text" class="form-control" id="metadataSubsys"
+                                           placeholder=" 子系统" name="metadataSubsys"
+                                           v-model="selectSubsysLst[editMetadataMaster.subsysId]">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label for="metadataOrder" class="col-sm-3 control-label">排序</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="metadataOrder"
+                                           placeholder="请输入排序方式" name="metadataOrder"
+                                           v-model="editMetadataMaster.metadataOrder">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label for="metadataName" class="col-sm-3 control-label">元数据名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="metadataName"
+                                           placeholder="请输入元数据名称" name="metadataName"
+                                           v-model="editMetadataMaster.metadataName">
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="metadataAlias" class="col-sm-3 control-label">中文名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control"
+                                           id="metadataAlias" placeholder="请输入中文名称" name="metadataAlias"
+                                           v-model="editMetadataMaster.metadataAlias">
+                                </div>
+                            </div>
+                             <div class="form-group  col-sm-6">
+                                 <label for="mdType" class="col-sm-3 control-label">元数据类型</label>
+                                 <div class="col-sm-9">
+                                     <select class="form-control" v-model="editMetadataMaster.metadataType"
+                                             id="mdType"  name="mdType">
+                                         <option selected="key==editMetadataMaster.metadataType"
+                                                 v-for="(value,key) in metadataTypes" :value="key"
+                                                 v-html="value"></option>
+                                     </select>
+                                 </div>
+                             </div>
+                            <div class="form-group col-sm-6">
+                                <label for="metadataMemo" class="col-sm-3 control-label">描述</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="metadataMemo" placeholder="请输入元数据描述"
+                                           name="metadataMemo"
+                                           v-model="editMetadataMaster.metadataMemo">
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="metadataReadonly" class="col-sm-3 control-label">
+                                    只读表
+                                </label>
+                                <div class="col-sm-9">
+                                    <select v-model="editMetadataMaster.metadataReadonly" class="form-control"
+                                            id="metadataReadonly"  name="metadataReadonly">
+                                        <option :key=true  :selected="editMetadataMaster.metadataReadonly">true</option>
+                                        <option :key=false :selected="editMetadataMaster.metadataReadonly">false</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="metadataAddDel" class="col-sm-3 control-label">  增减行 </label>
+                                <div class="col-sm-9">
+                                    <select v-model="editMetadataMaster.metadataAddDel" class="form-control"
+                                            id="metadataAddDel"   name="metadataAddDel">
+                                        <option :key=true  :selected="editMetadataMaster.metadataAddDel">true</option>
+                                        <option :key=false :selected="editMetadataMaster.metadataAddDel">false</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="metadataDb" class="col-sm-3 control-label">归属数据库</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="metadataDb"
+                                            v-model="editMetadataMaster.metadataDb" id="metadataDb">
+                                        <template v-for="dbName in dbNameList">
+                                            <option :value="dbName.dataName" v-html="dbName.dataName"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="metadataParentid" class="col-sm-3 control-label">关联元数据</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" v-model="editMetadataMaster.metadataParentid"
+                                            id="metadataParentid"  name="metadataParentid">
+                                        <option selected="key==editMetadataSub.metadataParentid"
+                                                v-for="(value,key) in getMetadatRef" :value="key"
+                                                v-html="value"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label for="metadataCached" class="col-sm-3 control-label">
+                                    是否缓存
+                                </label>
+                                <div class="col-sm-9">
+                                    <select v-model="editMetadataMaster.metadataCached" class="form-control"
+                                            id="metadataCached"
+                                            name="metadataCached">
+                                        <option :key=true :selected="editMetadataMaster.metadataCached">true</option>
+                                        <option :key=false :selected="editMetadataMaster.metadataCached">false</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label for="" class="col-sm-3 control-label">
+                                    允许创建
+                                </label>
+                                <div class="col-sm-9">
+                                    <select v-model="editMetadataMaster.metadataAutocreate" class="form-control"
+                                            id="metadataAutocreate"
+                                            name="metadataAutocreate">
+                                        <option :key=editMetadataMaster.metadataAutocreate
+                                                :selected="editMetadataMaster.metadataAutocreate">true
+                                        </option>
+                                        <option :key=false :selected="editMetadataMaster.metadataAutocreate">false
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="refSrc" class="col-sm-3 control-label">数据来源</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" v-model="editMetadataMaster.refSrc"
+                                            id="refSrc"  name="refSrc">
+                                        <option selected="key==editMetadataMaster.refSrc"
+                                                v-for="(value,key) in mdSrcMap" :value="key"
+                                                v-html="value"></option>
+                                    </select>
+                                </div>
+                            </div>
+                             <div class="form-group col-sm-6">
+                                 <label for="metadataRemark" class="col-sm-3 control-label">说明</label>
+                                 <div class="col-sm-9">
+                                     <input type="text" class="form-control" id="metadataRemark"
+                                            placeholder="请输入说明" name="metadataRemark"
+                                            v-model="editMetadataMaster.metadataRemark">
+                                 </div>
+                             </div>
+                            <div class="form-group col-sm-6">
+                                <label for="refObject" class="col-sm-3 control-label">关联对象</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="refObject"
+                                           placeholder="关联对象" name="metadataStmt"
+                                           v-model="editMetadataMaster.refObject">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label for="refParam" class="col-sm-3 control-label">关联参数</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="refParam"
+                                           placeholder="关联参数" name="metadataStmt"
+                                           v-model="editMetadataMaster.refParam">
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="metadataSortFields" class="col-sm-3 control-label">表格排序字段</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="metadataSortFields"
+                                           placeholder="输入表格排序字段" name="metadataSortFields"
+                                           v-model="editMetadataMaster.metadataSortFields">
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="metadataIndex" class="col-sm-3 control-label">唯一索引字段</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="metadataIndex"
+                                           placeholder="请输入唯一索引字段" name="metadataIndex"
+                                           v-model="editMetadataMaster.metadataIndex">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label for="metadataStmt" class="col-sm-3 control-label">脚本</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="metadataStmt"
+                                           placeholder="请输入脚本" name="metadataStmt"
+                                           v-model="editMetadataMaster.metadataStmt">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="error-info"></div>
+                </div>
+
+                <div style="{text-align: center;padding: 15px;border-top: 1px solid #e5e5e5}" class="modal-footer" >
+
+                    <button @click="btnSaveMaster" type="button"  class="btn btn-primary" id="btnSaveMgrs">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseUser">取消</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="AddmyModalDic" tabindex="-1" role="dialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content animated bounceInDown">
+
+                <div class="modal-header profile-TextLeft ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEdit">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="EditModal">
+                        新增
+                    </h4>
+                </div>
+                <div class="modal-body profile-TextLeft ">
+                    <div class="body-info">
+                        <form class="form-inline row text-right" id="AdddicForm">
+                            <ul>
+
+                                <li><span>字段标识</span> <input readonly type="text" class="form-control"
+                                                             v-model="editMetadataSub.fieldId" name="fieldId"></li>
+
+                                <li><span>字段名称</span> <input type="text" class="form-control"
+                                                             v-model="editMetadataSub.fieldName" name="fieldName">
+                                </li>
+                                <li><span>中文名称</span> <input type="text" class="form-control"
+                                                             v-model="editMetadataSub.fieldMemo" name="fieldMemo"></li>
+
+                                <li><span>字段类型</span>
+                                    <select v-model="editMetadataSub.fieldType" id="fieldType" class="form-control"
+                                            name="fieldType">
+                                        <template v-for="item1 in fieldDatatypeList">
+                                            <option :value="item1.dataName" v-html="item1.dataName"></option>
+                                        </template>
+                                    </select>
+                                </li>
+
+                                <li><span>字段长度</span> <input type="number" class="form-control"
+                                                             v-model="editMetadataSub.fieldSize"
+                                                             name="fieldSize"></li>
+                                <li><span>是否主键</span>
+                                    <select v-model="editMetadataSub.fieldPk" class="form-control"
+                                            id="fieldPk" name="fieldPk">
+                                        <option :key=true :selected="editMetadataSub.fieldPk">
+                                            true
+                                        </option>
+                                        <option :key=false :selected="editMetadataSub.fieldPk">
+                                            false
+                                        </option>
+                                    </select>
+                                </li>
+                                <li><span>自动生成</span>
+
+                                    <select v-model="editMetadataSub.fieldAuto" class="form-control"
+                                            id="fieldAuto" name="fieldIsnull">
+                                        <option :key=true :selected="editMetadataSub.fieldAuto">
+                                            true
+                                        </option>
+                                        <option :key=false :selected="editMetadataSub.fieldAuto">
+                                            false
+                                        </option>
+                                    </select>
+                                </li>
+                                <li><span>显示顺序</span>
+                                    <input v-model="editMetadataSub.fieldOrder"
+                                           type="number" :value="editMetadataSub.fieldOrder"
+                                           class="form-control" name="fieldOrder"></li>
+
+                                <li>
+                                    <span>是否显示</span>
+                                    <select v-model="editMetadataSub.fieldVisible" class="form-control"
+                                            id="fieldVisible" name="fieldVisible">
+                                        <option :key=true :selected="editMetadataSub.fieldVisible">
+                                            true
+                                        </option>
+                                        <option :key=false :selected="editMetadataSub.fieldVisible">
+                                            false
+                                        </option>
+                                    </select>
+                                </li>
+                                <li><span>显示长度</span>
+                                    <input type="number" v-model="editMetadataSub.fieldDisplaysize" class="form-control"
+                                           id="fieldDisplaysize" name="fieldDisplaysize">
+                                </li>
+
+                                <li class="form-group">
+                                    <span>显示格式</span>
+                                    <select class="form-control" v-model="editMetadataSub.fieldFormat" id="fieldFormat">
+                                        <option selected="key==editMetadataSub.fieldFormat"
+                                                v-for="(value,key) in fieldFormats" :value="key"
+                                                v-html="value"></option>
+                                    </select>
+                                </li>
+                                <li><span>是否计算</span>
+                                    <select v-model="editMetadataSub.fieldIscal" class="form-control"
+                                            id="fieldIscal" name="fieldIscal">
+                                        <option :key=true :selected="editMetadataSub.fieldIscal">
+                                            true
+                                        </option>
+                                        <option :key=false :selected="editMetadataSub.fieldIscal">
+                                            false
+                                        </option>
+                                    </select>
+                                </li>
+                                <li><span>是否只读</span>
+
+                                    <select v-model="editMetadataSub.fieldReadonly" class="form-control"
+                                            id="fieldReadonly" name="fieldReadonly">
+                                        <option :key=true :selected="editMetadataSub.fieldReadonly">
+                                            true
+                                        </option>
+                                        <option :key=false :selected="editMetadataSub.fieldReadonly">
+                                            false
+                                        </option>
+                                    </select>
+
+                                <li><span>是否为空</span>
+                                    <select v-model="editMetadataSub.fieldIsnull" class="form-control"
+                                            id="fieldIsnull" name="fieldIsnull">
+                                        <option :key=true :selected="editMetadataSub.fieldIsnull">
+                                            true
+                                        </option>
+                                        <option :key=false :selected="editMetadataSub.fieldIsnull">
+                                            false
+                                        </option>
+                                    </select>
+                                </li>
+                                <li><span>默认值</span>
+                                    <input type="text" class="form-control" name="fieldDefault" id="fieldDefault"
+                                           v-model="editMetadataSub.fieldDefault">
+                                </li>
+
+                                <li><span>数据来源</span>
+                                    <select v-model="editMetadataSub.fieldSrc" id="fieldSrc" name="fieldSrc"
+                                            class="form-control">
+                                        <option :selected="key==editMetadataSub.fieldSrc"
+                                                v-for="(value,key) in fieldSrcMap" :value="key"
+                                                v-html="value"></option>
+                                    </select>
+                                </li>
+                                <li><span>说明</span>
+                                    <input type="text" class="form-control" v-model="editMetadataSub.fieldRemark"
+                                           name="fieldRemark">
+                                </li>
+
+                                <li><span>关联对象</span>
+                                    <input type="textarea" class="form-control" v-model="editMetadataSub.refObject"
+                                           name="refObject"></li>
+                                <li><span>关联参数</span>
+                                    <input type="text" class="form-control" v-model="editMetadataSub.refParameter"
+                                           name="refParameter"></li>
+                                <li><span>关联字段</span>
+                                    <input type="text" class="form-control" v-model="editMetadataSub.refField"
+                                           name="refField"></li>
+                                <li><span>关联显示字段</span>
+                                    <input type="text" class="form-control" v-model="editMetadataSub.refDisplayid"
+                                           name="refDisplayid"></li>
+                                <li><span>关联条件字段</span>
+                                    <input type="text" class="form-control" v-model="editMetadataSub.refFilter"
+                                           name="refFilter">
+                                </li>
+                                <li><span>显示控件</span>
+                                    <select v-model="editMetadataSub.fieldComponent" id="fieldComponent"
+                                            name="fieldComponent"
+                                            class="form-control">
+                                        <option :selected="key==editMetadataSub.fieldComponent"
+                                                v-for="(value,key) in fieldComponentMap" :value="key">{{value}}</option>
+                                    </select>
+                                </li>
+                                <li >
+                                    <span>页面弹出框</span>
+                                    <select v-model="editMetadataSub.refPool" id="refPool"
+                                            name="refPool"
+                                            class="form-control">
+                                        <option :selected="key==editMetadataSub.refPool"
+                                                v-for="(value,key) in mdFieldControl_map" :value="key">{{value}}</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                    <div class="error-info">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button @click="btnSaveSub" type="button" class="btn btn-primary " id="btnAddDicSave">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnEditClose">取消</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog " role="document" style="width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h3 class="modal-title" style="font-weight: normal;">{{msgTitleModal}}</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="center-block text-center">
+                        <img src="../../../../r/images/at.png" alt="图片"><br>
+                        <div id="text">{{msgPromptModal}}</div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: block;">
+                    <button @click="btnDeleteConfirm($event,modalFlag)" id="btnDeleteConfirm" type="button" class="btn btn-primary" >
+                        确定
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade in" id="sortModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog " role="document" style="width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h3 class="modal-title" style="font-weight: normal;">排序</h3>
+                </div>
+
+                <div id="selectSortFieldg" class="form-group">
+                    <select class="form-control col-sm-3" id="selectSortField" multiple="multiple" size="16">
+                        <option v-for="(item,index) in getSortSubList"
+                                :id="item.fieldId" :value="item.fieldOrder"
+                                :selected="index==0" v-html="item.fieldMemo"></option>
+                    </select>
+
+                </div>
+                <div class="modal-footer" style="display: block;">
+                    <button @click="bntUpDownClickTop($event)" id="btnUpBegin" type="button" class="btn">第一</button>
+                    <button @click="bntUpDownClick($event,true)" id="btnUp" type="button" class="btn">up</button>
+                    <button @click="bntUpDownClick($event,false)" id="btnDown" type="button" class="btn">down</button>
+                    <button @click="bntUpDownClickEnd($event)" id="btnDownEnd" type="button" class="btn">最后</button>
+                    <button @click="btnSaveFieldsOrder" id="btnSortConfirm" type="button" class="btn btn-primary">确定
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="" style="clear: both;">
+</div>
+<script src="../../../../r/js/modules/systemDictionary/metadataDictionary/public.js"></script>
+<script type="text/javascript"
+        src="../../../../r/js/modules/systemDictionary/metadataDictionary/metadataDictionary.js"></script>
+</body>
+
+</html>

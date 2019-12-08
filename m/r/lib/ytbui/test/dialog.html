@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/ytbui.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="app">
+
+    <button type="button" @click="dialogVisible = true">打开对话框</button>
+    <ytb-dialog title="邀请好友" width="580px" :visible.sync="dialogVisible">
+        <div class="container-fluid" style="height: 420px;">
+            <div class="row">
+                <div class="col-xs-6 p0">
+                    <div class="col-xs-12 search-box">
+                        <span class="search-font">搜索</span>
+                        <input type="text" placeholder="输入关键字">
+                        <a class="search-btn"></a>
+                    </div>
+                    <div class="col-xs-12 p0">
+                        <div class="selectClass">
+                            <span>
+                            <img src="../img/address.png" height="26" width="26"/>
+                                <p>通讯录</p>
+                            </span>
+                            <span>
+                            <img src="../img/group.png" height="26" width="26"/>
+                                <p>群组</p>
+                            </span>
+                        </div>
+                        <div class="communicationList">
+                            <!------------通讯录---------->
+                            <ul class="p0">
+                                <li v-for="item in friendList">
+                                    <p class="i" @click="oneMenuClick($event,item)"><img :src="item.head" height="20"
+                                                                                         width="20"/><span
+                                            v-text="item.remarks"></span></p>
+                                </li>
+                            </ul>
+                            <!------------群组---------->
+                            <!--<ul class="p0">-->
+                            <!--<li v-for="item in friendList">-->
+                            <!--<p class="i" @click="oneMenuClick($event)"><i class="selectbImg"></i><span v-text="item.remarks"></span></p>-->
+                            <!--<ul class="p0 showhide">-->
+                            <!--<li>-->
+                            <!--<p class="leve2" @click="oneMenuClick($event)"><img src="../img/address.png" class="listhade"/>二级<i class="selectrImg"></i></p>-->
+                            <!--<ul class="showhide">-->
+                            <!--<li><img src="../img/address.png" class="listhade"/>3级</li>-->
+                            <!--<li><img src="../img/address.png" class="listhade"/>3级</li>-->
+                            <!--</ul>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                            <!--<p class="leve2" @click="oneMenuClick($event)"><img src="../img/address.png" class="listhade"/>二级<i class="selectrImg"></i></p>-->
+                            <!--<ul class="showhide">-->
+                            <!--<li><img src="../img/address.png" class="listhade"/>3级</li>-->
+                            <!--</ul>-->
+                            <!--</li>-->
+                            <!--</ul>-->
+                            <!--</li>-->
+                            <!--</ul>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 p0 pl20">
+                    <div class="col-xs-12 p0 mtb10">
+                        <span>已选接好友：1/10</span>
+                        <a class="flr cur">全部移除</a>
+                    </div>
+                    <div class="col-xs-12 p0">
+                        <ul class="p0 selectuserlist">
+                            <li><img src="../img/address.png" class="listhade"/>独秀A<a class="cleanUser"
+                                                                                      @click="cleanUser($event)"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span slot="header">
+            <button type="button" class="btnBlue" @click="ok">确定</button>
+            <button type="button" @click="cancel">取消</button>
+        </span>
+    </ytb-dialog>
+
+</div>
+
+<script src="../../jquery.js"></script>
+<script src="../../layer/layer.js"></script>
+<script src="../../base64.js"></script>
+<script src="../../../js/common.js"></script>
+<script src="../../bootstrap/js/bootstrap.js"></script>
+<script src="../../vue.js"></script>
+<script src="../js/ytbui.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            dialogVisible: false,
+            friendList: [],
+            idstr: ""
+        },
+        methods: {
+            oneMenuClick: function (e, item) {
+                var that = this;
+                var idstr;
+                $(e.target).next('.showhide').toggle();
+//            idstr+=item.friendId+',';
+//            console.log(that.idstr.slice(0,-1))
+            },
+            cleanUser: function (e) {
+                $(e.target).parent().remove()
+            },
+            ok: function () {
+                this.dialogVisible = false;
+            },
+            cancel: function () {
+                this.dialogVisible = false;
+            },
+            getFriendList: function () {
+                var self = this;
+                var reqOps = {
+                    "cmdtype": "projectRelease",
+                    "cmd": "getUserFriendList",
+                    "url": "//project.youtobon.com/rest/projectCenter",
+                }
+                //成功回调函数d
+                reqOps.success = function (data) {
+                    self.friendList = data.list;
+                }
+                //失败回调函数
+                reqOps.fail = function (retcode) {
+                    minAlert(retcode);
+                }
+                //调用
+                $.ajaxPost(reqOps);
+            },
+        },
+        mounted: function () {
+            this.getFriendList()
+        }
+
+    });
+</script>
+</body>
+</html>

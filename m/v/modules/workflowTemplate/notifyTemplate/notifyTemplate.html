@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>通知模板</title>
+		<link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../r/css/admin.css" />
+		<script src="../../../../r/lib/jquery.min.js"></script>
+		<script src="../../../../r/lib/vue.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="../../../../r/lib/bootstrap/css/bootstrap-table.min.css">
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+		<script src="../../../../r/js/common.js"></script>
+		<script src="../../../../r/js/const.js"></script>
+		<script src="../../../../r/js/public.js"></script>
+		<style type="text/css">
+			.marginTop {
+				margin-top: 30px;
+			}
+			
+			.marginLeft {
+				margin-left: 20px;
+			}
+			
+			.PersonanlRealName {
+				display: inline-block;
+			}
+			
+			.labelLineHeight {
+				padding-left: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container-fluid" id="divMax">
+			<p id="toolbar">
+				<button type="button" class="btn btn-primary user_line_height User_margin" id="add" @click="add">新增</button>
+				<button type="button" class="btn btn-primary user_line_height User_margin" id="edit" @click="edit">修改</button>
+				<button type="button" class="btn btn-primary user_line_height User_margin" id="delete" @click="del">删除</button>
+			</p>
+			<div id="content-body">
+				<div id="reportTableDiv" class="span10">
+					<table id="reportTable">
+					 
+					</table>
+				</div>
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-20
+   	描述：模板-新增、修改模态框
+   -->
+			<div class="modal fade  " id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalListO"
+				 aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				<div class="modal-dialog" style="width: 750px;">
+					<div class="modal-content animated bounceInDown">
+						<!-- 窗口顶部 -->
+						<div class="modal-header profile-TextLeft ">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+									id="btnEditInter">
+								× <!-- 关闭按钮图标 -->
+							</button>
+							<h4 class="modal-title" id="myModalList">
+								新增通知模板
+							</h4>
+						</div>
+						<div class="modal-body profile-TextLeft ">
+							<div class="body-info row">
+								<form class="form-horizontal" id="AddRestForm" v-for="item in tableList">
+									<div class="form-group ">
+										<label for="userName1" class="control-label col-md-3">模板标识：</label>
+										<div id="userName0" class="col-md-8">
+											<input readonly type="text" class="form-control" placeholder="模板标识"
+												   id="templateId" name="templateName" :value="item.templateId"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName1" class="control-label col-md-3">模板名称：</label>
+										<div id="userName1" class="col-md-8">
+											<input type="text" class="form-control" placeholder="请输入模板名称"
+												   id="templateName" name="templateName" :value="item.templateName"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName2" class="control-label col-md-3">通知渠道：</label>
+										<div id="userName2" class="col-md-8">
+											<input readonly="" type="text" value="站内通知" class="form-control"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName3" class="control-label col-md-3">通知类型：</label>
+										<div id="userName3" class="col-md-8">
+											<select class="form-control" id="notifyType" name="notifyType">
+												<option v-for="(value,key) in notifyTypeList" v-html="value"
+														:value="key" :selected="key==notifyType"></option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName4" class="control-label col-md-3">通知模板类型：</label>
+										<div id="userName4" class="col-md-8">
+											<select class="form-control" id="templateType" name="templateType">
+												<option v-for="(value,key) in templateTypelList" v-html="value"
+														:value="key" :selected="key==templateType">通用
+												</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName5" class="control-label col-md-3">模板内容：</label>
+										<div id="userName5" class="col-md-8">
+											<textarea :value="item.template" type="text" class="form-control" placeholder="请输入模板内容"
+													  id="template" name="template"/></textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="paramCount" class="control-label col-md-3">参数个数：</label>
+										<div id="paramCount1" class="col-md-8">
+											<input :value="item.paramCount"  type="number" class="form-control" placeholder="请输入参数个数"
+												   id="paramCount" name="paramCount"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="templateUrl" class="control-label col-md-3">处理页面：</label>
+										<div id="templateUrl1" class="col-md-8">
+											<input :value="item.templateUrl" type="text" class="form-control" placeholder="请输入处理页面url"
+												   id="templateUrl" name="templateUrl"/>
+										</div>
+									</div>
+									<div id="userName10"
+										 class="form-group marginTop PersonanlRealName col-md-12 text-center">
+										<button @click="btnPassThrough" type="button" class="btn btn-primary "
+												id="passThrough1"
+										>提交
+										</button>
+										<button type="button" class="btn btn-default marginLeft" data-dismiss="modal">
+											取消
+										</button>
+									</div>
+								</form>
+							</div>
+							<!-- 出错提示 -->
+							<div class="error-info"></div>
+						</div>
+						<!-- 窗口底部 -->
+						<div class="modal-footer" style="border-top:none;">
+						</div>
+
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+
+
+			<div class="modal fade in" id="lookModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 750px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">	
+   				<span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;">查看</h3>
+						</div>
+						<div class="modal-body">
+							<form class="form-horizontal" id="lookForm" v-for="item in tableInfo">
+								<div class="form-group ">
+									<label for="templateName" class="control-label col-md-3">模板名称：</label>
+									<div id="templateName1" class="col-md-8">
+										<p class="form-control-static" v-html="item.templateName"></p>
+									</div>
+								</div>
+
+								<div class="form-group ">
+									<label for="notifyChannel" class="control-label col-md-3">通知渠道：</label>
+									<div id="notifyChannel" class="col-md-8">
+										<p class="form-control-static" v-html="channelTypes[item.notifyChannel]"></p>
+									</div>
+								</div>
+								<div class="form-group ">
+									<label for="notifyType" class="control-label col-md-3">通知类型：</label>
+									<div id="notifyType1" class="col-md-8">
+										<p class="form-control-static" v-html="notifyTypeList[item.notifyType]"> </p>
+									</div>
+								</div>
+								<div class="form-group ">
+									<label for="templateType" class="control-label col-md-3">通知模板类型：</label>
+									<div id="templateType1" class="col-md-8">
+										<p class="form-control-static" v-html="templateTypelList[item.templateType]"> </p>
+									</div>
+								</div>
+								<div class="form-group ">
+									<label for="template" class="control-label col-md-3">模板内容：</label>
+									<div id="template1" class="col-md-8">
+										<p class="form-control-static" v-html="item.template"> </p>
+									</div>
+								</div>
+
+								<div id="" class="form-group marginTop text-center">
+									<button type="button" class="btn btn-primary " id="passThrough" @click="btnedit">修改</button>
+									<button type="button" class="btn btn-default marginLeft" data-dismiss="modal">取消</button>
+								</div>
+							</form>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-19
+   	描述：删除
+   -->
+			<div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 400px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">	
+   				<span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;">提示</h3>
+						</div>
+						<div class="modal-body">
+							<div class="center-block text-center">
+								<img src="../../../../r/images/at.png" alt="图片"><br>
+								<div id="text">您确认删除吗？</div>
+							</div>
+						</div>
+						<div class="modal-footer" style="display: block;border-top: none;text-align: center;">
+							<button type="button" class="btn btn-primary" id="btnDeletePolicy" @click="btnDeletePolicy">确定	</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript"  src="../../../../r/js/modules/workflowTemplate/notifyTemplate/notifyTemplate.js"></script>
+	</body>
+
+</html>

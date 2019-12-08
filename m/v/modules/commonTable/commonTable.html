@@ -1,0 +1,92 @@
+<!DOCTYPE >
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title> 通用列表 </title>
+    <link rel="stylesheet" type="text/css" href="../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../../r/lib/jquery.min.js"></script>
+    <script src="../../../r/lib/layer/layer.js"></script>
+    <script type="text/javascript" src="../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../r/css/main.css"/>
+    <script type="text/javascript" src="../../../r/lib/vue.min.js"></script>
+    <script src="../../../r/lib/bootstrap/js/modalDialog.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../../r/plugins/zTree/zTreeStyle.css"/>
+    <script type="text/javascript" src="../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+    <script src="../../../r/js/common.js"></script>
+    <script src="../../../r/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../../r/plugins/validate/messages_zh.js"></script>
+</head>
+
+<body>
+<div id="bodydiv1" class="container-fluid">
+    <div>
+        <!-- Nav tabs -->
+        <!--<ul class="nav nav-pills" role="tablist">-->
+            <!--<li role="presentation" class="active">-->
+                <!--<a href="#home" aria-controls="home" role="tab" data-toggle="tab" class="btn-default btn btn-xs"-->
+                   <!--@click="loadStatTree">通用列表</a>-->
+            <!--</li>-->
+        <!--</ul>-->
+        <div class="tab-content  ">
+            <div role="tabpanel" class="tab-pane active" id="home">
+            <div v-if="showCreditGrademsg">
+                <p> 1. 信用等级的分值</p>
+                <p>（1）平台依据项目完成时间（延期率）自动计分方式评价</p>
+                <p>（2）项目完成：项目完成后最终计算延期率。乙方可以在不同的阶段有不同的延期或提前，最后算整个项目周期即可。</p>
+                <p>（3）协作终止：严重超期（延期率>500% 可配），任何一方可以终止项目。按照协作终止处理规则，进行信用等级的升降。</p>
+
+                <p> 2. 延期率与信用等级Q的升降</p>
+                <p>延期率(t)定义：t=(计划工期D-实际完成工期D) /计划工期(D) (扣除甲方审核时间) </p>
+            </div>
+                <div v-show="selectRecords.length>=0">
+                    <table class="table table-bordered text-center" id="gentagTable" cellpadding="0"
+                           cellspacing="0">
+                        <thead class="manager_table_thead">
+                        <th>序号</th>
+                        <th v-show="field.fieldVisible" v-for="field in fieldNames"
+                            v-html="field.fieldMemo"></th>
+                        </thead>
+                        <tbody id="tbodySelect">
+                        <template v-for="(item,index) in selectRecords">
+                            <tr @click="clickTr($event,item)" :class="index==0?'bg-blue':''">
+                                <td   v-text="index+1">
+                                </td>
+                                <td   v-for="field in fieldNames" v-show="field.fieldVisible">
+                                    {{U.datetimeFormatString(field.fieldType,item[field.fieldName])}}
+                                    <button v-if="field.fieldComponent==1&&field.refPool=='100'"
+                                            @click="testRefTagTableParam($event,item)"
+                                            type="button" class="btn btn-info">测试
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="font-family:宋体;" v-show="selectRecords.length==-1" class="table table-bordered">
+                    <form class="form-horizontal" id="showForm">
+                        <div v-show="field.fieldVisible" v-for="field in fieldNames" class="form-group">
+                            <label :for="field.fieldName" class="col-sm-2 control-label"
+                                   v-html="field.fieldMemo"></label>
+
+                            <div class="col-sm-7">
+                                   <input readonly :id="field.fieldName" class="bg-blue"
+                                       v-else  type="text"
+                                       v-model="U.datetimeFormatString(field.fieldType,selectRecords[0][field.fieldName])">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<script src="../../../r/js/public.js"></script>
+<script type="text/javascript" src="../../../r/js/modules/commonTable/commonTable.js"></script>
+</body>
+</html>

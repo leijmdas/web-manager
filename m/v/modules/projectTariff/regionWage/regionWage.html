@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>区域与薪酬设置</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="../../../../r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../r/plugins/zTree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../../../r/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../../../r/css/main.css">
+    <style>
+        .ztree li span.button.add {margin-right:2px;background-position: -143px 0px; vertical-align:top; *vertical-align:middle}
+    </style>
+</head>
+
+<body>
+<div class="container-fluid" id="tabelMain">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="col-md-8">
+                <input type="text" id="searchArea" value="" class="form-control empty">
+
+            </div>
+            <div class="col-md-3">
+                <button type="button" class="btn btn-primary" @click="searchArea">查询
+                </button>
+            </div>
+            <div class="clean"></div>
+            <div class="zTreeDemoBackground left">
+                <ul id="treeDemo" class="ztree"></ul>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!--<div class="">-->
+            <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增-->
+            <!--</button>-->
+            <!--<button type="button" class="btn btn-warning">修改-->
+            <!--</button>-->
+            <!--<button type="button" class="btn btn-danger">删除-->
+            <!--</button>-->
+            <!--</div>-->
+            <table id="" cellpadding="0" cellspacing="0" class="table table-bordered text-center">
+                <thead class="manager_table_thead">
+                <tr>
+                    <th>ID</th>
+                    <th>地区名称</th>
+                    <th>最低月薪</th>
+                    <th>录入时间</th>
+                    <th>状态</th>
+                    <th>录入人</th>
+                    <th>版本号</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr v-for="item in areaData">
+                    <td v-text="item.salaryId"></td>
+                    <td>
+                        <span v-if="item.dictArea!=null" v-text="item.dictArea.name"></span>
+                        <span v-else></span>
+                    </td>
+                    <td v-text="item.salary"></td>
+                    <td v-text="$options.filters.formatDate(item.auditTime)"></td>
+                    <td v-text="judgeStatus(item.status)"></td>
+                    <td v-text="item.createBy"></td>
+                    <td v-text="item.versionId"></td>
+                    <td>
+                        <button type="button" @click="changeAreaData(item)" class="btn  btn-xs del btn-primary">修改
+                        </button>
+                        <button type="button" class="btn  btn-xs edit  btn-primary" @click="delAreaData(item)">删除
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="paging" class="pagestyle"></div>
+
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="newAddArea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        新增
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="distpicker" class="selectArea" data-toggle="distpicker">
+                        <select class="address1"></select>
+                        <select class="address2"></select>
+                        <select class="address3"></select>
+                    </div>
+                    <input type="text" id="areaId" class="nones">
+                    <div class="form-group minimum">
+                        <label>最低月薪</label>
+                        <input type="text" class="form-control" id="salary" placeholder="请输入">
+                    </div>
+                    <div class="radio-contrl">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="optionsRadios2" value="2" v-model="type">
+                                启用
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="optionsRadios3" value="3" v-model="type">
+                                禁用
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="optionsRadios1" value="1" v-model="type">
+                                草稿
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="saveArea" @click="saveArea">
+                        保存
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+</div>
+
+<script src="../../../../r/lib/jquery.min.js"></script>
+<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../../r/lib/vue.js"></script>
+<script src="../../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+<script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.excheck.min.js"></script>
+<script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.exedit.min.js"></script>
+
+<script src="../../../../r/js/distpicker.js"></script>
+<script src="../../../../r/js/common.js"></script>
+<script src="../../../../r/lib/layer/layer.js"></script>
+
+<script src="../../../../r/lib/layui/layui.js"></script>
+<script src="../../../../r/js/modules/projectTariff/regionWage/regionWage.js"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

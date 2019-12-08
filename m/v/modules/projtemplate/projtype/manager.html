@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/m/r/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/m/r/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/m/r/css/layui-custom.css">
+
+    <style>
+
+        html, body {
+            height: 100%;
+        }
+
+        #nav-tree {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            bottom: 60px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        #fixed-top {
+            position: fixed;
+            top: 0;
+            left: 240px;
+            right: 0;
+            background-color: #fff;
+            z-index: 100;
+        }
+
+        #content {
+            position: relative;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: 80px 0 0 240px;
+            min-height: 100%;
+        }
+
+        #content #tabBody {
+            position: absolute;
+            top: 80px;
+            left: 240px;
+            right: 0;
+            bottom: 0;
+            padding: 0;
+            margin-left: 10px;
+        }
+
+        #content #tabBody .layui-tab-item, #content #tabBody .layui-tab-item .tab-item-iframe {
+            position: absolute;
+            top: 0;
+            left: 30px;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #content #tabBody .layui-tab-item .tab-item-iframe {
+            border: 0;
+        }
+
+        .layui-form .layui-form-label {
+            width: 120px;
+        }
+
+        .layui-form .layui-input-block {
+            margin-left: 150px;
+        }
+
+        .search-wrap {
+            font-size: 0;
+        }
+
+        .search-wrap > * {
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        body .layui-layer-iframe .layui-layer-content {
+            padding: 0;
+        }
+
+        #tpl1-wrap .layui-form-label {
+            text-align: left;
+        }
+
+        #tpl1-wrap {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="nav-tree">
+    <ul class="layui-nav layui-nav-tree" id="navTree" lay-filter="navTree">
+        <!--<li class="layui-nav-item layui-nav-itemed">
+            <a href="javascript:;">电子电路模块设计</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javscript:;">信号检测与处理</a>
+                </dd>
+                <dd>
+                    <a href="javascript:;">WIFI模块</a>
+                </dd>
+            </dl>
+        </li>-->
+    </ul>
+</div>
+
+<div id="fixed-top">
+    <div class="layui-breadcrumb" id="breadcrumb" lay-filter="breadcrumb">
+        <%--<a href="">电子电路模块设计</a>
+        <a href="">信号检测与处理</a>--%>
+    </div>
+
+    <div class="layui-tab layui-tab-brief" lay-filter="layTab">
+        <ul class="layui-tab-title" id="tabHeader">
+            <li class="layui-this" lay-id="1">项目分类</li>
+            <!--<li lay-id="2">需求书模板</li>
+            <li lay-id="3">工作组计划模板</li>-->
+        </ul>
+    </div>
+</div>
+
+<div id="content">
+    <div class="layui-tab-content" id="tabBody">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-btn-container" id="operate-btn-group">
+                <div class="layui-btn-group" id="btn-group1">
+                    <button class="layui-btn" event-type="add"><i class="layui-icon">&#xe608;</i>添加</button>
+                    <button class="layui-btn layui-btn-warm" event-type="modify"><i class="layui-icon">&#xe642;</i>修改
+                    </button>
+                    <button class="layui-btn layui-btn-danger" event-type="remove"><i class="layui-icon">&#xe640;</i>删除
+                    </button>
+                </div>
+                <div class="layui-btn-group" id="btn-group2">
+                    <button class="layui-btn" event-type="pub"><i class="layui-icon">&#xe642;</i>发布</button>
+                    <button class="layui-btn layui-btn-danger" event-type="stop"><i class="layui-icon">&#xe642;</i>停用
+                    </button>
+                    <button class="layui-btn layui-btn-danger" event-type="rePub"><i class="layui-icon">&#xe642;</i>重新发布
+                    </button>
+                </div>
+            </div>
+            <div class="form"></div>
+        </div>
+        <div class="layui-tab-item">
+            <div class="search-wrap">
+                <div class="search">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">模板状态</label>
+                                <div class="layui-input-inline">
+                                    <select name="state">
+                                        <option value="">全部</option>
+                                        <option value="0">草稿</option>
+                                        <option value="1">发布</option>
+                                        <option value="2">停用</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <a class="layui-btn layui-btn-primary" lay-filter="search-xqs-submit"
+                                       lay-submit>查询</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="right">
+                    <div class="layui-btn-container">
+                        <button class="layui-btn" id="xqs-btn-add"><i class="layui-icon">&#xe608;</i>添加</button>
+                    </div>
+                </div>
+            </div>
+            <div class="xqs-list-wrap">
+                <table id="xqs-list" lay-filter="xqs-list"></table>
+            </div>
+        </div>
+        <div class="layui-tab-item">
+            <div class="search-wrap">
+                <div class="search">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">模板状态</label>
+                                <div class="layui-input-inline">
+                                    <select name="state">
+                                        <option value="">全部</option>
+                                        <option value="0">草稿</option>
+                                        <option value="1">发布</option>
+                                        <option value="2">停用</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <a class="layui-btn layui-btn-primary" lay-filter="search-ggz-submit"
+                                       lay-submit>查询</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="right">
+                    <div class="layui-btn-container">
+                        <button class="layui-btn" id="gzz-btn-add"><i class="layui-icon">&#xe608;</i>添加</button>
+                    </div>
+                </div>
+            </div>
+            <div class="gzz-list-wrap">
+                <table id="gzz-list" lay-filter="gzz-list"></table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!--修改-->
+<script type="text/html" id="tpl1">
+    {{# if(d.projTypeDetailsInfo!==null){ }}
+    <div id="tpl1-wrap">
+        <div class="form-wrap">
+            <form class="layui-form" id="tpl1-form" lay-filter="tpl1-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">项目分类</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="title" value="{{=d.projTypeDetailsInfo.title}}" class="layui-input"
+                                   lay-verify="required" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">模板仓库</label>
+                        <div class="layui-input-inline">
+                            <select name="repositoryId" lay-verify="required">
+                                <option value="">请选择</option>
+                                {{# $.each(d.repositoryList,function(i,item){ }}
+                                <option value="{{=item.repositoryId}}" {{#
+                                        if(d.projTypeDetailsInfo.repositoryId===item.repositoryId){ }}
+                                        selected
+                                        {{# } }}>
+                                    {{=item.no+item.name}}
+                                </option>
+                                {{# }); }}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="layui-form-item">
+                    <label class="layui-form-label">项目分类状态</label>
+                    <div class="layui-input-block">
+                        <select name="state" lay-verify="required">
+                            <option value="0" {{# if(d.projTypeDetailsInfo.state===0){ }} selected {{# } }}>草稿</option>
+                            <option value="1" {{# if(d.projTypeDetailsInfo.state===1){ }} selected {{# } }}>发布</option>
+                            <option value="2" {{# if(d.projTypeDetailsInfo.state===2){ }} selected {{# } }}>停用</option>
+                        </select>
+                    </div>
+                </div>-->
+                <!--<div class="layui-form-item">
+                    <label class="layui-form-label">岗位类别</label>
+                    <div class="layui-input-block">
+                        <select name="workJobTypeId" lay-verify="required">
+                            {{# $.each(d.workJobTypeList,function(i,item){ }}
+                            <option value="{{=item.workJobTypeId}}" {{#
+                                    if(d.projTypeDetailsInfo.workJobTypeId===item.workJobTypeId){ }}
+                                    selected
+                                    {{# } }}>
+                                {{=item.workJobTypeName}}
+                            </option>
+                            {{# }); }}
+                        </select>
+                    </div>
+                </div>-->
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">服务费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input class="layui-input" autocomplete="off" name="feeRate" type="text"
+                                   lay-verify="required|number"
+                                   value="{{=d.projTypeDetailsInfo.feeRate}}">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">专票税率(%)</label>
+                        <div class="layui-input-inline">
+                            <input name="taxRate" class="layui-input" autocomplete="off" type="text"
+                                   lay-verify="required|number"
+                                   value="{{=d.projTypeDetailsInfo.taxRate}}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">普票税率(%)</label>
+                        <div class="layui-input-inline">
+                            <input name="staxRate" class="layui-input" autocomplete="off" type="text"
+                                   lay-verify="required|number"
+                                   value="{{=d.projTypeDetailsInfo.staxRate}}">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">个人毛利率(%)</label>
+                        <div class="layui-input-inline">
+                            <input name="pRate" class="layui-input" autocomplete="off" type="text"
+                                   lay-verify="required|number"
+                                   value="{{=d.projTypeDetailsInfo.pRate}}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">公司毛利率(%)</label>
+                        <div class="layui-input-inline">
+                            <input name="cRate" class="layui-input" autocomplete="off" type="text"
+                                   lay-verify="required|number"
+                                   value="{{=d.projTypeDetailsInfo.cRate}}">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">项目类型</label>
+                        <div class="layui-input-inline">
+                            <select name="projectType" lay-verify="required">
+                                {{# $.each(d.PROJECT_TYPE_LIST,function(key,val){ }}
+                                <option value="{{=key}}" {{#
+                                        if(d.projTypeDetailsInfo.projectType==key){ }}
+                                        selected
+                                        {{# } }}>{{=val}}
+                                </option>
+                                {{# }); }}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">排序ID</label>
+                        <div class="layui-input-inline">
+                            <input name="orderNo" class="layui-input" autocomplete="off" type="text"
+                                   lay-verify="required|number"
+                                   value="{{d.projTypeDetailsInfo.orderNo}}">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <div class="layui-form-mid">{{ U.timeFormatString(d.projTypeDetailsInfo.createTime) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <div class="layui-form-mid">{{PROJECT_STATE.arr[d.projTypeDetailsInfo.state]}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: none;">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="tpl1-subBtn" id="tpl1-subBtn">添加</button>
+                    </div>
+                </div>
+                <input type="hidden" name="projectTypeId" value="{{=d.projTypeDetailsInfo.projectTypeId}}">
+            </form>
+        </div>
+    </div>
+    {{# } }}
+</script>
+<!--添加-->
+<script type="text/html" id="tpl2">
+
+    <form action="" class="layui-form" id="tpl2-form" lay-filter="tpl2-form">
+
+        {{# if(d.projTypeDetailsInfo!=null){ }}
+
+        {{# if(d.projTypeDetailsInfo.parentId===0) { }}
+
+        <!--当前选中的是一级类-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">选项</label>
+            <div class="layui-input-block">
+                <input type="radio" name="opt" value="1" title="一级类" checked lay-filter="opt">
+                <input type="radio" name="opt" value="2" title="二级类" lay-filter="opt">
+            </div>
+        </div>
+
+        <div class="layui-form-item" id="tpl2-optBlock" style="display: none;">
+            <input type="hidden" name="parentId" value="{{=d.projTypeDetailsInfo.projectTypeId}}">
+            <label class="layui-form-label">一级类名称</label>
+            <div class="layui-input-block">
+                <span>{{=d.projTypeDetailsInfo.title}}</span>
+            </div>
+        </div>
+
+
+        {{# }else{ }}
+
+        <!--当前选中的是二级类-->
+        <div class="layui-form-item">
+            <input type="hidden" name="parentId" value="{{=d.projTypeDetailsInfo.parentId}}">
+            <label class="layui-form-label">一级类名称</label>
+            <div class="layui-input-block">
+                <span>{{=d.projTypeDetailsInfo.parentName}}</span>
+            </div>
+        </div>
+
+        {{# } }}
+
+
+        {{# } }}
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">项目类别名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" class="layui-input" lay-verify="required" autocomplete="off">
+            </div>
+        </div>
+
+        <!--<div class="layui-form-item">
+            <label class="layui-form-label">项目类别状态</label>
+            <div class="layui-input-block">
+                <select name="state" lay-verify="required">
+                    <option value="0">草稿</option>
+                    <option value="1">发布</option>
+                    <option value="2">停用</option>
+                </select>
+            </div>
+        </div>-->
+
+        <!--<div class="layui-form-item">
+            <label class="layui-form-label">关联岗位类别名称</label>
+            <div class="layui-input-block">
+                <select name="workJobTypeId" lay-verify="required">
+                    {{# $.each(d.workJobTypeList,function(i,item){ }}
+                    <option value="{{item.workJobTypeId}}">{{item.workJobTypeName}}</option>
+                    {{# }); }}
+                </select>
+            </div>
+        </div>-->
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">关联模板仓库</label>
+            <div class="layui-input-block">
+                <select name="repositoryId" lay-verify="required">
+                    <option value="">请选择</option>
+                    {{# $.each(d.repositoryList,function(i,item){ }}
+                    <option value="{{=item.repositoryId}}">{{=item.no+item.name}}</option>
+                    {{# }); }}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">服务费率</label>
+            <div class="layui-input-block">
+                <input class="layui-input" autocomplete="off" name="feeRate" type="text" lay-verify="required|number">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">专票税率</label>
+            <div class="layui-input-block">
+                <input name="taxRate" class="layui-input" autocomplete="off" type="text" lay-verify="required|number">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">普票税率</label>
+            <div class="layui-input-block">
+                <input name="staxRate" class="layui-input" autocomplete="off" type="text" lay-verify="required|number">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">个人毛利率</label>
+            <div class="layui-input-block">
+                <input name="pRate" class="layui-input" autocomplete="off" type="text" lay-verify="required|number">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">公司毛利率</label>
+            <div class="layui-input-block">
+                <input name="cRate" class="layui-input" autocomplete="off" type="text" lay-verify="required|number">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">项目类型</label>
+            <div class="layui-input-block">
+                <select name="projectType" lay-verify="required">
+                    {{# $.each(d.PROJECT_TYPE_LIST,function(key,val){ }}
+                    <option value="{{=key}}">{{=val}}</option>
+                    {{# }); }}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="tpl2-subBtn">添加</button>
+            </div>
+        </div>
+
+    </form>
+</script>
+<script src="/m/r/lib/layui/layui.all.js"></script>
+<script src="/m/r/lib/jquery.min.js"></script>
+<script src="/m/r/js/common.js"></script>
+<script src="/m/r/js/modules/projtemplate/doctemplate.js"></script>
+<script src="/m/r/js/modules/projtemplate/projtype/manager.js"></script>
+</body>
+</html>

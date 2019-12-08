@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/m/r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="/m/r/lib/html5shiv.min.js"></script>
+    <script src="/m/r/lib/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #form1 {
+            width: 500px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <form id="form1" class="form-horizontal">
+        <div class="form-group">
+            <label class="col-xs-4 control-label">请选择Excel文件：</label>
+            <div class="col-xs-8">
+                <input type="file" name="file" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-offset-4 col-xs-8">
+                <input type="submit" value="上传" class="btn btn-primary">
+                <button type="button" class="btn btn-default" @click="cancel">取消</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="/m/r/lib/jquery.min.js"></script>
+<script src="/m/r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="/m/r/lib/vue.js"></script>
+<script src="/m/r/lib/vuex.js"></script>
+<script src="/m/r/js/common.js"></script>
+<script src="/m/r/lib/jquery.form.js"></script>
+<script src="/m/r/lib/layer/layer.js"></script>
+
+<script>
+    $(function () {
+        var URL_ADMIN = '';
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                templateId: -1
+            },
+            methods: {
+                cancel: function (e) {
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                    // parent.OUTER_API && parent.OUTER_API.renderPage();
+                },
+                upload: function (e) {
+                    /*e.stopPropagation();
+                    var formData = new FormData();
+                    var msgBody = "{\"cmd\":\"upload\",\"cmdtype\":\"projectImage\",\"msgBody\":{\"saveMode\":1,\"picType\":\"JPG\",\"docType\":6,\"name\":\"\",\"documentId\":0,\"userId\":0,\"docPath\":\"/testfile/1.jpg\"},\"reqtime\":1540532039434,\"seqno\":1540532039434,\"token\":\"8cd0571369f94360badfbd776e7e3cf1\"}";
+                    formData.append("msgBody",msgBody);
+                    /!*formData.append('msgBody', $.buildUploadParams('templateDcument', 'uploadTemplate',
+                        {
+                            templateId: this.templateId
+                        }
+                    ));*!/
+                    formData.append('file', $('#file')[0].files[0]);*/
+                    /*$.ajax({
+                        url: U.rootPath + '/rest/upload',
+                        type: 'post',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        async: false,
+                        cache: false,
+                        dataType:'json',
+                        success: function () {
+                            layer.alert('上传成功！', function (index) {
+                                if (parent === self) {
+                                    layer.close(index);
+                                } else {
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layer.close(index); //再执行关闭
+                                    parent.OUTER_API.renderPage();
+                                }
+                            });
+                        }
+                    });*/
+                }
+            },
+            mounted: function () {
+                this.templateId = U.urlParamObj['templateId'];
+                $('#form1').ajaxForm({
+                    url: URL_ADMIN + '/rest/upload',
+                    method: 'post',
+                    data: {
+                        msgBody: $.buildUploadParams('templateDocument', 'uploadTemplate',
+                            {
+                                templateId: this.templateId
+                            }
+                        )
+                    },
+                    beforeSubmit: function (arr, $form, options) {
+                        var type = ['xlsx'];
+                        var errorAlert = function (msg) {
+                            var _msg = '文件类型只允许上传：' + type.join('、') + '。';
+                            if (msg) {
+                                _msg = msg;
+                            }
+                            layer.alert(_msg, function (index) {
+                                layer.close(index);
+                            });
+                        };
+                        for (var i in arr) {
+                            if (arr[i].name === 'file') {
+                                var file = arr[i].value;
+                                if (!file) {
+                                    errorAlert('请选择文件！');
+                                    return false;
+                                }
+
+                                var name = file.name;
+                                var lastDotIndex = name.lastIndexOf('.');
+                                if (lastDotIndex === -1 || lastDotIndex === name.length - 1) {
+                                    errorAlert();
+                                    return false;
+                                }
+                                var suffix = name.substring(lastDotIndex + 1);
+                                if (type.indexOf(suffix) === -1) {
+                                    errorAlert();
+                                    return false;
+                                }
+                            }
+                        }
+                    },
+                    success: function (data, textStatus, jqXHR, $form) {
+                        layer.alert('上传成功！', function (index) {
+                            if (parent === self) {
+                                layer.close(index);
+                            } else {
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.OUTER_API && parent.OUTER_API.renderPage();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

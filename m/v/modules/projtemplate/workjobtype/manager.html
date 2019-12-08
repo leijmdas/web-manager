@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../../r/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../../../r/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../../../r/css/layui-custom.css">
+    <style>
+        .navTreeContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        #tab1 {
+            position: fixed;
+            top: 0;
+            left: 210px;
+            right: 0;
+            z-index: 200;
+            background-color: #fff;
+            margin: 0;
+        }
+
+        #tab1Body {
+            position: relative;
+            padding: 80px 30px 100px 210px;
+        }
+
+        #workJobType-modify-form {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="navTreeContainer">
+    <!--<ul class="layui-nav layui-nav-tree" lay-filter="navTree" id="navTree">
+        <li class="layui-nav-item">
+            <a href="javascript:;">硬件类</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">软件类</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">界面UI</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">产品造型设计</a>
+        </li>
+    </ul>-->
+</div>
+
+<div class="layui-tab layui-tab-brief" lay-filter="tab1" id="tab1">
+    <ul class="layui-tab-title" id="tab1Header">
+        <li class="layui-this"><a href="javascript:;" lay-id="1">岗位分类</a></li>
+        <li><a href="javascript:;" lay-id="2">岗位</a></li>
+        <li><a href="javascript:;" lay-id="3">所有文档</a></li>
+    </ul>
+</div>
+
+<div class="layui-tab-content" id="tab1Body">
+    <div class="layui-tab-item layui-show">
+        <div>
+            <div class="layui-btn-container" id="operate-btn-group">
+                <div class="layui-btn-group" id="btn-group1">
+                    <button class="layui-btn" event-type="add"><i class="layui-icon">&#xe608;</i>添加</button>
+                    <button class="layui-btn layui-btn-warm" event-type="modify"><i class="layui-icon">&#xe642;</i>修改
+                    </button>
+                    <button class="layui-btn layui-btn-danger" event-type="remove"><i class="layui-icon">&#xe640;</i>删除
+                    </button>
+                </div>
+                <div class="layui-btn-group" id="btn-group2">
+                    <button class="layui-btn" event-type="pub"><i class="layui-icon">&#xe642;</i>发布</button>
+                    <button class="layui-btn layui-btn-danger" event-type="stop"><i class="layui-icon">&#xe642;</i>停用
+                    </button>
+                    <button class="layui-btn layui-btn-danger" event-type="rePub"><i class="layui-icon">&#xe642;</i>重新发布
+                    </button>
+                </div>
+            </div>
+            <div id="workJobType-modify-form">
+
+            </div>
+        </div>
+    </div>
+    <div class="layui-tab-item" id="tab1BodyContent2">
+        <div id="tab1Page2Item1">
+            <div class="workJobListWrap">
+                <div class="header">
+                    <div class="layui-btn-container">
+                        <button id="btnAddWorkJob" class="layui-btn">添加岗位</button>
+                    </div>
+                </div>
+                <div class="dataList">
+                    <table id="dataListWorkJob" lay-filter="dataListWorkJob">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="tab1Page2Item2">
+            <div class="layui-tab layui-tab-brief" id="tab2" lay-filter="tab2">
+                <ul class="layui-tab-title" id="tab2_header">
+                    <li lay-id="tab2_1" class="layui-this"><a href="javascript:;">工作任务</a></li>
+                    <li lay-id="tab2_2"><a href="javascript:;">设计文档模板</a></li>
+                    <li lay-id="tab2_3"><a href="javascript:;">交付文档模板</a></li>
+                    <li lay-id="tab2_4"><a href="javascript:;">其它文档模板</a></li>
+                </ul>
+            </div>
+            <div class="layui-tab-content" id="tab2_body">
+                <div class="layui-tab-item layui-show">
+                    <div class="taskListWrap">
+                        <div class="header">
+                            <div class="layui-btn-container">
+                                <button id="btnAddTask" class="layui-btn">添加工作任务</button>
+                            </div>
+                        </div>
+                        <div class="dataList">
+                            <table id="dataListTask" lay-filter="dataListTask">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item" id="tab2Page2">
+                    <div class="search-wrap">
+                        <!--<div class="search">
+                            <form class="layui-form">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">模板状态</label>
+                                        <div class="layui-input-inline">
+                                            <select name="state">
+                                                <option value="">全部</option>
+                                                <option value="0">草稿</option>
+                                                <option value="1">发布</option>
+                                                <option value="2">停用</option>
+                                            </select>
+                                        </div>
+                                        <div class="layui-input-inline">
+                                            <a class="layui-btn layui-btn-primary" lay-filter="search-sjwd-submit"
+                                               lay-submit>查询</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>-->
+                        <div class="right">
+                            <div class="layui-btn-container">
+                                <button class="layui-btn" id="sjwd-btn-add"><i class="layui-icon">&#xe608;</i>添加
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sjwd-list-wrap">
+                        <table id="sjwd-list" lay-filter="sjwd-list"></table>
+                    </div>
+                </div>
+                <div class="layui-tab-item" id="tab2Page3">
+                    <div class="search-wrap">
+                        <!--<div class="search">
+                            <form class="layui-form">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">模板状态</label>
+                                        <div class="layui-input-inline">
+                                            <select name="state">
+                                                <option value="">全部</option>
+                                                <option value="0">草稿</option>
+                                                <option value="1">发布</option>
+                                                <option value="2">停用</option>
+                                            </select>
+                                        </div>
+                                        <div class="layui-input-inline">
+                                            <a class="layui-btn layui-btn-primary" lay-filter="search-jfwd-submit"
+                                               lay-submit>查询</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>-->
+                        <div class="right">
+                            <div class="layui-btn-container">
+                                <button class="layui-btn" id="jfwd-btn-add"><i class="layui-icon">&#xe608;</i>添加
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="jfwd-list-wrap">
+                        <table id="jfwd-list" lay-filter="jfwd-list"></table>
+                    </div>
+                </div>
+                <div class="layui-tab-item" id="tab2Page4">
+                    <div class="search-wrap">
+                        <!--<div class="search">
+                            <form class="layui-form">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">模板状态</label>
+                                        <div class="layui-input-inline">
+                                            <select name="state">
+                                                <option value="">全部</option>
+                                                <option value="0">草稿</option>
+                                                <option value="1">发布</option>
+                                                <option value="2">停用</option>
+                                            </select>
+                                        </div>
+                                        <div class="layui-input-inline">
+                                            <a class="layui-btn layui-btn-primary" lay-filter="search-qtwd-submit"
+                                               lay-submit>查询</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>-->
+                        <div class="right">
+                            <div class="layui-btn-container">
+                                <button class="layui-btn" id="qtwd-btn-add"><i class="layui-icon">&#xe608;</i>添加
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="qtwd-list-wrap">
+                        <table id="qtwd-list" lay-filter="qtwd-list"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-tab-item" id="">
+        <div class="search-wrap">
+            <div class="right">
+                <div class="layui-btn-container">
+                    <button class="layui-btn" id="all-doc-template-btn-add"><i class="layui-icon">&#xe608;</i>添加
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="all-doc-template-list-wrap">
+            <table id="all-doc-template-list" lay-filter="all-doc-template-list"></table>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/html" id="tpl6">
+    <form class="layui-form" lay-filter="tpl6-form">
+        <input type="hidden" name="taskId" value="{{d.taskId}}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位名称</label>
+            <div class="layui-input-block">
+                <span>{{=d.workJobName}}</span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模板类型</label>
+            <div class="layui-input-block">
+                <select name="docType">
+                    <option value="100" {{# if(d.docType===100){ }} selected {{# } }}>需求模板</option>
+                    <option value="200" {{# if(d.docType===200){ }} selected {{# } }}>工作组计划模板</option>
+                    <option value="300" {{# if(d.docType===300){ }} selected {{# } }}>设计模板</option>
+                    <option value="400" {{# if(d.docType===400){ }} selected {{# } }}>交付模板</option>
+                    <option value="500" {{# if(d.docType===500){ }} selected {{# } }}>其它</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务内容</label>
+            <div class="layui-input-block">
+                <input type="text" name="taskName" class="layui-input" autocomplete="off" value="{{=d.taskName}}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务内容XLS标识</label>
+            <div class="layui-input-block">
+                <input type="text" name="taskNameAlias" class="layui-input" autocomplete="off"
+                       value="{{=d.taskNameAlias}}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否默认</label>
+            <div class="layui-input-block">
+                <input type="radio" name="isDefault" value="1" title="是" {{# if(d.isDefault===1){ }} checked {{# }
+                       }}>
+                <input type="radio" name="isDefault" value="0" title="否" {{# if(d.isDefault===0){ }} checked {{# }
+                       }}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否可选</label>
+            <div class="layui-input-block">
+                <input type="radio" name="isOptional" value="1" title="是" {{# if(d.isOptional===1){ }} checked {{# }
+                       }}>
+                <input type="radio" name="isOptional" value="0" title="否" {{# if(d.isOptional===0){ }} checked {{# }
+                       }}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-filter="tpl6-form-submit" lay-submit>保存</button>
+                <button class="layui-btn layui-btn-primary" type="button" id="tpl6-btn-cancel">取消</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/html" id="tpl5">
+    <form class="layui-form" lay-filter="tpl5-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位名称</label>
+            <div class="layui-input-block">
+                <span>{{=d.workJobName}}</span>
+                <input type="hidden" name="workJobId" value="{{=d.workJobId}}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模板类型</label>
+            <div class="layui-input-block">
+                <select name="docType">
+                    <option value="100">需求模板</option>
+                    <option value="200">工作组计划模板</option>
+                    <option value="300">设计模板</option>
+                    <option value="400">交付模板</option>
+                    <option value="500">其它</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务内容</label>
+            <div class="layui-input-block">
+                <input type="text" name="taskName" class="layui-input" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务内容XLS标识</label>
+            <div class="layui-input-block">
+                <input type="text" name="taskNameAlias" class="layui-input" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否默认</label>
+            <div class="layui-input-block">
+                <input type="radio" name="isDefault" value="1" checked title="是">
+                <input type="radio" name="isDefault" value="0" title="否">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否可选</label>
+            <div class="layui-input-block">
+                <input type="radio" name="isOptional" value="1" checked title="是">
+                <input type="radio" name="isOptional" value="0" title="否">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-filter="tpl5-form-submit" lay-submit>添加</button>
+                <button class="layui-btn layui-btn-primary" id="tpl5-btn-cancel" type="button">取消</button>
+
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/html" id="dataListTaskToolbar">
+    <button class="layui-btn layui-btn-xs layui-btn-warm" lay-event="modify">修改</button>
+    <button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="remove">删除</button>
+</script>
+
+<script type="text/html" id="layTplModifyConstraint">
+    <div class="addConstraintWrap">
+        <form class="layui-form" lay-filter="formModifyConstraint">
+            <input type="hidden" name="ConstraintId" value="{{=d.ConstraintId}}">
+            <div class="layui-form-item">
+                <label class="layui-form-label">岗位分类</label>
+                <div class="layui-input-block">
+                    <span>{{=d.WorkJobTypeName}}</span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">约束内容</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="Title" value="1" title="电路设计"
+                    >
+                    <input type="checkbox" name="Title" value="2" title="软件设计"
+                    >
+                    <input type="checkbox" name="Title" value="3" title="机械设计"
+                    >
+                    <input type="checkbox" name="Title" value="4" title="界面UI设计"
+                    >
+                    <input type="checkbox" name="Title" value="5" title="产品造型设计">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否有效</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="IsValid" value="0" title="有效" {{# if(d.IsValid===0) { }} checked {{# } }}>
+                    <input type="radio" name="IsValid" value="1" title="无效" {{# if(d.IsValid===1) { }} checked {{# } }}>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="subBtnformModifyConstraint" lay-submit>修改</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/html" id="layTplAddConstraint">
+    <div class="addConstraintWrap">
+        <form class="layui-form" lay-filter="formAddConstraint">
+            <div class="layui-form-item">
+                <label class="layui-form-label">岗位分类</label>
+                <div class="layui-input-block">
+                    <span>{{=d.workJobTypeName}}</span>
+                    <input type="hidden" name="workJobTypeId" value="{{=d.workJobTypeId}}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">约束内容</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="title" value="1" title="电路设计">
+                    <input type="checkbox" name="title" value="2" title="软件设计">
+                    <input type="checkbox" name="title" value="3" title="机械设计">
+                    <input type="checkbox" name="title" value="4" title="界面UI设计">
+                    <input type="checkbox" name="title" value="5" title="产品造型设计">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否有效</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="isValid" value="0" title="有效" checked>
+                    <input type="radio" name="isValid" value="1" title="无效">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="subBtnFormAddConstraint" lay-submit>添加</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/html" id="dataListConstraintToolbar">
+    <button class="layui-btn layui-btn-xs layui-btn-warm" lay-event="modify">修改</button>
+    <button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="remove">删除</button>
+</script>
+
+<script type="text/html" id="layTplConstraintList">
+    <div class="constraintListWrap">
+        <div class="layui-btn-container">
+            <button class="layui-btn" id="btnAddConstraint"><i class="layui-icon">&#xe608;</i>添加真值约束</button>
+        </div>
+        <div>
+            <table id="dataListConstraint" lay-filter="dataListConstraint"></table>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="tpl4">
+    <form class="layui-form" lay-filter="tpl4-form">
+        <input type="hidden" name="workJobId" value="{{d.workJobId}}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" value="{{d.title}}" class="layui-input"
+                       autocomplete="off" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位别名</label>
+            <div class="layui-input-block">
+                <input type="text" name="title_alias" value="{{d.titleAlias}}" class="layui-input"
+                       autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否默认</label>
+            <div class="layui-input-block">
+                <input type="radio" name="isDefault" value="1" {{# if(d.isDefault===1) { }} checked {{# } }} title="是">
+                <input type="radio" name="isDefault" value="0" {{# if(d.isDefault===0) { }} checked {{# } }} title="否">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">可重复次数</label>
+            <div class="layui-input-block">
+                <input type="text" name="workJobNumber" value="{{d.workJobNumber}}" class="layui-input"
+                       autocomplete="off" lay-verify="required|number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="tpl4-form-submit">保存</button>
+                <button class="layui-btn layui-btn-primary" id="tpl4-btn-cancel" type="button">取消</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/html" id="tpl3">
+    <form class="layui-form" lay-filter="tpl3-form">
+        <input type="hidden" name="workJobTypeId" value="{{d.workJobTypeId}}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" class="layui-input"
+                       autocomplete="off" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位别名</label>
+            <div class="layui-input-block">
+                <input type="text" name="title_alias" class="layui-input"
+                       autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否默认</label>
+            <div class="layui-input-block">
+                <input type="radio" name="isDefault" value="1" title="是">
+                <input type="radio" name="isDefault" value="0" checked title="否">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">可重复次数</label>
+            <div class="layui-input-block">
+                <input type="text" name="workJobNumber" class="layui-input"
+                       autocomplete="off" lay-verify="required|number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="tpl3-form-submit">添加</button>
+                <button class="layui-btn layui-btn-primary" id="tpl3-btn-cancel" type="button">取消</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/html" id="tpl2">
+    <form class="layui-form" lay-filter="tpl2-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">岗位名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="workJobTypeName" class="layui-input"
+                       autocomplete="off" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工作组人数</label>
+            <div class="layui-input-block">
+                <input type="text" name="workGroupNum" class="layui-input"
+                       autocomplete="off" lay-verify="number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="tpl2-form-submit">添加</button>
+                <button class="layui-btn layui-btn-primary" type="button" id="tpl2-btn-cancel">取消</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<!-- 修改 -->
+<script type="text/html" id="tpl1">
+    <form class="layui-form" lay-filter="tpl1-form">
+        <input type="hidden" name="workJobTypeId" value="{{=d.workJobTypeId}}">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">岗位名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="workJobTypeName" value="{{=d.workJobTypeName}}" class="layui-input"
+                           autocomplete="off" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">工作组人数</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid">{{ d.workGroupNum }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">创建者</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid">{{d.createBy}}</div>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">更新时间</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid">{{ U.timeFormatString(d.createTime) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid">{{WORK_JOB_TYPE_STATE.arr[d.state]}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button id="tpl1-form-submit" class="layui-btn layui-hide" lay-submit lay-filter="tpl1-form-submit">修改
+                </button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script src="../../../../r/lib/layui/layui.all.js"></script>
+<script src="../../../../r/lib/jquery.min.js"></script>
+<script src="../../../../r/js/common.js"></script>
+<script src="../../../../r/js/modules/projtemplate/doctemplate.js"></script>
+<script src="../../../../r/js/modules/projtemplate/workjobtype/manager.js"></script>
+</body>
+</html>

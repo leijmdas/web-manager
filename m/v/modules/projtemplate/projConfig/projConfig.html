@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>标签库</title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/main.css"/>
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/layer/layer.js"></script>
+    <script src="../../../../r/lib/vue.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/medic.css"/>
+    <script src="../../../../r/js/common.js"></script>
+    <script src="../../../../r/js/const.js"></script>
+
+    <link rel="stylesheet" href="../../../../r/plugins/zTree/zTreeStyle.css" type="text/css">
+    <script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+    <script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.exedit.min.js"></script>
+</head>
+
+<body>
+<div class="container-fluid" id="projConfigBody">
+    <ul class="nav nav-pills" role="tablist">
+        <li v-show="configType==1" role="presentation" id="s1" class="active">
+            <a @click="clickTabTitle($event,1)" href="#" aria-controls="home3" role="tab" data-toggle="tab"
+               class="btn-default btn btn-xs"
+            >全局通用配置</a>
+        </li>
+        <li v-show="configType==2" role="presentation" id="s2">
+            <a @click="clickTabTitle($event,2)" href="#" aria-controls="home4" role="tab" data-toggle="tab"
+               class="btn-default btn btn-xs"
+            >项目分类配置</a>
+        </li>
+    </ul>
+    <div id="projTree1" style="margin-top: 5px;">
+        <div v-show="configType==2" class="zTreeDemoBackground left pull-left projTree">
+            <ul id="projTree" class="ztree"></ul>
+        </div>
+    </div>
+    <button @click="btnAddConfig" type="button" class="btn btn-primary" id="addDic" >新增</button>
+    <div class="devices-conten devices-conten-table" id="A11">
+        <table class="table table-bordered text-center" id="A22" cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead">
+            <tr>
+                <!--<th><input type="checkbox"></th>-->
+                <th>配置标识</th>
+                <th>项目分类</th>
+                <th>配置项名称</th>
+                <th>配置项取值</th>
+                <th>编码标识</th>
+                <!--<th>配置项</th>-->
+                <th>使用场景</th>
+                <th>使用说明</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            <template v-for="(item,index) in projConfigList">
+                <tr @click="clickTr" @dblclick="btnEditConfig($event,item)" :class="index==0?'bg-blue':''">   <!--<td><input type="checkbox"></td>-->
+                    <td v-html="item.configId"/>
+                    <td v-html="projectTypesName[item.projectType]"/>
+                    <td v-html="configItems[item.valueType]"/>
+                    <td v-html="item.value"/>
+                    <td v-html="item.code">/>
+                    <td v-html="item.scene"/>
+                    <td v-html="item.remark"/>
+                    <td class="th">
+                        <button @click="btnEditConfig($event,item)" type="button" class="btn btn-primary btn-xs btnMargin" >
+                                修改</button>
+                        <button @click="delModal($event,item)" type="button" class="btn btn-danger btn-xs del"
+                                name="delModal">删除
+                        </button>
+                    </td>
+                </tr>
+
+            </template>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInDown">
+
+                <div class="modal-header profile-TextLeft ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEdit">
+                        ×                </button>
+                    <h4 class="modal-title" id="editModalTitle">
+                        配置项
+                    </h4>
+                </div>
+
+
+                <div class="modal-body profile-TextLeft ">
+                    <div class="body-info">
+                        <form class="form-horizontal" id="dicForm">
+                            <div class="form-group">
+                                <label for="configId" class="col-sm-3 control-label">配置标识</label>
+                                <div class="col-sm-9">
+                                    <input readonly v-model="editRecord.configId" id="configId" class="form-control"
+                                           readonly placeholder="配置标识"
+                                           name="configId"></input>
+                                </div>
+                            </div>
+                            <!--<div class="form-group">-->
+                                <!--<label for="code" class="col-sm-3 control-label">编码标识</label>-->
+                                <!--<div class="col-sm-9">-->
+                                    <!--<select class="form-control" v-model="editRecord.code" id="code">-->
+                                        <!--<option selected="value==editRecord.code" v-for="(value,key) in configCodes"-->
+                                                <!--:value="value" v-html="value"></option>-->
+                                    <!--</select>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <div class="form-group">
+                                <label for="valueType" class="col-sm-3 control-label">配置项名称</label>
+                                <div class="col-sm-9">
+                                    <select  class="form-control" v-model="editRecord.valueType" id="valueType" >
+                                        <option selected="key==editRecord.valueType" v-for="(value,key) in configItems" :value="key" v-html="value"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="value" class="col-sm-3 control-label">配置项取值</label>
+                                <div class="col-sm-9">
+                                    <input v-model="editRecord.value" type="number" class="form-control"
+                                           name="value" id="value"
+                                           placeholder="请输入配置项取值">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="scene" class="col-sm-3 control-label">使用场景</label>
+                                <div class="col-sm-9">
+                                    <input v-model="editRecord.scene" type="text" class="form-control" name="scene"
+                                           id="scene"
+                                           placeholder="请输入使用场景">
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="remark" class="col-sm-3 control-label">使用说明</label>
+                                <div class="col-sm-9">
+                                    <input v-model="editRecord.remark" type="text" class="form-control" name="remark"
+                                           id="remark"
+                                           placeholder="请输入使用说明">
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="error-info"></div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button @click="btnEditConfigSave" type="submit" class="btn btn-primary " id="btnEditConfigSave" >保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnEditClose">取消</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog " role="document" style="width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h3 class="modal-title" style="font-weight: normal;">删除</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="center-block text-center">
+                        <img src="../../../../r/images/at.png" alt="图片"><br>
+                        <div id="text">您确认删除吗？</div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: block;">
+                    <button  @click="btnDeleteConfirm" type="button" class="btn btn-primary" id="btnDeleteConfirm">确定
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="../../../../r/js/public.js"></script>
+<script type="text/javascript" src="../../../../r/js/modules/projtemplate/projConfig/projConfig.js"></script>
+
+</body>
+
+</html>
+

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>手续费</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="../../../../r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../r/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../../../r/css/main.css">
+    <style>
+    </style>
+</head>
+
+<body>
+<div class="container-fluid" id="tabelMain">
+    <div class="row">
+        <div class="col-md-12">
+
+            <table cellpadding="0" cellspacing="0" class="table table-bordered text-center">
+                <thead class="manager_table_thead">
+                <tr>
+                    <th>ID</th>
+                    <th>手续费名称</th>
+                    <th>手续费描述</th>
+                    <th>收费比率</th>
+                    <th>添加时间</th>
+                    <th>状态</th>
+                    <th>操作人员</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr v-for="item in serviceChargedata">
+                    <td v-text="item.feeId"></td>
+                    <td v-text="checkTypes[item.projectType]"></td>
+                    <td v-text="item.describeText"></td>
+                    <td v-text="item.feeRate+'%'"></td>
+                    <td v-text="$options.filters.formatDate(item.createTime)"></td>
+                    <td><span v-if="item.state==0">启用</span><span v-else="item.state==1">禁用</span></td>
+                    <td v-text="item.createBy"></td>
+                    <td>
+                        <button type="button" class="btn  btn-xs del btn-warning" v-if="item.state==1" @click="enable(item)">启用
+                        </button>
+                        <!--<button type="button" class="btn  btn-xs del btn-danger" v-else @click="prohibit(item)">禁用-->
+                        <!--</button>-->
+                        <button type="button" class="btn  btn-xs edit  btn-primary" @click="edit(item)">编辑
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="paging" class="pagestyle"></div>
+
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        编辑
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="text" class="nones" id="information">
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label" for="">手续费名称</label>
+                            <div class="col-sm-5">
+                                <select class="form-control" id="typeSelect">
+                                    <option value="10">钱包提现至银行卡费率</option>
+                                    <option value="11">钱包提现至支付宝费率</option>
+                                    <option value="12">钱包提现至财富通费率</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label" for="">手续费描述</label>
+                            <div class="col-sm-5">
+                                <textarea class="form-control" id="describeText" placeholder="请输入"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label" for="">收取费用比例</label>
+                            <div class="col-sm-5">
+                                <input class="form-control" type="text" id="feeRate" placeholder="请输入">
+
+                            </div>
+                            <label class="control-label" for="">%</label>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="" @click="saveEdit">
+                        保存
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+<script src="../../../../r/lib/jquery.min.js"></script>
+<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../../r/lib/vue.js"></script>
+<script src="../../../../r/js/common.js"></script>
+<!--<script src="../../../../r/lib/layer/layer.js"></script>-->
+<script src="../../../../r/lib/layui/layui.js"></script>
+<script src="../../../../r/js/modules/projectTariff/proServiceCharge/serviceCharge.js"></script>
+</body>
+
+</html>

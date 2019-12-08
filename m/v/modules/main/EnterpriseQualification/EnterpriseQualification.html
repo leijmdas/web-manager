@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>企业资质认证审核</title>
+		<link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+		<script src="../../../../r/lib/jquery.min.js"></script>
+		<script src="../../../../r/lib/vue.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="../../../../r/lib/bootstrap/css/bootstrap-table.min.css">
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+		<script src="../../../../r/lib/layer/layer.js"></script>
+		<script src="../../../../r/js/common.js"></script>
+		<script src="../../../../r/js/public.js"></script>
+		<style type="text/css">
+			.marginTop {
+				margin-top: 30px;
+			}
+			
+			.marginLeft {
+				margin-left: 20px;
+			}
+			
+			.PersonanlRealName {
+				display: inline-block;
+			}
+			.labelLineHeight{padding-left: 0px;}
+	 #list li{    margin-left: 30px;
+    width: 312px;
+    padding: 5px 1px;}
+		</style>
+	</head>
+
+	<body>
+		<div class="container-fluid" id="divMax">
+			<div>当前共有<span class="text-danger">5</span>条认证信息需要审核
+			<div id="content-body">
+				<div id="reportTableDiv" class="span10">
+					<table id="reportTable">
+					</table>
+				</div>
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-18
+   	描述：企业资质认证审核-审核模态框
+   -->
+			<div class="modal fade  " id="myModalAuditing" tabindex="-1" role="dialog" aria-labelledby="myModalListO" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				<div class="modal-dialog" style="width: 750px;">
+					<div class="modal-content animated bounceInDown">
+						<!-- 窗口顶部 -->
+						<div class="modal-header profile-TextLeft ">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEditInter">
+                            × <!-- 关闭按钮图标 -->
+                        </button>
+							<h4 class="modal-title" id="myModalListO">
+                       审核 <!-- 窗口标题 -->
+                        </h4>
+						</div>
+						<!-- 窗口中部 -->
+						<div class="modal-body profile-TextLeft ">
+							<div class="body-info row">
+								<form class="form-inline" id="AddRestForm">
+                                     <ul class="list-unstyled list-inline" id="list">
+                                      	<li><label for="userName">用户名称：</label>
+										<span>管理员</span></li>
+                                      	<li><label for="tel">手机号码：</label>
+										<span>18680362569</span></li>
+                                      	<li><label for="time">申请时间：</label>
+										<span>2018-09-18</span></li>
+                                      	<li><label for="time">企业名称：</label>
+										<span>知合兴</span></li>
+                                      	<li><label>营业执照注册号：</label>
+										<span>3604985322635698</span></li>
+                                      	<li><label  >营业执照所在地：</label>
+										<span>深圳</span></li>
+                                      	<li style="width:350px;"><label>营业执照：</label>
+										 <img src="../../../../r/images/bg.jpg" alt="身份证正面" width="250" height="150" style="vertical-align: top;" />
+									</li>
+                                  </ul>
+									 
+									<div id="" class="form-group marginTop PersonanlRealName col-md-4 col-md-pull-4 col-md-push-4">
+										<button type="button" class="btn btn-warning " id="passThrough" @click="btnPassThrough">通过</button>
+										<button type="button" class="btn btn-danger marginLeft" id="refuse" @click="refuse">拒绝</button>
+										<button type="button" class="btn btn-primary marginLeft" data-dismiss="modal" id="btnEditClose">取消</button>
+
+									</div>
+								</form>
+							</div>
+							<!-- 出错提示 -->
+							<div class="error-info"></div>
+						</div>
+						<!-- 窗口底部 -->
+						<div class="modal-footer" style="border-top:none;">
+							<!-- style="border-top:none;" 不显示分隔线 -->
+						</div>
+
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+				<!--
+   	作者：yuan
+   	时间：2018-09-19
+   	描述：拒绝
+   -->
+		<div class="modal fade in" id="refuseModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog " role="document" style="width: 750px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">	
+   				<span aria-hidden="true">×</span></button>
+						<h3 class="modal-title" style="font-weight: normal;">提示</h3>
+					</div>
+					<div class="modal-body">
+						<div >
+							<p>请说明拒绝该申请人认证的理由,以便下次再申请时做好准备。</p>
+							<textarea maxlength="500" placeholder="请填写拒绝理由" style="width:715px; height: 250px;">	
+							</textarea>
+							<span>剩余字数:<label class="text-danger">500</label>字</span>
+						</div>
+					</div>
+					<div class="modal-footer" style="display: block;border-top: none;">
+						<button type="button" class="btn btn-primary" id="btnDeletePolicy" @click="btnRefuseTrue">确定	</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--
+   	作者：yuan
+   	时间：2018-09-19
+   	描述：提示
+   -->
+			<div class="modal fade in" id="TrueModal"  tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 400px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" >	
+   				<span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;">提示</h3>
+						</div>
+						<div class="modal-body">
+							<div class="center-block text-center">
+								<img src="../../../../r/images/at.png" alt="图片"><br>
+							<div id="text">确定认领吗？</div>
+							</div>
+						</div>
+							<div class="modal-footer" style="display: block;border-top: none;text-align: center;">
+							<button type="button" class="btn btn-primary" id="btnDeletePolicy" @click="btnTrue">确定	</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<script src="../../../../r/js/modules/main/PersonalRealName/PersonalRealName.js"></script>
+	</body>
+
+</html>

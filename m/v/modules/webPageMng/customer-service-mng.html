@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客服中心管理页面</title>
+    <link href="../../../r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../r/lib/bootstrap/css/bootstrap-table.min.css" rel="stylesheet">
+    <link href="../../../r/css/boostrap-custom.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../r/plugins/zTree/zTreeStyle.css">
+    <link href="../../../r/lib/ytbui/css/ytbui.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="../../../r/lib/html5shiv.min.js"></script>
+    <script src="../../../r/lib/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<div id="app">
+
+    <div class="wrap">
+        <ul class="nav nav-pills" id="tab1" @click="tabClick">
+            <li class="active"><a href="#question-type" data-toggle="pill">问题类别</a></li>
+            <li><a href="#question-view" data-toggle="pill">入门教程</a></li>
+            <li><a href="#question-view" data-toggle="pill">快速引导</a></li>
+            <li><a href="#hot-search" data-toggle="pill">热搜管理</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="question-type">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="btn-toolbar" id="question-type-tree-toolbar">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary"
+                                        @click="queTypeTreeToolbarClick($event,1)">添加
+                                </button>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-warning"
+                                        @click="queTypeTreeToolbarClick($event,2)">编辑
+                                </button>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger" @click="queTypeTreeToolbarClick($event,3)">
+                                    删除
+                                </button>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <ul id="queTypeTree" class="ztree"></ul>
+                                </div>
+                                <div class="col-md-10">
+                                    <ul v-if="existSelNode">
+                                        <li><p><strong>ID：</strong>{{curQueType.id}}</p></li>
+                                        <li><p><strong>问题类别名称：</strong>{{curQueType.typeName}}</p></li>
+                                        <li><p><strong>父ID：</strong>{{curQueType.parentId}}</p></li>
+                                        <li><p><strong>排序：</strong>{{curQueType.sortNo}}</p></li>
+                                        <li><p><strong>创建时间：</strong>{{parseTime(curQueType.createTime)}}</p></li>
+                                        <li><p><strong>创建人ID：</strong>{{curQueType.createBy}}</p></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default" v-if="existSelNode">
+                                        <div class="panel-body">
+                                            <div class="btn-toolbar" id="question-table-toolbar"></div>
+                                            <table id="question-table"></table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="question-view">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="btn-toolbar" id="question-view-table-toolbar"></div>
+                        <table id="question-view-table"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="hot-search">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="btn-toolbar" id="hot-search-table-toolbar"></div>
+                        <table id="hot-search-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-question">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{questionModalObj.panelTitle}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="submitQuestion">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">类别名称</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{{questionModalObj.typeName}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">问题</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="title" v-model="questionModalObj.title"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">答案</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="content"
+                                       v-model="questionModalObj.content" autocomplete="off">
+                            </div>
+                        </div>
+                        <!--<div class="form-group">
+                            <label class="col-sm-2 control-label">标记</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="mark"
+                                       v-model="questionModalObj.mark"
+                                       autocomplete="off">
+                            </div>
+                        </div>-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">排序</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="sortNo"
+                                       v-model="questionModalObj.sortNo"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <!--<div class="form-group">
+                            <label class="col-sm-2 control-label">上传图片</label>
+                            <div class="col-sm-10">
+                                <ytb-upload :upload-type="'img-list'"
+                                            :img-src-arr="imgSrcArr(resourceModalObj.imgDocId)"
+                                            :msg-body="uploadImgMsgBody"
+                                            :accept="'image/png,image/jpg,image/jpeg'"
+                                            :size="10*1024*1024"
+                                            :limit="1"
+                                            :on-verify-fail="uploadImgVerifyFail" :on-success="uploadImgSuccess"
+                                            :on-fail="uploadImgFail"
+                                            :on-remove="uploadImgRemove">
+                                    <span style="color: #f00;">{{uploadImgFailMsg}}</span>
+                                </ytb-upload>
+                            </div>
+                        </div>-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">按钮名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="btnName"
+                                       v-model="questionModalObj.btnName"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">跳转网页地址</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="forwardUrl"
+                                       v-model="questionModalObj.forwardUrl"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-que-type">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{queTypeModalObj.panelTitle}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="submitQueType">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">类别名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="typeName"
+                                       v-model="queTypeModalObj.typeName"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">排序</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="sortNo"
+                                       v-model="queTypeModalObj.sortNo"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-hot-search">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{hotSearchPanelInfo.title}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" @submit.prevent="submitHotSearch">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">关键词</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="keyword"
+                                       v-model="hotSearchModalObj.keyword"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">搜索次数</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="count"
+                                       v-model="hotSearchModalObj.count"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../r/lib/jquery.min.js"></script>
+<script src="../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../r/lib/bootstrap/js/bootstrap-table.js"></script>
+<script src="../../../r/lib/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+<script src="../../../r/lib/vue.js"></script>
+<script src="../../../r/lib/layer/layer.js"></script>
+<script src="../../../r/lib/base64.js"></script>
+<script src="../../../r/js/common.js"></script>
+<script src="../../../r/lib/ytbui/js/ytbui.js"></script>
+<script src="../../../r/js/modules/webPageMng/customer-service-mng.js"></script>
+</body>
+</html>

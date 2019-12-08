@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/main.css"/>
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <script src="../../../../r/lib/vue.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/medic.css"/>
+    <script src="../../../../r/js/common.js"></script>
+
+    <link rel="stylesheet" href="../../../../r/plugins/zTree/zTreeStyle.css" type="text/css">
+    <script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+    <script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.exedit.min.js"></script>
+</head>
+
+<body>
+<div class="container-fluid" id="dataTypeBody">
+
+    <div class="form-inline">
+        <label v-show="false" for="selectDatatype">分类</label>
+
+        <select @change="qryDic($event,$('#selectDatatype').val())" class="form-control" name="datatype" id="selectDatatype">
+            <option :value=0>选择分类</option>
+            <template v-for="item in dataTypelist">
+                <option :value=item.typeId v-html="item.typeId+ ' '+ item.typeName"></option>
+            </template>
+        </select>
+        <button @click="qryDic($event,$('#selectDatatype').val())" type="button" class="btn btn-default" id="qryDic">查询</button>
+        <button type="button" class="btn btn-default" id="qryDicRestore" @click="qryDicRestore">取消条件</button>
+        <button  @click="btnAddDic" type="button" class="btn btn-primary" id="addDic">新增</button>
+    </div>
+    <div class="devices-conten devices-conten-table" id="A11">
+        <table class="table table-bordered text-center" id="A22" cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead">
+            <tr>
+                <!--<th><input type="checkbox"></th>-->
+                <th>字典标识</th>
+                <th @click="clickSort($event,'typeId')" class="bg-info">分类编号</th>
+                <th @click="clickSort($event,'typeName')" class="bg-info">分类名称</th>
+                <th @click="clickSort($event,'dataId')" class="bg-info">字典编号</th>
+                <th @click="clickSort($event,'dataName')" class="bg-info">字典名称</th>
+                <th v-show="false">创建人</th>
+                <th>备注</th>
+                 <!--<th>创建时间</th>-->
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            <template v-for="(item,index) in getLeftLists">
+                <tr @click="clickTr" @dblclick="btnEditDic($event,item)"  :class="index==0?'bg-blue':''">
+                    <!--<td><input type="checkbox"></td>-->
+                    <!--<td v-html="item.dataInnerId"></td>-->
+                    <td v-html="index+1"></td>
+                    <td  v-html="item.typeId"></td>
+                    <td v-html="item.typeName"></td>
+                    <td v-html="item.dataId"></td>
+                    <td v-html="item.dataName"></td>
+                    <td v-show="false" v-html="item.createBy"></td>
+                    <td v-html="item.remark"></td>
+                    <!--<td v-html="item.createTime"></td>-->
+                    <td class="th">
+                        <button type="button" class="btn btn-primary btn-xs btnMargin editDic" :a="index"
+                          @click="btnEditDic($event,item)">修改
+                        </button>
+                        <button @click="btnDelModal($event,item)" type="button" class="btn btn-danger btn-xs del"
+                                name="btnDelModal"  :a="index">删除
+                        </button>
+                    </td>
+                </tr>
+            </template>
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog " role="document" style="width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h3 class="modal-title" style="font-weight: normal;">删除</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="center-block text-center">
+                        <img src="../../../../r/images/at.png" alt="图片"><br>
+                        <div id="text">您确认删除吗？</div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: block;">
+                    <button  @click="btnDeleteConfirm" type="button" class="btn btn-primary" id="btnDeletePolicy">确定
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInDown">
+                   <div class="modal-header profile-TextLeft ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEdit">
+                        × <
+                    </button>
+                    <h4 class="modal-title" id="editModaltitle">
+                        修改
+                    </h4>
+                </div>
+                <div class="modal-body profile-TextLeft ">
+                    <div class="body-info">
+                        <form class="form-horizontal" id="dicForm">
+                            <div class="form-group">
+                                <label for="dataInnerId" class="col-sm-3 control-label">字典标识</label>
+                                <div class="col-sm-9">
+                                    <input v-model="editRecord.dataInnerId" id="dataInnerId" class="form-control" readonly placeholder="请输入字典ID"
+                                           name="dataInnerId"></input>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="typeId" class="col-sm-3 control-label">分类编号</label>
+                                <div class="col-sm-9">
+                                    <input v-model="editRecord.typeId" type="text" class="form-control" name="typeId" id="typeId"
+                                           placeholder="请输入分类编号">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="typeName" class="col-sm-3 control-label">分类名称</label>
+                                <div class="col-sm-9">
+                                    <input v-model="editRecord.typeName"  type="text" class="form-control" name="typeName" id="typeName"
+                                           placeholder="请输入分类名称">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="dataId" class="col-sm-3 control-label">字典编号</label>
+                                <div class="col-sm-9">
+                                    <input v-model="editRecord.dataId" type="text" class="form-control" name="dataId" id="dataId"
+                                           placeholder="请输入字典编号">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="dataName" class="col-sm-3 control-label">字典名称</label>
+                                <div class="col-sm-9">
+                                    <input v-model="editRecord.dataName"  type="text" class="form-control" name="dataName" id="dataName"
+                                           placeholder="请输入字典名称">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="remark" class="col-sm-3 control-label">备注 </label>
+                                <div class="col-sm-9">
+                                    <input  v-model="editRecord.remark" type="text" class="form-control" name="remark" id="remark"
+                                           placeholder="请输入备注 ">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="createTime" class="col-sm-3 control-label">创建时间</label>
+                                <div class="col-sm-9">
+                                    <input  v-model="editRecord.createTime"  type="date" class="form-control" name="createTime" id="createTime"
+                                           placeholder="请输入创建时间">
+                                </div>
+                            </div>
+                            <div v-show="false" class="form-group">
+                                <label for="createBy" class="col-sm-3 control-label">创建人</label>
+                                <div class="col-sm-9">
+                                    <input  v-model="editRecord.createBy" type="number" class="form-control" name="createBy" id="createBy"
+                                           placeholder="请输入创建人">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="error-info"></div>
+
+                </div>
+
+                <!-- 窗口底部 -->
+                <div class="modal-footer">
+                    <button @click="btnSave" type="submit" class="btn btn-primary " id="btnEditDicSave" >保存
+                    </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="btnEditClose">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="../../../../r/js/modules/systemDictionary/metadataDictionary/public.js"></script>
+<script type="text/javascript" src="../../../../r/js/modules/systemDictionary/dataDictionary/managerTwo.js"></script>
+
+</body>
+
+</html>

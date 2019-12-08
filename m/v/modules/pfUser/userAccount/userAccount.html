@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>平台用户管理</title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../../../../r/lib/ytbui/css/ytbui.css">
+    <link rel="stylesheet" href="../../../../r/lib/layui/css/layui.css">
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../../../r/lib/layer/layer.js"></script>
+    <script src="../../../../r/lib/layui/layui.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/vue.min.js"></script>
+    <script src="../../../../r/lib/base64.js"></script>
+    <script src="../../../../r/js/common.js"></script>
+    <script src="../../../../r/lib/ytbui/js/ytbui.js"></script>
+    <script src="../../../../r/js/modules/pfUser/userAccount/userAccount.js"></script>
+    <style>
+        .div_margin{
+            margin-left: 245px;
+            margin-top:20px;
+        }
+        .clean{
+            clear: both;
+        }
+        .border-leftline{
+            border-left: 1px solid #f5f5f5;
+        }
+        .h4, h4 {
+            font-size: 18px;
+        }
+        .h4, .h5, .h6, h4, h5, h6 {
+            margin-top: 10px!important;
+            margin-bottom: 10px!important;
+        }
+    </style>
+</head>
+<body>
+<div id="mainDiv">
+<div  class="container-fluid" id="index">
+    <div class="table-bordered">
+        <h5 style="background: #f5f5f5;padding:10px 30px;margin: 0;font-size: 18px">数据增长</h5>
+        <div>
+            <div class="col-sm-3 text-center border-leftline">
+                <h5>总收入</h5>
+                <h4 v-text="'￥'+dataGrowth.balanceIn"></h4>
+            </div>
+            <div class="col-sm-3 text-center border-leftline">
+                <h5>总支出</h5>
+                <h4 v-text="'￥'+dataGrowth.balanceOut"></h4>
+            </div>
+            <div class="col-sm-3 text-center border-leftline">
+                <h5>余额</h5>
+                <h4 v-text="'￥'+dataGrowth.balance"></h4>
+            </div>
+            <div class="col-sm-3 text-center border-leftline">
+                <h5>项目收入冻结金额</h5>
+                <h4 v-text="'￥'+dataGrowth.takeoutMoney"></h4>
+            </div>
+            <div class="clean"></div>
+        </div>
+    </div>
+    <div class="form-group" style="margin-top: 15px">
+        <div class="col-sm-2">
+            <select class="form-control" id="typeSelect" @change="typeSelect">
+                <option value="1">个人账户</option>
+                <option value="2">公司账户</option>
+            </select>
+        </div>
+        <!--<div class="form-group col-sm-2" style="">-->
+            <!--<input type="date" class="form-control" placeholder="输入时间">-->
+        <!--</div>-->
+        <!--<div class="form-group col-sm-2" style="">-->
+            <!--<input type="date" class="form-control" placeholder="输入时间">-->
+        <!--</div>-->
+        <!--<button type="submit" class="btn btn-default">查询</button>-->
+        <div class="clean"></div>
+
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center  table-hover" cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead ">
+            <tr>
+                <th>序号</th>
+                <th>用户名</th>
+                <th>手机号</th>
+                <th>可用资金</th>
+                <th>冻结资金</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item,index) in userListData">
+                <td>{{index}}</td>
+                <td v-text="item.userLoginModel.nickName"></td>
+                <td v-text="item.userLoginModel.loginMobile"></td>
+                <td v-text="item.userInners.balance"></td>
+                <td v-text="item.userInners.takeoutMoney"></td>
+                <td><span v-if="item.userInners.status==0">启用</span><span v-else="item.userInners.status==1">禁用</span></td>
+                <td>
+                    <button v-if="item.userInners.status==0" type="button" class="btn btn-primary edit ">禁用</button>
+                    <button v-else="item.userInners.status==1" type="button" class="btn btn-primary edit ">启用</button>
+                    <button type="button" class="btn btn-primary edit " @click="seeDetails(item,'')">查看</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="pageTable" class="pagestyle" style="float: right;"></div>
+    </div>
+
+    <!--<div>-->
+        <!--<table class="table table-bordered text-center" cellpadding="0" cellspacing="0">-->
+            <!--<thead class="manager_table_thead ">-->
+            <!--<tr>-->
+                <!--<th>ID</th>-->
+                <!--<th>用户名</th>-->
+                <!--<th>邦邦号</th>-->
+                <!--<th>可用资金</th>-->
+                <!--<th>冻结资金</th>-->
+                <!--<th>状态</th>-->
+                <!--<th>操作</th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<tr>-->
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <!--<td>-->
+                    <!--<button type="button" class="btn btn-primary edit ">禁用</button>-->
+                    <!--<button type="button" class="btn btn-primary edit ">启用</button>-->
+                    <!--<button type="button" class="btn btn-primary edit " >查看</button>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--</tbody>-->
+        <!--</table>-->
+    <!--</div>-->
+</div>
+
+
+<div id="details" class="container-fluid" style="display: none;">
+    <div class="">
+        <h4 style="padding:10px 30px;margin: 0">用户账户详情(当前用户：<span v-if="seeDetailData.userLoginModel" v-text="seeDetailData.userLoginModel.nickName"></span>)</h4>
+        <div>
+            <div class="col-sm-2 text-center border-leftline table-bordered" style="margin-right: 20px">
+                <h5>总收入</h5>
+                <h4 v-if="seeDetailData.userInners" v-text="'￥'+seeDetailData.userInners.balanceIn"></h4>
+            </div>
+            <div class="col-sm-2 text-center border-leftline table-bordered">
+                <h5>总支出</h5>
+                <h4 v-if="seeDetailData.userInners" v-text="'￥'+seeDetailData.userInners.balanceOut"></h4>
+            </div>
+            <div class="clean"></div>
+        </div>
+    </div>
+    <div class="form-group" style="margin-top: 15px">
+        <h4 style="padding:10px 30px;margin: 0">用户账户变动明细</h4>
+        <div class="col-sm-2">
+            <select class="form-control" id="typeChange" @change="typeChange">
+                <option value="">全部</option>
+                <option value="10">充值</option>
+                <option value="20">提现</option>
+                <option value="30">收入</option>
+                <option value="40">支出</option>
+
+            </select>
+        </div>
+        <!--<div class="form-group col-sm-2" style="">-->
+            <!--<input type="date" class="form-control" placeholder="输入时间">-->
+        <!--</div>-->
+        <!--<div class="form-group col-sm-2" style="">-->
+            <!--<input type="date" class="form-control" placeholder="输入时间">-->
+        <!--</div>-->
+        <!--<button type="submit" class="btn btn-default">查询</button>-->
+        <button type="submit" class="btn btn-default" @click="black">返回上一级</button>
+        <div class="clean"></div>
+
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center  table-hover" cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead ">
+            <tr>
+                <th>单号</th>
+                <th>账户变动原因</th>
+                <th>可用资金</th>
+                <th>冻结资金</th>
+                <th>账户变动时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in detailsData">
+                <td v-text="item.tradeId"></td>
+                <td v-text="checktype[item.tradeType]"></td>
+                <td v-text="item.balance"></td>
+                <td v-text="item.tradeBalance"></td>
+                <td v-text="$options.filters.formatDate(item.inTime)"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</body>
+</html>

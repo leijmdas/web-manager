@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>缓存刷新</title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/main.css"/>
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <script src="../../../../r/lib/vue.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/medic.css"/>
+    <script src="../../../../r/js/common.js"></script>
+
+</head>
+
+<body>
+<div class="container-fluid" id="cacheBody">
+
+
+    <div class="col-md-4">
+
+        <div class="text-center article-title" >
+            <p>
+            <h3> 缓存管理
+            </h3></p>
+        </div>
+        <table class="table table-bordered col-md-offset-1">
+            <tr class="bg-info">
+                <th class="center" style='width:15%;'>序号</th>
+                <th class="center" style='width:15%;'>对象</th>
+                <th class="center" style='width:15%;'>管理中心</th>
+                <th class="center" style='width:15%;'>项目中心</th>
+                <th class="center" style='width:15%;'>邦邦</th>
+                <th class="center" style='width:15%;'>所有节点</th>
+            </tr>
+            <tr  class="bg-blue">
+            <tr>
+                <td @click="clickTr" >1</td>
+                <td @click="clickTr" >用户权限</td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshUserRight1" @click="refreshUserRight1">
+                        刷新
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshUserRight2" @click="refreshUserRight2">
+                        刷新
+                    </button>
+                </td> <td>
+                <button type="button" class="btn btn-primary" id="refreshUserRight3" @click="refreshUserRight3">
+                    刷新
+                </button>
+            </td>
+            </tr>
+            <tr>
+                <td @click="clickTr" >2</td>
+                <td @click="clickTr" >刷新全部</td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshAll1" @click="refreshAll1">刷新
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshAll2" @click="refreshAll2">刷新
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshAll3" @click="refreshAll3">刷新
+                    </button>
+                </td>
+            </tr>
+                <td @click="clickTr" >3</td>
+                <td @click="clickTr" >过期会话</td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="clearSession1" @click="clearSession1">清理
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="clearSession2" @click="clearSession2">清理
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="clearSession3" @click="clearSession3">清理
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td @click="clickTr" >4</td>
+                <td @click="clickTr" >子系统表</td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="clearSubsys1" @click="clearSubsys1">刷新
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="clearSubsys2" @click="clearSubsys2">刷新
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="clearSubsys3" @click="clearSubsys3">刷新
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td @click="clickTr" >5</td>
+                <td  @click="clickTr" >系统参数</td>
+                <td><button type="button" class="btn btn-primary" id="refreshParam1" @click="refreshConfig1">刷新
+                    </button>           </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshParam2" @click="refreshConfig2">刷新
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshParam3" @click="refreshConfig3">刷新
+                    </button>
+                </td>
+            </tr>
+
+            <tr>
+                <td @click="clickTr">6</td>
+                <td @click="clickTr" >错误码表</td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshErrorCode1" @click="refreshErrorCode1">
+                        刷新
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshErrorCode2" @click="refreshErrorCode2">
+                        刷新
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="refreshErrorCode3" @click="refreshErrorCode3">
+                        刷新
+                    </button>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td @click="clickTr">7</td>-->
+                <!--<td @click="clickTr" >标签函数表</td>-->
+                <!--<td>-->
+                    <!--<button type="button" class="btn btn-primary" id="clearTagFuncion11" @click="refreshErrorCode1">-->
+                        <!--刷新-->
+                    <!--</button>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<button type="button" class="btn btn-primary" id="clearTagFuncion21" @click="refreshErrorCode2">-->
+                        <!--刷新-->
+                    <!--</button>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--&lt;!&ndash;<button type="button" class="btn btn-primary" id="clearTagFuncion3" @click="refreshErrorCode3">&ndash;&gt;-->
+                        <!--&lt;!&ndash;刷新&ndash;&gt;-->
+                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td @click="clickTr">8</td>-->
+                <!--<td @click="clickTr" >接口引用表</td>-->
+                <!--<td>-->
+                    <!--<button type="button" class="btn btn-primary" id="clearTagFuncion12" @click="refreshErrorCode1">-->
+                        <!--刷新-->
+                    <!--</button>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<button type="button" class="btn btn-primary" id="clearTagFuncion22" @click="refreshErrorCode2">-->
+                        <!--刷新-->
+                    <!--</button>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--&lt;!&ndash;<button type="button" class="btn btn-primary" id="clearTagFuncion3" @click="refreshErrorCode3">&ndash;&gt;-->
+                    <!--&lt;!&ndash;刷新&ndash;&gt;-->
+                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                <!--</td>-->
+            <!--</tr>-->
+
+            <template v-for="(item,index) in cachedTableList">
+                <tr>
+                    <td @click="clickTr" v-text="index+9"></td>
+                    <td @click="clickTr" v-text="item.metadataAlias"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" id="r1" @click="clearSystable1($event,item.metadataName)">
+                            刷新
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" id="r2" @click="clearSystable2($event,item.metadataName)">
+                            刷新
+                        </button>
+                    </td>
+                    <td>
+                        <!--<button type="button" class="btn btn-primary" id="clearTagFuncion3" @click="refreshErrorCode3">-->
+                        <!--刷新-->
+                        <!--</button>-->
+                    </td>
+                </tr>
+            </template>
+
+        </table>
+    </div>
+</div>
+
+
+</div>
+
+<script src="../../../../r/js/modules/systemDictionary/metadataDictionary/public.js"></script>
+<script type="text/javascript" src="../../../../r/js/modules/systemDictionary/cacheManager/cacheManager.js"></script>
+
+</body>
+
+
+</html>
+
+

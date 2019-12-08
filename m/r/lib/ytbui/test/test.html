@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="../../jquery.js"></script>
+<script>
+
+    function show(s) {
+        var htmlDivElement = document.createElement('div');
+        htmlDivElement.innerHTML = s;
+        document.body.appendChild(htmlDivElement);
+    }
+
+
+    var testObj = {
+        string: '',
+        number: 1,
+        boolean: true,
+        function: function () {
+
+        },
+        array: [],
+        object: {}
+    };
+
+    show('==========typeof test==========');
+
+    for (var k in testObj) {
+        show(k + ' is ' + typeof testObj[k]);
+    }
+
+    show('==========custom type function test==========');
+
+    function type(t) {
+        return Object.prototype.toString.call(t);
+    }
+
+    for (k in testObj) {
+        show(k + ' is ' + type(testObj[k]));
+    }
+
+    console.log($.type(testObj.array));
+    console.log($.type(testObj.function));
+
+
+    var obj = {a: 1, b: 2};
+    var r = $.extend(true, {}, obj);
+    console.log(r);
+    var arr = [1, {a: 1, b: 2}];
+    r = $.extend(true, [], arr);
+    console.log(r);
+
+    r[1].a = 100;
+
+    console.log(arr);
+
+    var fn = function () {
+        return 'xxxx';
+    };
+    r = $.extend(true, {}, fn);
+    console.log(r);
+
+
+    var s1 = 'a）';
+    r1 = s1.charCodeAt(0);
+    r2 = s1.charAt(1);
+    var s2 = String.fromCharCode(r1 + 1) + r2;
+    console.log(s2);
+
+
+</script>
+
+</body>
+</html>

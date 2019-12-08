@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>通用模板仓库</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/main.css"/>
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <script src="../../../../r/lib/vue.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/medic.css"/>
+    <script src="../../../../r/lib/base64.js"></script>
+    <script src="../../../../r/js/common.js"></script>
+    <script src="../../../../r/js/const.js"></script>
+</head>
+<body>
+<div class="container-fluid" id="genTemplateBody">
+    <div>
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" id="stagtav3">
+                <a @click="showTable($event,903)" href="#" aria-controls="home3" role="tab" data-toggle="tab"
+                   class="btn-default btn btn-xs"
+                >需求变更</a>
+            </li>
+            <li role="presentation" id="stagtav4" class="active">
+                <a @click="showTable($event,904)" href="#" aria-controls="home4" role="tab" data-toggle="tab"
+                   class="btn-default btn btn-xs"
+                >项目终止</a>
+            </li>
+            <li role="presentation" id="stagtav1">
+                <a @click="showTable($event,901)" href="#" aria-controls="home1" role="tab" data-toggle="tab"
+                   class="btn-default btn btn-xs"
+                >保密协议模板</a>
+            </li>
+            <li role="presentation" id="stagtav2">
+                <a @click="showTable($event,902)" href="#" aria-controls="home2" role="tab" data-toggle="tab"
+                   class="btn-default btn btn-xs"
+                >三方协作合同</a>
+            </li>
+
+        </ul>
+    </div>
+    <div id="templateLst" class="form-inline">
+        <!--<span >变更类型</span>-->
+        <select   v-show="docType==904"
+                  @change="btnQryClick($event, $('#select-docType').val(),
+                   $('#select-state').val(),$('#select-subType').val(),$('#select-phase').val())"
+                  class="form-control" name="docType" id="select-phase">
+            <option :value=0>选择阶段</option>
+            <template v-for="(value,key) in cPrjPhase">
+                <option :value=key v-html=value></option>
+            </template>
+        </select>
+        <select
+                @change="btnQryClick($event, $('#select-docType').val(), $('#select-state').val(),$('#select-subType').val(),0)" class="form-control" name="subType" id="select-subType">
+            <option :value=0>选择变更类型</option>
+            <template v-for="(value,key) in prjSubType">
+                <option :value=key v-html=value></option>
+            </template>
+        </select>
+
+        <span v-show= "false">文档类型</span>
+        <select v-show="false"   @change="btnQryClick($event, $('#select-docType').val(),
+            $('#select-state').val(),$('#select-subType').val(),0)"  class="form-control" name="docType"
+                id="select-docType">
+            <option :value=0>选择类型文档</option>
+            <template v-for="(value,key) in docTypes">
+                <option :value=key v-html=value></option>
+            </template>
+        </select>
+
+
+        <span v-show= "false">状态</span>
+        <select
+                @change="btnQryClick($event, $('#select-docType').val(), $('#select-state').val(),$('#select-subType').val(),0)" class="form-control" name="docType" id="select-state">
+            <option :value=-1>选择状态</option>
+            <template v-for="(value,key) in docStatus">
+                <option :value=key v-html=value></option>
+            </template>
+        </select>
+        <button type="button"
+                @click="btnQryClick($event, $('#select-docType').val(), $('#select-state').val(),$('#select-subType').val(),0)"
+                class="btn btn-default" id="btnQry">
+        查询  </button>
+        <button type="button" @click="btnCancelQryClick" class="btn btn-default" id="btnCancelQry">
+        取消条件 </button>
+        <button type="button" @click="btnAddTemplateClick" class="btn btn-primary" id="IDaddTemplate">
+            新增  </button>
+    </div>
+    <div class="devices-conten devices-conten-table" id="A11">
+        <table class="table table-bordered text-center" id="genTemplateTable" cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead">
+            <tr>
+                <th>模板操作</th>
+                <th hidden="hidden">repositoryId</th>
+                <th hidden="hidden">workJobId</th>
+                <th>模板标识</th>
+                <th v-show="docType==904">提出方</th>
+                <th>变更类型</th>
+                <th v-show="docType==904">阶段数</th>
+                <th>模板文件</th>
+                <th>模板名称</th>
+                <th>模板类型</th>
+                <th>文档标识</th>
+                <th>模板状态</th>
+            </tr>
+            </thead>
+
+
+            <tbody id="tbody">
+            <template v-for="(item,index) in templateList">
+                <tr @click="clickTrStop($event,item)" @dblclick="btnEditTemplateClick($event,item)"
+                    :class="index==0?'bg-blue':''">
+                    <td class="th">
+                        <button v-show="item.state!=1" @click="btnImportClick($event,item)" type="button"
+                                class="btn btn-primary btn-xs btnMargin  "  >   导入
+                        </button>
+                        <button v-show="item.state!=1" @click="btnExportClick($event,item,item)" type="button"
+                                class="btn btn-primary btn-xs btnMargin  "  >   下载
+                        </button>
+                        <button  :disabled="item.state>0"
+                                 @click="btnParseClick($event,item)" type="button"
+                                 class="btn btn-danger btn-xs btnMargin  "  > 模板转换
+                        </button>
+                        <button v-show="item.state!=1" @click="btnExpTable($event,item)" type="button"
+                                class="btn btn-primary btn-xs btnMargin" id="btnExpTable">   导表
+                        </button>
+                        <button   @click="btnEditClick($event,item)" type="button"
+                                  class="btn btn-info btn-xs btnMargin  "  >  预览
+                        </button>
+                    </td>
+                    <td hidden="hidden" v-html="item.repositoryId"></td>
+                    <td hidden="hidden" v-html="item.workJobId"></td>
+                    <td v-text="item.templateId"></td>
+                    <td v-show="docType==904" v-text="user[item.user]"></td>
+                    <td v-text="prjSubType[item.subType]"></td>
+                    <td v-show="docType==904" v-text="projectPhase[item.phase]"></td>
+                    <td v-text="item.title"></td>
+                    <td v-text="item.alias"></td>
+                    <td v-text="docTypes[item.docType]"></td>
+                    <td v-text="item.docNew"></td>
+                    <td>{{docStatus[item.state]}}
+                        <button @click="btnPulishClick($event,item)" type="button"
+                                class="btn btn-info btn-xs btnMargin  " :a="index">
+                            {{docBtn[item.state]}}
+                        </button>
+                        <button v-show="item.state!=1" @click="btnEditTemplateClick($event,item)" type="button"
+                                class="btn btn-primary btn-xs btnMargin editDic" :a="index"  >修改
+                        </button>
+                        <button v-show="item.state!=1" @click="delModal($event,item)" type="button"
+                                class="btn btn-danger btnMargin btn-xs del delTemplate" name="delTemplate">  删除
+                        </button>
+                    </td>
+
+
+                </tr>
+            </template>
+            </tbody>
+        </table>
+    </div>
+    <div v-if="docType==904"  class="devices-conten devices-conten-table" id="action">
+        <button type="button" @click="btnAddActClick" class="btn btn-primary" id="addTAction">
+            新增  </button>
+        <table class="table table-bordered text-center" id="genActTable" cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead">
+            <tr>
+                <th>处置标识</th>
+                <th>模板标识</th>
+                <th>可否终止</th>
+                <th>当前阶段</th>
+                <th>处置方式</th>
+                <th>违约金:剩余总费用%(不含利润)</th>
+                <th>Q值减分</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody v-if="templateList.length>0" id="tbodyAct">
+            <template v-for="(item,index) in actionList">
+                <tr @click="clickTr" @dblclick="btnEditActClick($event,item)" :class="index==0?'bg-blue':''">
+                    <td v-html="item.actionId"></td>
+                    <td v-text="item.templateId"></td>
+                    <td v-text="item.stop"></td>
+                    <td v-text="item.cPhase"></td>
+                    <td v-text="item.stopAction"></td>
+                    <td v-text="item.penaltyRate"></td>
+                    <td v-text="item.stopQ"></td>
+                    <td>
+                        <button type="button" @click="btnEditActClick($event,item)"
+                                class="btn btn-primary btn-xs btnMargin" name="editActtion">修改
+                        </button>
+                        <button type="button" @click="btnDelActClick($event,item)"
+                                class="btn btn-danger btn-xs btnMargin" name="delAction"> 删除
+                        </button>
+                    </td>
+                </tr>
+            </template>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal fade" id="editActionDialog" tabindex="-1" role="dialog">
+        <div class="modal-dialog" style="width: 400px;">
+            <div class="modal-content animated bounceInDown">
+                <div class="modal-header profile-TextLeft ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEditdialog"></button>
+                    <h4 class="modal-title" id="editActiondialogT">处置动作</h4>
+                </div>
+                <div class="modal-body profile-TextLeft">
+                    <div class="body-info">
+                        <form class="form-horizontal" id="editActionForm">
+
+                            <div class="form-group">
+                                <label for="actionId" class="col-sm-3 control-label">处置标识</label>
+                                <div class="col-sm-9">
+                                    <input readonly type="text" class="form-control" id="actionId"
+                                           v-model="actionRecord.actionId">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="templateId" class="col-sm-3 control-label">模板标识</label>
+                                <div class="col-sm-9">
+                                    <input  readonly type="text" class="form-control" id="templateIdAct"
+                                             v-model="actionRecord.templateId">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="stop" class="col-sm-3 control-label">可否终止</label>
+                                <div class="col-sm-9">
+                                    <select v-model="actionRecord.stop" class="form-control" id="stop"  name="actionRecord">
+                                        <option :key=true :selected="actionRecord.stop">true</option>
+                                        <option :key=false :selected="actionRecord.stop">false</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="cPhase" class="col-sm-3 control-label">当前阶段</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="cPhase"
+                                           v-model="actionRecord.cPhase"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="stopAction" class="col-sm-3 control-label">处置办法</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="stopAction"
+                                           v-model="actionRecord.stopAction"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="stopQ" class="col-sm-3 control-label">Q值减分</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="stopQ"
+                                           v-model="actionRecord.stopQ"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="penaltyRate" class="col-sm-3 control-label">违约金占比</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="penaltyRate"
+                                           v-model="actionRecord.penaltyRate"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="error-info"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" @click="btnSaveAct" class="btn btn-primary" id="btnSaveAct" >保存</button>
+                    <button type="button"  class="btn btn-default" data-dismiss="modal" id="btnCloseAct">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="addAndEditTemplate" tabindex="-1" role="dialog">
+        <div class="modal-dialog" style="width: 400px;">
+            <div class="modal-content animated bounceInDown">
+                <div class="modal-header profile-TextLeft ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEdit1"></button>
+                    <h4 class="modal-title" id="EditModal1">全局模板库</h4>
+                </div>
+                <div class="modal-body profile-TextLeft">
+                    <div class="body-info">
+
+                        <form class="form-horizontal" id="addTemplateForm">
+
+                            <div class="form-group">
+                                <label for="templateId" class="col-sm-3 control-label">模板标识</label>
+                                <div class="col-sm-9">
+                                    <input readonly type="text" class="form-control" id="templateId"
+                                           v-model="templateRecord.templateId">
+                                </div>
+                            </div>
+                            <div v-show="docType==904" class="form-group">
+                                <label for="user" class="col-sm-3 control-label">提出方</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="user" v-model="templateRecord.user" id="user">
+                                        <template v-for="(value,key) in user">
+                                            <option :value=key v-html=value></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subType" class="col-sm-3 control-label">变更类型</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="phase" v-model="templateRecord.subType"
+                                            id="subType">
+                                        <template v-for="(value,key) in prjSubType">
+                                            <option :value=key v-html=value></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                            <div v-show="docType==904" class="form-group">
+                                <label for="phase" class="col-sm-3 control-label">阶段数</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="phase" v-model="templateRecord.phase" id="phase">
+                                        <template v-for="(value,key) in projectPhase">
+                                            <option :value=key v-html=value></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="alias" class="col-sm-3 control-label">模板名称</label>
+                                <div class="col-sm-9">
+                                    <input   type="text" class="form-control" id="alias"
+                                           v-model="templateRecord.alias">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="title" class="col-sm-3 control-label">模板文件</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="title"
+                                           v-model="templateRecord.title"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="docType0" class="col-sm-3 control-label">文档类型</label>
+                                <div class="col-sm-9">
+                                    <select disabled class="form-control" name="docType0"
+                                            v-model="templateRecord.docType"
+                                            id="docType0">
+                                        <template v-for="(value,key) in docTypes">
+                                            <option :value=key v-html=value></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="error-info"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" @click="btnSaveTemplate" class="btn btn-primary " id="btnSaveTemplate" >
+                        保存
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnClose">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog " role="document" style="width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h3 class="modal-title" style="font-weight: normal;">删除</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="center-block text-center">
+                        <img src="../../../../r/images/at.png" alt="图片"><br>
+                        <div id="text">您确认删除吗？</div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: block;">
+                    <button  @click="btnDeleteConfirm" type="button" class="btn btn-primary" id="btnDeleleConfirm">
+                        确定	</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../../../r/lib/layer/layer.js"></script>
+<script src="../../../../r/js/modules/systemDictionary/metadataDictionary/public.js"></script>
+<script type="text/javascript" src="../../../../r/js/modules/projtemplate/genTemplate/genTemplate.js"></script>
+</body>
+</html>

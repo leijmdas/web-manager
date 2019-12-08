@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/m/r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="/m/r/lib/html5shiv.min.js"></script>
+    <script src="/m/r/lib/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #doc-template-container {
+            margin: 100px 0;
+        }
+    </style>
+    <link rel="stylesheet" href="/m/r/lib/doctemplate/css/doctemplate.css">
+</head>
+<body>
+
+<div id="app">
+    <div id="doc-template-container" class="doc-template-edit">
+        <div class="doc-template-wrap">
+            <component :is="tagValueComponent(tag)" v-for="tag in tags" :data="tag"
+                       :key="getKey(tag)"></component>
+        </div>
+    </div>
+</div>
+
+<script src="/m/r/lib/jquery.min.js"></script>
+<script src="/m/r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="/m/r/lib/vue.js"></script>
+<script src="/m/r/lib/vuex.js"></script>
+<script src="/m/r/lib/doctemplate/js/doctemplate-vue.js"></script>
+<script>
+  $(function() {
+    var store = new Vuex.Store({
+      modules: {
+        docTemplate: docTemplateVue.docTemplateStore,
+      },
+    });
+
+    var vm = new Vue({
+      el: '#app',
+      mixins: [docTemplateVue.mixin],
+      store: store,
+      data: {},
+      methods: {},
+      computed: {
+        tags: function() {
+          return this.$store.getters.tags;
+        },
+      },
+      beforeCreate: function() {
+        //请求服务端获取数据
+        var tags = [
+          {
+            'depth': 1,
+            'key': 'text1:1',
+            'rowLimit': 2147483647,
+            'rows': 5,
+            'tag': 'tagText',
+            'title': 'A. 项目需求简介',
+            'value': [
+              {
+                'depth': 2,
+                'key': 'text2:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': 'a） 产品主要功能简介（发单方必填）',
+                'value': [
+                  {
+                    'placeholder': '图文描述：产品主要功能的说明0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text3:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': 'b） 产品主要技术（性能）参数简介',
+                'value': [
+                  {
+                    'placeholder': '图文描述：产品主要技术参数的说明0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text4:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': 'c） 产品使用环境',
+                'value': [
+                  {
+                    'placeholder': '图文描述：产品工作在室内、室外、温度、湿度、潮湿、高温等环境说明0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text5:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': 'd） 产品使用人群',
+                'value': [
+                  {
+                    'placeholder': '图文描述：产品由专业技术人员、专职操作人员、老人、小孩等人群使用的说明0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text6:2',
+                'rowLimit': 2147483647,
+                'rows': 2,
+                'tag': 'tagText',
+                'title': 'e） 希望产品开发设计成果最好达到的目标',
+                'value': [
+                  {
+                    'placeholder': '图文描述：希望设计的产品达到成本低、尺寸小、精度高、使用方便等目标的说明0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '！ 以上的“需求简介”资料将发布在平台网上公开展示。以下的资料，只对进入洽谈阶段的人打开。',
+                    'row': 1,
+                    'value': '',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text7:1',
+            'rowLimit': 2147483647,
+            'rows': 3,
+            'tag': 'tagText',
+            'title': 'B. 产品参考资料（默认：无）',
+            'value': [
+              {
+                'depth': 2,
+                'key': 'radio1:2',
+                'rowLimit': 1,
+                'rows': 1,
+                'tag': 'tagRadio',
+                'value': [
+                  {
+                    'desc': '',
+                    'items': [
+                      '无（批注：关闭子标题）',
+                      '有（批注：展开子标题）',
+                    ],
+                    'row': 0,
+                    'selectedIndex': 1,
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text8:2',
+                'rowLimit': 2147483647,
+                'rows': 5,
+                'tag': 'tagText',
+                'title': 'a） 参考资料1',
+                'value': [
+                  {
+                    'placeholder': '参考资料的公司名称：【填写名称/品牌】',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '参考公司的官网：【链接网址】',
+                    'row': 1,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '参考产品的名称：【填写产品名称】',
+                    'row': 2,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '参考产品的规格或型号：【填写产品的规格或型号】',
+                    'row': 3,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'image1:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '参考产品的图片：',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 5,
+                            'desc': '参考产品图片',
+                            'index': 1,
+                            'paths': [],
+                          },
+                          {
+                            'count': 5,
+                            'desc': '参考产品图片',
+                            'index': 2,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text9:2',
+                'rowLimit': 2147483647,
+                'rows': 6,
+                'tag': 'tagText',
+                'title': 'b） 参考资料2',
+                'value': [
+                  {
+                    'placeholder': '参考资料的公司名称：【填写名称/品牌】',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '参考公司的官网：【链接网址】',
+                    'row': 1,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '参考产品的名称：【填写产品名称】',
+                    'row': 2,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '参考产品的规格或型号：【填写产品的规格或型号】',
+                    'row': 3,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '参考产品的图片：（添加图片）',
+                    'row': 4,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'image2:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '参考产品的图片：',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 5,
+                            'desc': '参考产品图片',
+                            'index': 1,
+                            'paths': [],
+                          },
+                          {
+                            'count': 5,
+                            'desc': '参考产品图片',
+                            'index': 2,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text10:1',
+            'rowLimit': 2147483647,
+            'rows': 3,
+            'tag': 'tagText',
+            'title': 'C. 产品规格或操作使用等参考资料（默认：无）',
+            'value': [
+              {
+                'depth': 2,
+                'key': 'radio2:2',
+                'rowLimit': 1,
+                'rows': 1,
+                'tag': 'tagRadio',
+                'value': [
+                  {
+                    'desc': '',
+                    'items': [
+                      '无（批注：关闭子标题）',
+                      '有（批注：展开子标题）',
+                    ],
+                    'row': 0,
+                    'selectedIndex': 1,
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text11:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': 'a）参考资料1：',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'file1:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagFile',
+                    'value': [
+                      {
+                        'desc': '上传操作使用说明书或规格书等文件',
+                        'path': '',
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text12:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': 'b）参考资料2：',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'file2:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagFile',
+                    'value': [
+                      {
+                        'desc': '上传操作使用说明书或规格书等文件',
+                        'path': '',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text13:1',
+            'rowLimit': 2147483647,
+            'rows': 1,
+            'tag': 'tagText',
+            'title': 'D.产品开发设计成果的交付形式（必填，可多选。默认：均为有）',
+            'value': [
+              {
+                'depth': 2,
+                'key': 'radio3:2:3',
+                'rowLimit': 3,
+                'rows': 3,
+                'tag': 'tagRadio',
+                'value': [
+                  {
+                    'desc': '1）含PCBA电路板实物及其设计文档：',
+                    'items': [
+                      '有',
+                      '无',
+                    ],
+                    'row': 0,
+                    'selectedIndex': 0,
+                  },
+                  {
+                    'desc': '2）含嵌入式软件代码及其设计文档：',
+                    'items': [
+                      '有',
+                      '无',
+                    ],
+                    'row': 1,
+                    'selectedIndex': 0,
+                  },
+                  {
+                    'desc': '3）含机械零部件实物及其设计文档：',
+                    'items': [
+                      '有',
+                      '无',
+                    ],
+                    'row': 2,
+                    'selectedIndex': 0,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text14:1',
+            'rowLimit': 2147483647,
+            'rows': 3,
+            'tag': 'tagText',
+            'title': '1.功能',
+            'value': [
+              {
+                'placeholder': '列出产品所有的功能。',
+                'row': 0,
+                'value': '',
+              },
+              {
+                'depth': 2,
+                'key': 'text15:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': '1.1. 【0/20功能名称1】',
+                'value': [
+                  {
+                    'placeholder': '图文描述：功能名称的说明0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text16:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': '1.2. 【0/20功能名称2】',
+                'value': [
+                  {
+                    'placeholder': '图文描述：功能名称的说明0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text17:1',
+            'rowLimit': 2147483647,
+            'rows': 4,
+            'tag': 'tagText',
+            'title': '2. 技术性能参数（默认：无）',
+            'value': [
+              {
+                'placeholder': '列出产品所有包含有数值指标的功能、技术参数、性能指标。',
+                'row': 0,
+                'value': '',
+              },
+              {
+                'depth': 2,
+                'key': 'radio4:2',
+                'rowLimit': 1,
+                'rows': 1,
+                'tag': 'tagRadio',
+                'value': [
+                  {
+                    'desc': '',
+                    'items': [
+                      '无（批注：关闭子标题）',
+                      '有（批注：展开子标题）',
+                    ],
+                    'row': 0,
+                    'selectedIndex': 1,
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text18:2',
+                'rowLimit': 2147483647,
+                'rows': 2,
+                'tag': 'tagText',
+                'title': '2.1. 【0/20技术参数名称1】',
+                'value': [
+                  {
+                    'placeholder': '参数的单位：【0/10】  参数的标准数值：【0/10】  参数的误差：正+【0/10】负-【0/10】',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '图文描述：参数的说明0/500',
+                    'row': 1,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text19:2',
+                'rowLimit': 2147483647,
+                'rows': 2,
+                'tag': 'tagText',
+                'title': '2.2. 【0/20技术参数名称2】',
+                'value': [
+                  {
+                    'placeholder': '参数的单位：【0/10】  参数的标准数值：【0/10】  参数的误差：正+【0/10】负-【0/10】',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'placeholder': '图文描述：参数的说明0/500',
+                    'row': 1,
+                    'value': '',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text20:1',
+            'rowLimit': 2147483647,
+            'rows': 4,
+            'tag': 'tagText',
+            'title': '3. 产品的电器接口（默认：无）',
+            'value': [
+              {
+                'placeholder': '列出产品用于连接外部装置或设备的电路插头或插座的接口。例如：电源插座、USB插座、电路板卡上的信号线插头插座等等。',
+                'row': 0,
+                'value': '',
+              },
+              {
+                'depth': 2,
+                'key': 'radio5:2',
+                'rowLimit': 1,
+                'rows': 1,
+                'tag': 'tagRadio',
+                'value': [
+                  {
+                    'desc': '',
+                    'items': [
+                      '无（批注：关闭子标题） ',
+                      '有（批注：展开子标题）',
+                    ],
+                    'row': 0,
+                    'selectedIndex': 1,
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text21:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': '3.1. 【0/20接口名称1】',
+                'value': [
+                  {
+                    'placeholder': '图文描述：接口的信号端定义、功能、技术指标、数据通讯协议等0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text22:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': '3.2. 【0/20接口名称2】',
+                'value': [
+                  {
+                    'placeholder': '图文描述：接口的信号端定义、功能、技术指标、数据通讯协议等0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text23:1',
+            'rowLimit': 2147483647,
+            'rows': 4,
+            'tag': 'tagText',
+            'title': '4. 产品的光气液等接口（默认：无）',
+            'value': [
+              {
+                'placeholder': '列出产品用于连接外部装置或设备的光、气、液等插头或插座的接口。例如：气路连接器、液路连接器等等。',
+                'row': 0,
+                'value': '',
+              },
+              {
+                'depth': 2,
+                'key': 'radio6:2',
+                'rowLimit': 1,
+                'rows': 1,
+                'tag': 'tagRadio',
+                'value': [
+                  {
+                    'desc': '',
+                    'items': [
+                      '无（批注：关闭子标题）',
+                      '有（批注：展开子标题）',
+                    ],
+                    'row': 0,
+                    'selectedIndex': 1,
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text24:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': '4.1. 【0/20接口名称1】',
+                'value': [
+                  {
+                    'placeholder': '图文描述：接口的定义、功能、技术指标等0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text25:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': '4.1. 【0/20接口名称2】',
+                'value': [
+                  {
+                    'placeholder': '图文描述：接口的定义、功能、技术指标等0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text26:1',
+            'rowLimit': 2147483647,
+            'rows': 17,
+            'tag': 'tagText',
+            'title': '5. 产品外壳或外观布局（默认：无）',
+            'value': [
+              {
+                'placeholder': '产品如果有外壳，就需要确定外壳上安装的所有零部件的名称、位置、大小；',
+                'row': 0,
+                'value': '',
+              },
+              {
+                'placeholder': '对无外壳的电路板或机械模块来说，外观布局是指电路板或机械模块上的接插件、特殊零部件的安放位置；',
+                'row': 1,
+                'value': '',
+              },
+              {
+                'placeholder': '如果用户需要对外壳或外观进行设计，则是指对产品的人机交互、产品形状、结构、材料、色彩、表面加工、装饰等进行的产品造型设计。',
+                'row': 2,
+                'value': '',
+              },
+              {
+                'placeholder': '（批注：以下为单选）',
+                'row': 3,
+                'value': '',
+              },
+              {
+                'placeholder': '○无产品外壳或外观布局要求（批注：点选后。关闭子标题）',
+                'row': 4,
+                'value': '',
+              },
+              {
+                'placeholder': '○有产品外壳或外观布局要求（批注：点选后。展开子标题）',
+                'row': 5,
+                'value': '',
+              },
+              {
+                'placeholder': '○已有产品造型设计图',
+                'row': 6,
+                'value': '',
+              },
+              {
+                'placeholder': '【上传造型设计图文件】（批注：点选后。打开文件链接，关闭子标题）',
+                'row': 7,
+                'value': '',
+              },
+              {
+                'placeholder': '●需要产品造型的设计，且在协作的工作计划中增加产品造型设计阶段（批注：点选后。展开子标题，并启动造型设计阶段）',
+                'row': 8,
+                'value': '',
+              },
+              {
+                'depth': 2,
+                'key': 'image3:2',
+                'rowLimit': 1,
+                'rows': 1,
+                'tag': 'tagImage',
+                'title': '产品外观六面说明示意图：',
+                'value': [
+                  {
+                    'items': [],
+                  },
+                ],
+              },
+              {
+                'placeholder': '以下六个面的图画出所有可看得到的显示屏、指示灯、按键、开关、插头/插座、把手等等功能部件。表格中列出上述零部件的名称、规格及功能说明。',
+                'row': 10,
+                'value': '',
+              },
+              {
+                'depth': 2,
+                'key': 'text27:2',
+                'rowLimit': 2147483647,
+                'rows': 3,
+                'tag': 'tagText',
+                'title': '5.1.正面说明',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'image4:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '产品正面中的零部件布局图。（批注：有图就有表，无图无表）',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 1,
+                            'desc': '正面：部件布局图',
+                            'index': 1,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'placeholder': '图中部件名称和功能说明一览表：',
+                    'row': 1,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'tableItem1:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagTable:item',
+                    'title': '序号|部件名称|部件型号/规格|功能说明',
+                    'value': [
+                      {
+                        'text': '1|【0/20】|【0/20】|【0/50】',
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text28:2',
+                'rowLimit': 2147483647,
+                'rows': 3,
+                'tag': 'tagText',
+                'title': '5.2. 后面说明',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'image5:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '产品后面中的零部件布局图。（批注：有图就有表，无图无表）',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 1,
+                            'desc': '后面：部件布局图',
+                            'index': 1,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'placeholder': '图中部件名称和功能说明一览表：',
+                    'row': 1,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'tableItem2:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagTable:item',
+                    'title': '序号|部件名称|部件型号/规格|功能说明',
+                    'value': [
+                      {
+                        'text': '1|【0/20】|【0/20】|【0/50】',
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text29:2',
+                'rowLimit': 2147483647,
+                'rows': 3,
+                'tag': 'tagText',
+                'title': '5.3. 左侧说明',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'image6:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '产品左侧中的零部件布局图。（批注：有图就有表，无图无表）',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 1,
+                            'desc': '左侧：部件布局图',
+                            'index': 1,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'placeholder': '图中部件名称和功能说明一览表：',
+                    'row': 1,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'tableItem3:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagTable:item',
+                    'title': '序号|部件名称|部件型号/规格|功能说明',
+                    'value': [
+                      {
+                        'text': '1|【0/20】|【0/20】|【0/50】',
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text30:2',
+                'rowLimit': 2147483647,
+                'rows': 3,
+                'tag': 'tagText',
+                'title': '5.4. 右侧说明',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'image7:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '产品右侧中的零部件布局图。（批注：有图就有表，无图无表）',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 1,
+                            'desc': '右侧：部件布局图',
+                            'index': 1,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'placeholder': '图中部件名称和功能说明一览表：',
+                    'row': 1,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'tableItem4:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagTable:item',
+                    'title': '序号|部件名称|部件型号/规格|功能说明',
+                    'value': [
+                      {
+                        'text': '1|【0/20】|【0/20】|【0/50】',
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text31:2',
+                'rowLimit': 2147483647,
+                'rows': 3,
+                'tag': 'tagText',
+                'title': '5.5. 顶部说明',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'image8:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '产品顶部中的零部件布局图。（批注：有图就有表，无图无表）',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 1,
+                            'desc': '顶部（电路板的Top层）：部件布局图',
+                            'index': 1,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'placeholder': '图中部件名称和功能说明一览表：',
+                    'row': 1,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'tableItem5:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagTable:item',
+                    'title': '序号|部件名称|部件型号/规格|功能说明',
+                    'value': [
+                      {
+                        'text': '1|【0/20】|【0/20】|【0/50】',
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text32:2',
+                'rowLimit': 2147483647,
+                'rows': 3,
+                'tag': 'tagText',
+                'title': '5.6. 底部说明',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'image9:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '产品底部中的零部件布局图。（批注：有图就有表，无图无表）',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 1,
+                            'desc': '底部（电路板的Bottom层）：部件布局图',
+                            'index': 1,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'placeholder': '图中部件名称和功能说明一览表：',
+                    'row': 1,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'tableItem6:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagTable:item',
+                    'title': '序号|部件名称|部件型号/规格|功能说明',
+                    'value': [
+                      {
+                        'text': '1|【0/20】|【0/20】|【0/50】',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text33:1',
+            'rowLimit': 2147483647,
+            'rows': 15,
+            'tag': 'tagText',
+            'title': '6. 产品操作与显示界面（UI）（默认：无）',
+            'value': [
+              {
+                'placeholder': '产品操作与显示界面是指产品如果有显示的器件，如液晶显示屏幕、数码管、指示灯等，就需要定义产品操作、运行时和屏幕显示内容之间的关系。',
+                'row': 0,
+                'value': '',
+              },
+              {
+                'placeholder': '产品界面设计是指对产品的人机交互、操作逻辑、显示界面美观的整体设计，一般包含产品原型设计和界面美工设计两部分。界面（UI）设计不仅体现在美观，更重要的是让产品的操作变得舒适、简单。',
+                'row': 1,
+                'value': '',
+              },
+              {
+                'placeholder': '（批注：以下单选）',
+                'row': 2,
+                'value': '',
+              },
+              {
+                'placeholder': '○无显示界面（批注：点选后，关闭子标题）',
+                'row': 3,
+                'value': '',
+              },
+              {
+                'placeholder': '○有显示界面（批注：点选后，展开子标题）',
+                'row': 4,
+                'value': '',
+              },
+              {
+                'placeholder': '○已有界面原型设计和UI美工设计图',
+                'row': 5,
+                'value': '',
+              },
+              {
+                'placeholder': '【上传原型设计图文件】',
+                'row': 6,
+                'value': '',
+              },
+              {
+                'placeholder': '【上传UI美工设计图文件】（批注：点选后，打开文件链接，关闭子标题）',
+                'row': 7,
+                'value': '',
+              },
+              {
+                'placeholder': '●需要产品界面设计，在该项目的工作计划中增加界面设计阶段（批注：点选后，展开子标题，启动原型和UI设计阶段）',
+                'row': 8,
+                'value': '',
+              },
+              {
+                'placeholder': '绘制产品界面布局图（简易原型图）的基本要求：',
+                'row': 9,
+                'value': '',
+              },
+              {
+                'placeholder': '（1） 布局图主要包括：显示内容的布局、文字、操作按键、图标、颜色等。',
+                'row': 10,
+                'value': '',
+              },
+              {
+                'placeholder': '（2） 布局图中包含不同页面之间切换的触发条件、状态。用箭头线加标注说明页面的切换。',
+                'row': 11,
+                'value': '',
+              },
+              {
+                'placeholder': '（3） 此处的布局图只能简单说明产品显示界面的功能描述，对复杂的界面建议增加界面设计阶段。',
+                'row': 12,
+                'value': '',
+              },
+              {
+                'depth': 2,
+                'key': 'text34:2',
+                'rowLimit': 2147483647,
+                'rows': 2,
+                'tag': 'tagText',
+                'title': '6.1. 【0/20显示页面名称1】',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'image10:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '界面布局图',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 1,
+                            'desc': '界面布局图',
+                            'index': 1,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'placeholder': '图文描述：显示页面的说明0/500',
+                    'row': 1,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text35:2',
+                'rowLimit': 2147483647,
+                'rows': 2,
+                'tag': 'tagText',
+                'title': '6.2. 【0/20显示页面名称2】',
+                'value': [
+                  {
+                    'depth': 3,
+                    'key': 'image11:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagImage',
+                    'title': '界面布局图',
+                    'value': [
+                      {
+                        'items': [
+                          {
+                            'count': 1,
+                            'desc': '界面布局图',
+                            'index': 1,
+                            'paths': [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'placeholder': '图文描述：显示页面的说明0/500',
+                    'row': 1,
+                    'value': '',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text36:1',
+            'rowLimit': 2147483647,
+            'rows': 4,
+            'tag': 'tagText',
+            'title': '7.产品运行的工作环境',
+            'value': [
+              {
+                'depth': 2,
+                'key': 'text37:2',
+                'rowLimit': 2147483647,
+                'rows': 4,
+                'tag': 'tagText',
+                'title': '7.1.产品运行需要配套的硬件',
+                'value': [
+                  {
+                    'placeholder': '列出产品运行所需要特别指定配套使用的硬件、设备，包括仪器仪表、工具、计算机、服务器、仿真器、处理器芯片、电路板卡和模块等。例如嵌入式软件需要指定的CPU芯片、软件调试需要指定的电路板、应用软件需要指定最低配置的计算机；超声探头需要指定配套的超声探测仪等。',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'radio7:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagRadio',
+                    'value': [
+                      {
+                        'desc': '',
+                        'items': [
+                          '无（批注：点选后，关闭子标题） ',
+                          '有（批注：点选后，展开子标题）',
+                        ],
+                        'row': 0,
+                        'selectedIndex': 1,
+                      },
+                    ],
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text38:3',
+                    'rowLimit': 2147483647,
+                    'rows': 2,
+                    'tag': 'tagText',
+                    'title': '7.1.1. 【0/20硬件设备名称1】',
+                    'value': [
+                      {
+                        'placeholder': '厂家或品牌：【0/10】 规格型号：【0/10】 需用数量：【0/2】 ',
+                        'row': 0,
+                        'value': '',
+                      },
+                      {
+                        'placeholder': '图文描述配套该硬件设备的理由，设备的主要功能、技术参数、连接使用方法等0/500',
+                        'row': 1,
+                        'value': '',
+                      },
+                    ],
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text39:3',
+                    'rowLimit': 2147483647,
+                    'rows': 2,
+                    'tag': 'tagText',
+                    'title': '7.1.2. 【0/20硬件设备名称2】',
+                    'value': [
+                      {
+                        'placeholder': '厂家或品牌：【0/10】 规格型号：【0/10】 需用数量：【0/2】',
+                        'row': 0,
+                        'value': '',
+                      },
+                      {
+                        'placeholder': '图文描述配套该硬件设备的理由，设备的主要功能、技术参数、连接使用方法等0/500',
+                        'row': 1,
+                        'value': '',
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text40:2',
+                'rowLimit': 2147483647,
+                'rows': 4,
+                'tag': 'tagText',
+                'title': '7.2. 产品运行需要配套的支持软件（默认：无）',
+                'value': [
+                  {
+                    'placeholder': '列出产品运行所需要特别指定配套使用的软件，包括操作系统、浏览器、编译（或汇编）软件、数据处理软件、测试支持软件等。例如，财务管理软件运行需要指定某版本的Windows操作系统，数控机床控制器运行指定的某CAD软件等。',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'radio8:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagRadio',
+                    'value': [
+                      {
+                        'desc': '',
+                        'items': [
+                          '无（批注：点选后，关闭子标题）',
+                          '有（批注：点选后，展开子标题）',
+                        ],
+                        'row': 0,
+                        'selectedIndex': 1,
+                      },
+                    ],
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text41:3',
+                    'rowLimit': 2147483647,
+                    'rows': 2,
+                    'tag': 'tagText',
+                    'title': '7.2.1. 【0/20软件名称1】',
+                    'value': [
+                      {
+                        'placeholder': '厂家或品牌：【0/10】 版本：【0/10】',
+                        'row': 0,
+                        'value': '',
+                      },
+                      {
+                        'placeholder': '图文描述配套该支持软件的理由，软件的主要功能、技术参数、连接使用方法等0/500',
+                        'row': 1,
+                        'value': '',
+                      },
+                    ],
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text42:3',
+                    'rowLimit': 2147483647,
+                    'rows': 2,
+                    'tag': 'tagText',
+                    'title': '7.2.2. 【0/20软件名称2】',
+                    'value': [
+                      {
+                        'placeholder': '厂家或品牌：【0/10】 版本：【0/10】',
+                        'row': 0,
+                        'value': '',
+                      },
+                      {
+                        'placeholder': '图文描述配套该支持软件的理由，软件的主要功能、技术参数、连接使用方法等0/500',
+                        'row': 1,
+                        'value': '',
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text43:2',
+                'rowLimit': 2147483647,
+                'rows': 1,
+                'tag': 'tagText',
+                'title': '7.3. 产品运行的环境温度范围',
+                'value': [
+                  {
+                    'placeholder': '【填写最低温度】℃ 至 【填写最高温度】℃',
+                    'row': 0,
+                    'value': '',
+                  },
+                ],
+              },
+              {
+                'depth': 2,
+                'key': 'text44:2',
+                'rowLimit': 2147483647,
+                'rows': 5,
+                'tag': 'tagText',
+                'title': '7.4. 产品运行需要输入的供电电源（默认：无）',
+                'value': [
+                  {
+                    'placeholder': '（批注：编制前，打开所有子标题。无为单选则关闭所有子标题。其它可多选，选中则打开对应的子标题）',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'check1:3',
+                    'rowLimit': 1,
+                    'rows': 1,
+                    'tag': 'tagCheck',
+                    'value': [
+                      {
+                        'desc': '可多选：',
+                        'items': [
+                          '无',
+                          '外部交流电源',
+                          '外部直流电源',
+                          '内部电池供电',
+                        ],
+                        'selecteds': [
+                          false,
+                          true,
+                          false,
+                          true,
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text45:3',
+                    'rowLimit': 2147483647,
+                    'rows': 2,
+                    'tag': 'tagText',
+                    'title': '7.4.1.外部交流电源',
+                    'value': [
+                      {
+                        'placeholder': '电压范围【0/20】V 电流范围【0/10】A',
+                        'row': 0,
+                        'value': '',
+                      },
+                      {
+                        'placeholder': '图文描述：外部交流电源的说明0/500',
+                        'row': 1,
+                        'value': '',
+                      },
+                    ],
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text46:3',
+                    'rowLimit': 2147483647,
+                    'rows': 2,
+                    'tag': 'tagText',
+                    'title': '7.4.2. 外部直流电源',
+                    'value': [
+                      {
+                        'placeholder': '电压范围【0/20】V 电流范围【0/10】A',
+                        'row': 0,
+                        'value': '',
+                      },
+                      {
+                        'placeholder': '图文描述：外部直流电源的说明0/500',
+                        'row': 1,
+                        'value': '',
+                      },
+                    ],
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text47:3',
+                    'rowLimit': 2147483647,
+                    'rows': 2,
+                    'tag': 'tagText',
+                    'title': '7.4.3. 内部电池供电',
+                    'value': [
+                      {
+                        'placeholder': '电池名称【0/20】 电压范围【0/10】V 容量范围【0/10】Ah',
+                        'row': 0,
+                        'value': '',
+                      },
+                      {
+                        'placeholder': '图文描述：内部电池供电的说明0/500',
+                        'row': 1,
+                        'value': '',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text48:1',
+            'rowLimit': 2147483647,
+            'rows': 2,
+            'tag': 'tagText',
+            'title': '8. 产品外形尺寸估算',
+            'value': [
+              {
+                'placeholder': '长【0/15】cm 宽【0/15】cm 高【0/15】cm',
+                'row': 0,
+                'value': '',
+              },
+              {
+                'placeholder': '图文描述：产品外形尺寸估算的说明0/500',
+                'row': 1,
+                'value': '',
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text49:1',
+            'rowLimit': 2147483647,
+            'rows': 2,
+            'tag': 'tagText',
+            'title': '9. 产品材料成本估算',
+            'value': [
+              {
+                'placeholder': '单台成本（人民币）：【0/10】元',
+                'row': 0,
+                'value': '',
+              },
+              {
+                'placeholder': '图文描述：产品材料成本估算的说明0/500',
+                'row': 1,
+                'value': '',
+              },
+            ],
+          },
+          {
+            'depth': 1,
+            'key': 'text50:1',
+            'rowLimit': 2147483647,
+            'rows': 3,
+            'tag': 'tagText',
+            'title': '10. 标准/指南/规范的要求（默认：无）',
+            'value': [
+              {
+                'depth': 2,
+                'key': 'radio9:2',
+                'rowLimit': 1,
+                'rows': 1,
+                'tag': 'tagRadio',
+                'value': [
+                  {
+                    'desc': '',
+                    'items': [
+                      '无（批注：关闭图文描述框和子标题）',
+                      '有（批注：展开图文描述框和子标题）',
+                    ],
+                    'row': 0,
+                    'selectedIndex': 1,
+                  },
+                ],
+              },
+              {
+                'placeholder': '图文描述：标准/指南/规范的要求的说明0/500',
+                'row': 1,
+                'value': '',
+              },
+              {
+                'depth': 2,
+                'key': 'text51:2',
+                'rowLimit': 2147483647,
+                'rows': 3,
+                'tag': 'tagText',
+                'title': '10.1. 【0/30标准/指南/规范的名称1】',
+                'value': [
+                  {
+                    'placeholder': '图文描述：标准/指南/规范的要求的说明0/500',
+                    'row': 0,
+                    'value': '',
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text52:3',
+                    'rowLimit': 2147483647,
+                    'rows': 1,
+                    'tag': 'tagText',
+                    'title': '10.1.1. 【1/20需求名称1】',
+                    'value': [
+                      {
+                        'placeholder': '图文描述：标准/指南/规范的要求的说明0/500',
+                        'row': 0,
+                        'value': '',
+                      },
+                    ],
+                  },
+                  {
+                    'depth': 3,
+                    'key': 'text53:3',
+                    'rowLimit': 2147483647,
+                    'rows': 1,
+                    'tag': 'tagText',
+                    'title': '10.1.2. 【0/20需求名称2】',
+                    'value': [
+                      {
+                        'placeholder': '图文描述：标准/指南/规范的要求的说明0/500',
+                        'row': 0,
+                        'value': '',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ];
+        this.$store.dispatch('init', tags);
+      },
+    });
+  });
+</script>
+</body>
+</html>

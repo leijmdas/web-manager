@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="main" style="color: red;">
+    <h3>打印内容1</h3>
+    <h3>打印内容2</h3>
+    <h3>打印内容3</h3>
+</div>
+
+<button type="button" onclick="myPrint1('#main')">打印1（直接打印）</button>
+
+<button type="button" onclick="myPrint2('#main')">打印2（隐藏IFRAME）</button>
+
+<button type="button" onclick="YTBUI.utils.print('#main')">打印3（调用YTBUI工具方法）</button>
+
+<iframe style="display: none;" id="iframePrint"></iframe>
+
+<script src="../../jquery.js"></script>
+<script src="../../vue.js"></script>
+<script src="../js/ytbui.js"></script>
+<script>
+
+    function myPrint1(id) {
+        var printContent = $(id).html();
+
+        var sourceHtml = document.body.innerHTML;
+        document.body.innerHTML = printContent;
+        print();
+        document.body.innerHTML = sourceHtml;
+    }
+
+    function myPrint2(id) {
+        var printContent = $(id).html();
+        var iframeWindow = $('#iframePrint').prop('contentWindow');
+        var iframeDocument = iframeWindow.document;
+        iframeDocument.body.innerHTML = printContent;
+        iframeWindow.print();
+
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <title>公司类型</title>
+
+
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/main.css"/>
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <script src="../../../../r/lib/layer/layer.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../../r/plugins/zTree/zTreeStyle.css"/>
+    <script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+    <script t type="text/javascript" src="../../../../r/lib/vue.min.js"></script>
+    <script src="../../../../r/js/common.js"></script>
+    <script src="../../../../r/js/const.js"></script>
+
+    <style type="text/css">
+        .zTreeDemoBackground1 {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+<div id="companyTypeBody" class="container-fluid">
+    <div role="tablist">
+        <div>
+            <ul class="nav nav-pills" role="tablist">
+                <li role="presentation" @click="loadTree1" id="ptagtav" class="active">
+                    <a href="#ltag" aria-controls="profile" role="tab" data-toggle="tab" class="btn-default btn btn-xs"
+                    >公司类型</a>
+                </li>
+
+            </ul>
+        </div>
+        <div id="ltag">
+            <div id="roleTree1" style="margin-top: 5px;">
+                <div class="zTreeDemoBackground left pull-left roleTree">
+                    <ul id="treeDemo1" class="ztree"></ul>
+                </div>
+            </div>
+            <div>
+                <button @click="btnAddClick($event)" class="btn btn-primary" id="addTag11">新增</button>
+                <label><input id="isFirstTag" type="checkbox" />一级类型</label>
+                <table class="table table-bordered text-center" id="gentagTable" cellpadding="0"
+                       cellspacing="0">
+                    <thead class="manager_table_thead">
+                    <tr>
+                        <th>标识</th>
+                        <th>公司类型</th>
+                        <th>父节点</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    <template v-for="(item,index) in tagList">
+                        <tr @click="clickTr" @dblclick="btnEditClick($event,item)" :class="index==0?'bg-blue':''">
+                            <td v-html="item.companyType"></td>
+                            <td v-html="item.remark"></td>
+                            <td v-html="item.parentId"></td>
+                            <td class="th">
+                                <button @click="btnEditClick($event,item)" type="button"
+                                        class="btn btn-primary btn-xs btnMargin editDic" >
+                                    修改 </button>
+                                <button @click="btnDeleteClick($event,item)"  type="button"
+                                        class="btn btn-danger btnMargin btn-xs del delTemplate"
+                                        name="btnDelete">
+                                    删除
+                                </button>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" style="width: 400px;">
+            <div class="modal-content animated bounceInDown">
+                <div class="modal-header profile-TextLeft ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEdit1"></button>
+                    <h4 class="modal-title" id="editModalTitle">公司类型</h4>
+                </div>
+                <div class="modal-body profile-TextLeft">
+                    <div class="body-info">
+                        <form class="form-horizontal"  id="editForm">
+
+                            <template>
+                                <div class="form-group">
+                                    <label for="companyType" class="col-sm-3 control-label">标识</label>
+                                    <div class="col-sm-9">
+                                        <input readonly type="text" class="form-control" id="companyType"
+                                               v-model="tagRecord.companyType"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="remark" class="col-sm-3 control-label">公司类型</label>
+                                    <div class="col-sm-9">
+                                        <input   type="text" class="form-control" id="remark"
+                                               v-model="tagRecord.remark"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="parentId" class="col-sm-3 control-label">父节点</label>
+                                    <div class="col-sm-9">
+                                        <input readonly type="text" class="form-control" id="parentId"
+                                               v-model="tagRecord.parentId"/>
+                                    </div>
+                                </div>
+                            </template>
+                        </form>
+                    </div>
+                    <div class="error-info"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" @click="btnSave" class="btn btn-primary " id="btnSave">
+                        保存
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnClose">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog " role="document" style="width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h3 class="modal-title" style="font-weight: normal;">删除</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="center-block text-center">
+                        <img src="../../../../r/images/at.png" alt="图片"><br>
+                        <div id="text">您确认删除吗？</div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: block;">
+                    <button  @click="btnDeleteConfirmClick" type="button" class="btn btn-primary" id="btnDeleteConfirm">
+                        确定	</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../../../../r/js/modules/pfUser/companyType/companyType.js"></script>
+</body>
+</html>

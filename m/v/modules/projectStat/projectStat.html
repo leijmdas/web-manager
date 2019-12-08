@@ -1,0 +1,137 @@
+<!DOCTYPE >
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>统计项列表</title>
+    <link rel="stylesheet" type="text/css" href="../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../../r/lib/jquery.min.js"></script>
+    <script src="../../../r/lib/layer/layer.js"></script>
+    <script type="text/javascript" src="../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../r/css/main.css"/>
+    <script type="text/javascript" src="../../../r/lib/vue.min.js"></script>
+    <script src="../../../r/lib/bootstrap/js/modalDialog.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../../r/plugins/zTree/zTreeStyle.css"/>
+    <script type="text/javascript" src="../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+    <script src="../../../r/js/common.js"></script>
+    <script src="../../../r/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../../r/plugins/validate/messages_zh.js"></script>
+</head>
+
+<body>
+<div id="bodydiv" class="container-fluid">
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#home" aria-controls="home" role="tab" data-toggle="tab" class="btn-default btn btn-xs"
+                   @click="loadStatTree">统计项列表</a>
+            </li>
+            <!--<li role="presentation" id="interface">-->
+            <!--<a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" class="btn-default btn btn-xs"-->
+            <!--@click="loadStatList">统计项明细表</a>-->
+            <!--</li>-->
+        </ul>
+
+        <div class="tab-content MenuManagement_Tab">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <!--<button type="button" class="btn btn-primary" id="Add_MenuManagement" @click="AddMenuManagement">新增</button>-->
+                <!--<button class="btn btn-primary" id="btnOpen">展开</button>-->
+                <!--<button class="btn btn-primary" id="btnClose">折叠</button>-->
+                <div v-show="false" id="roleTree1" style="margin-top: 30px;">
+                    <div class="zTreeDemoBackground left pull-left roleTree">
+                        <ul id="treeDemo1" class="ztree"></ul>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="profile">
+                    <div class="devices-conten devices-conten-table" id="table">
+                        <table class="table table-bordered text-center" id="addTable" cellpadding="0" cellspacing="0">
+                            <thead class="manager_table_thead">
+
+                            <tr>
+                                <!--<th><input type="checkbox"></th>-->
+                                <th>序号</th>
+                                <th>统计项目</th>
+                                <th v-show="false">实现方式</th>
+                                <th v-show="false">视图</th>
+                                <th v-show="false">元数据名称</th>
+                                <th v-show="false">计算脚本</th>
+                                <th v-show="false">计算参数</th>
+                                <th>计算时间</th>
+                                <th>统计标识</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+                            <template v-for="(item,index) in statList">
+                                <tr @click="clickStatTr($event,item)" :class="index==0?'bg-blue':''"
+                                    :name="item.statId">
+                                    <td v-html="index+1"></td>
+                                    <td v-html="item.statName"></td>
+                                    <td v-show="false" v-html="item.impType"></td>
+                                    <td v-show="false" v-html="item.tableView"></td>
+                                    <td v-show="false" v-html="item.metadataName"></td>
+                                    <td v-show="false" v-html="item.script"></td>
+                                    <td v-show="false" v-html="item.params"></td>
+                                    <td v-html="U.dateFormatString(item.runTime)"></td>
+                                    <td v-html="item.statId"></td>
+                                    <td>
+                                        <button @click="doStatClick($event,item)" name="doStat" type="button"
+                                                class="btn  btn-xs del btn-primary">
+                                            重新统计
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div v-show="selectRecords.length>=0">
+                        <table class="table table-bordered text-center" id="gentagTable" cellpadding="0"
+                               cellspacing="0">
+                            <thead class="manager_table_thead">
+                            <tr>
+                                <th v-show="field.fieldVisible" v-for="field in fieldNames"
+                                    v-html="field.fieldMemo"></th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbodySelect">
+                            <template v-for="(item,index) in selectRecords">
+                                <tr @click="clickTr($event,item)" :class="index==0?'bg-blue':''">
+                                    <td v-show="field.fieldVisible" v-for="field in fieldNames"
+                                        v-html="field.fieldType=='DATE'?U.dateFormatString(item[field.fieldName]):item[field.fieldName]"></td>
+                                </tr>
+                            </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--<div style="font-family:宋体;" v-if="selectRecords.length==1" class="table table-bordered">-->
+
+                            <!--<div style="font-family:宋体;"   class="table table-bordered">-->
+                                <!--<form v-if="selectRecords.length==1" class="form-horizontal" id="showForm">-->
+                                    <!--<div v-show="field.fieldVisible" v-for="field in fieldNames" class="form-group">-->
+                                        <!--<label :for="field.fieldName" class="col-sm-2 control-label"-->
+                                               <!--v-html="field.fieldMemo"></label>-->
+
+                                        <!--<label class="col-sm-2  control-label bg-blue" :id="field.fieldName"-->
+                                               <!--v-html="U.datetimeFormatString(field.fieldType,selectRecords[0][field.fieldName])">-->
+
+                                        <!--</label>-->
+
+                                    <!--</div>-->
+                                <!--</form>-->
+                            <!--</div>-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <script src="../../../r/js/public.js"></script>
+    <script type="text/javascript" src="../../../r/js/modules/projectStat/projectStat.js"></script>
+</body>
+</html>

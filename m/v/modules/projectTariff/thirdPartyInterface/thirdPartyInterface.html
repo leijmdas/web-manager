@@ -1,0 +1,96 @@
+<!DOCTYPE >
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title> 列表 </title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script src="../../../../r/lib/layer/layer.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../../r/css/main.css"/>
+    <script type="text/javascript" src="../../../../r/lib/vue.min.js"></script>
+    <script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../../../r/plugins/zTree/zTreeStyle.css"/>
+    <script type="text/javascript" src="../../../../r/plugins/zTree/jquery.ztree.core.min.js"></script>
+    <script src="../../../../r/js/common.js"></script>
+    <script src="../../../../r/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../../../r/plugins/validate/messages_zh.js"></script>
+</head>
+
+<body>
+<div id="bodydiv1" class="container-fluid">
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#home" aria-controls="home" role="tab" data-toggle="tab" class="btn-default btn btn-xs"
+                   @click="loadStatTree"> 列表</a>
+            </li>
+        </ul>
+
+        <div class="tab-content MenuManagement_Tab">
+            <div role="tabpanel" class="tab-pane active" id="home">
+
+                    <div v-show="selectRecords.length>=0">
+                        <table class="table table-bordered text-center" id="gentagTable" cellpadding="0"
+                               cellspacing="0">
+                            <thead class="manager_table_thead">
+
+                                <th v-show="field.fieldVisible" v-for="field in fieldNames"
+                                    v-html="field.fieldMemo"></th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbodySelect">
+                            <template v-for="(item,index) in selectRecords">
+                                <tr @click="clickTr($event,item)" :class="index==0?'bg-blue':''">
+                                    <template v-for="field in fieldNames">
+                                        <td v-if="field.fieldName=='is_active'"  v-show="field.fieldVisible" >
+                                            {{item['is_active']?'启用':'暂停'}}
+                                            <button @click="modifyStatus($event,item)" type="button" class="btn btn-primary" id="chngStatusBtn">
+                                                {{item['is_active']?'暂停':'启用'}}
+                                            </button>
+                                        </td>
+                                        <td v-else v-show="field.fieldVisible" v-html="item[field.fieldName]">
+                                        </td>
+                                    </template>
+                                    <td>
+                                        <button   type="button" class="btn btn-primary" id="refreshStatusBtn">
+                                            刷新缓存
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="font-family:宋体;" v-show="selectRecords.length==-1" class="table table-bordered">
+                        <form class="form-horizontal" id="showForm">
+                            <div v-show="field.fieldVisible" v-for="field in fieldNames" class="form-group">
+                                <label :for="field.fieldName" class="col-sm-2 control-label"
+                                       v-html="field.fieldMemo"></label>
+
+                                <div class="col-sm-7">
+                                    <input v-if="field.fieldName=='is_active'" readonly :id="field.fieldName" class="bg-blue"
+                                            type="checkbox"
+                                           v-model="field.fieldType=='DATE'?U.dateFormatString(selectRecords[0][field.fieldName]):selectRecords[0][field.fieldName]">
+                                    <input readonly :id="field.fieldName" class="bg-blue"
+                                           v-else  type="text"
+                                           v-model="field.fieldType=='DATE'?U.dateFormatString(selectRecords[0][field.fieldName]):selectRecords[0][field.fieldName]">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <script src="../../../../r/js/public.js"></script>
+    <script type="text/javascript" src="../../../../r/js/modules/projectTariff/thirdPartyInterface/thirdPartyInterface.js"></script>
+</body>
+</html>

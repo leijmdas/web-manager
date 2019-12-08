@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>举报</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="../../../../r/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../r/css/main.css">
+    <link rel="stylesheet" href="../../../../r/lib/layui/css/layui.css">
+</head>
+
+<body>
+<div class="container-fluid" id="tabelMain">
+    <div class="row">
+        <div class="col-md-12">
+            <table id="" cellpadding="0" cellspacing="0" class="table table-bordered text-center">
+                <thead class="manager_table_thead">
+                <tr>
+                    <th>举报人</th>
+                    <th>举报内容</th>
+                    <th>举报时间</th>
+                    <th>举报状态</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr v-for="item in listData">
+                    <td v-text="item.nickName"></td>
+                    <td v-text="item.reportText"></td>
+                    <td v-text="item.reportTime"></td>
+                    <td v-text="checkStat[item.reportStatus]"></td>
+                    <!--<td>-->
+                        <!--<button type="button" @click="" class="btn  btn-xs del btn-primary">修改-->
+                        <!--</button>-->
+                        <!--<button type="button" class="btn  btn-xs edit  btn-primary" @click="">删除-->
+                        <!--</button>-->
+                    <!--</td>-->
+                </tr>
+                </tbody>
+            </table>
+            <div id="paging" class="pagestyle"></div>
+        </div>
+    </div>
+</div>
+
+<script src="../../../../r/lib/jquery.min.js"></script>
+<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../../r/lib/vue.js"></script>
+<script src="../../../../r/js/common.js"></script>
+<script src="../../../../r/lib/layui/layui.js"></script>
+<script src="../../../../r/js/modules/main/reportAcceptance/reportAcceptance.js"></script>
+
+</body>
+</html>

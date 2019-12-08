@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>平台用户管理</title>
+    <link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../../../../r/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../../../r/lib/ytbui/css/ytbui.css">
+    <script type="text/javascript" src="../../../../r/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../../../r/lib/layer/layer.js"></script>
+    <script src="../../../../r/lib/layui/layui.js"></script>
+    <script t type="text/javascript" src="../../../../r/lib/vue.min.js"></script>
+    <script src="../../../../r/lib/base64.js"></script>
+    <script src="../../../../r/js/common.js"></script>
+    <script src="../../../../r/lib/ytbui/js/ytbui.js"></script>
+    <script src="../../../../r/js/modules/pfUser/userPlatform/userPlatform.js"></script>
+
+    <style>
+        .div_margin{
+            margin-left: 245px;
+            margin-top:20px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="userPlatformBody" class="container-fluid">
+    <div class="grid-btn" v-show="showBtnList">
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation"  id="ptagtav" class="active" @click="loadUser">
+                <a href="#ltag" aria-controls="profile" role="tab" data-toggle="tab" class="btn-default btn btn-xs">个人用户</a>
+            </li>
+            <li role="presentation" id="stagtav" @click="loadCompany()">
+                <a href="#ltag" aria-controls="home" role="tab" data-toggle="tab" class="btn-default btn btn-xs">公司用户</a>
+            </li>
+        </ul>
+        <div class="form-group col-sm-2" style="margin-left: 180px;margin-top: -35px;">
+            <input type="text" class="form-control" placeholder="用户名" v-model="q.nickName">
+        </div>
+            <a class="btn btn-default" style="margin-top: -55px;" @click="loadUser"><i class="fa fa-plus"></i>&nbsp;查询</a>
+        <!--用户黑名单-->
+        <a v-if="blackFlag" class="btn btn-default" style="margin-top: -35px;float: right" @click="loadUserBlack(1)"><i class="fa fa-plus"></i>&nbsp;黑名单</a>
+        <!--公司黑名单-->
+        <a v-if="!blackFlag" class="btn btn-default" style="margin-top: -35px;float: right" @click="loadUserBlack(2)"><i class="fa fa-plus"></i>&nbsp;黑名单</a>
+    </div>
+
+    <div id="userDiv" class="table-responsive">
+        <table class="table table-bordered text-center  table-hover" cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead ">
+            <tr>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>邦邦号</th>
+                <th>信用等级</th>
+                <th>手机</th>
+                <th>平台注册时间</th>
+                <th>最近登录时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody  class="userOrRoleGrid">
+            <tr v-for="(item,index) in userData" class="active">
+                <td>{{item.id}}</td>
+                <td>{{item.nickName}}</td>
+                <td>{{item.BBNo}}</td>
+                <td>{{item.userGrade}}</td>
+                <td>{{item.phone}}</td>
+                <td>{{item.registeredTime}}</td>
+                <td>{{item.loginTime}}</td>
+                <td>{{userStatus[item.userStatus]}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary edit "  v-if="item.userStatus===0" @click="addUserBlack(item.id,1)">禁用</button>
+                    <button type="button" class="btn btn-primary edit "  v-if="item.userStatus===1">启用</button>
+                    <button type="button" class="btn btn-primary edit " @click="getUserRecord(item)" >查看</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="pageTable" class="pagestyle" style="float: right;"></div>
+    </div>
+
+    <div id="companyDiv" style="display: none">
+        <table class="table table-bordered text-center  " cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead ">
+            <tr>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>公司名称</th>
+                <th>用户类型</th>
+                <th>邦邦号</th>
+                <th>信用等级</th>
+                <th>手机</th>
+                <th>平台注册时间</th>
+                <th>最近登录时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody  class="userOrRoleGrid">
+            <tr class="active" v-for="(item,index) in companyData">
+                <td>{{item.userId}}</td>
+                <td>{{item.nickName}}</td>
+                <td>{{item.companyName}}</td>
+                <td>{{item.isAdmin}}</td>
+                <td>{{item.BBNo}}</td>
+                <td>B</td>
+                <td>{{item.phone}}</td>
+                <td>{{item.registeredTime}}</td>
+                <td>{{item.loginTime}}</td>
+                <td>{{userStatus[item.userStatus]}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary edit "  v-if="item.userStatus===0" @click="addUserBlack(item.userId,2)">禁用</button>
+                    <button type="button" class="btn btn-primary edit "  v-if="item.userStatus===1">启用</button>
+                    <button type="button" class="btn btn-primary edit " @click="getComapnyRecord(item)" >查看</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="pageCompanyTable" class="pagestyle" style="float: right;"></div>
+    </div>
+
+        <!--用户信息查看-->
+        <div class="panel panel-default" v-if="!showUserInfo" style="border: 1px solid grey;border-radius: 1px;width:auto;margin-bottom:20px;">
+            <table class="table" style="text-align: center">
+                <tr>
+                    <td>
+                        <label>用户名称：</label>
+                        <span>{{userRecord.nickName}}</span>
+                    </td>
+                    <td>
+                        <label >邦邦号：</label>
+                        <span >{{userRecord.BBNo}}</span>
+                    </td>
+                    <td>
+                        <label >信用等级：</label>
+                        <span>{{userRecord.userGrade}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label >真实姓名：</label>
+                        <span  > {{userRecord.realName}}</span>
+                    </td>
+                    <td>
+                        <label >身份证号码：</label>
+                        <span  >{{userRecord.card}}</span>
+                    </td>
+                    <td>
+                        <label >手机号：</label>
+                        <span  >{{userRecord.phone}}</span>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>
+                        <label  class=" labelLineHeight">身份证正面：</label>
+                        <ytb-upload :upload-type="'img-list'" :img-src-arr="imgSrcArr(userRecord.idCardPic1)">
+
+                        </ytb-upload>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-warning " style="margin-top: 105px;" @click="goUserBack">返回</button>
+                    </td>
+                    <td>
+                        <label  class=" labelLineHeight">身份证反面：</label>
+                        <ytb-upload :upload-type="'img-list'" :img-src-arr="imgSrcArr(userRecord.idCardPic2)">
+
+                        </ytb-upload>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+    <div class="panel panel-default" v-if="!showCompanyInfo" style="border: 1px solid grey;border-radius: 1px;width:auto;margin-bottom:20px;" id="companyInfoDiv">
+        <table class="table" style="text-align: center">
+            <tr>
+                <td>
+                    <label>用户名称：</label>
+                    <span>{{companyRecord.nickName}}</span>
+                </td>
+                <td>
+                    <label >邦邦号：</label>
+                    <span >{{companyRecord.BBNo}}</span>
+                </td>
+                <td>
+                    <label >信用等级：</label>
+                    <span>{{companyRecord.companyGrade}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label >手机号：</label>
+                    <span  > {{companyRecord.phone}}</span>
+                </td>
+                <td>
+                    <label >企业名称：</label>
+                    <span  >{{companyRecord.companyName}}</span>
+                </td>
+                <td>
+                    <label >营业执照注册号：</label>
+                    <span  >{{companyRecord.phone}}</span>
+                </td>
+                <td>
+                    <label >营业执照所在地：</label>
+                    <span  >{{companyRecord.address}}</span>
+                </td>
+            </tr>
+            <tr>
+
+                <td>
+                    <label  class=" labelLineHeight">营业执照：</label>
+                    <ytb-upload :upload-type="'img-list'" :img-src-arr="imgSrcArr(userRecord.idCardPic1)">
+
+                    </ytb-upload>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-warning " style="margin-top: 105px;" @click="goCompanyBack">返回</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <!--用户黑明单-->
+    <div class="panel panel-default"  style="border: 1px solid grey;border-radius: 1px;width:auto;margin-bottom:20px;display: none" id="userBla" >
+        <table class="table table-bordered text-center  " cellpadding="0" cellspacing="0">
+            <thead class="manager_table_thead ">
+            <tr>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>邦邦号</th>
+                <th>信用等级</th>
+                <th>手机</th>
+                <th>平台注册时间</th>
+                <th>最近登录时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody  class="userOrRoleGrid">
+            <tr class="active" v-for="(item,index) in userBlackData">
+                <td>{{item.userId}}</td>
+                <td>{{item.nickName}}</td>
+                <td>{{item.BBNo}}</td>
+                <td>{{item.companyGrade}}</td>
+                <td>{{item.phone}}</td>
+                <td>{{item.registeredTime}}</td>
+                <td>{{item.loginTime}}</td>
+                <td>{{userStatus[item.userStatus]}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary edit "  v-if="item.userStatus===1">启用</button>
+                    <button type="button" class="btn btn-primary edit " @click="getComapnyRecord(item)" >查看</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="pageUserBlackTable" class="pagestyle" style="float: right;"></div>
+    </div>
+
+
+</div>
+</body>
+</html>

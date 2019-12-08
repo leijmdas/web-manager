@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>任务模板</title>
+		<link rel="stylesheet" type="text/css" href="../../../../r/lib/bootstrap/css/bootstrap.min.css" />
+		<script src="../../../../r/lib/jquery.min.js"></script>
+		<script src="../../../../r/lib/vue.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="../../../../r/lib/bootstrap/css/bootstrap-table.min.css">
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/bootstrap-modal.js"></script>
+		<script src="../../../../r/lib/bootstrap/js/modalDialog.js"></script>
+		<script src="../../../../r/js/common.js"></script>
+		<script src="../../../../r/js/public.js"></script>
+		<style type="text/css">
+			.marginTop {
+				margin-top: 30px;
+			}
+			
+			.marginLeft {
+				margin-left: 20px;
+			}
+			
+			.PersonanlRealName {
+				display: inline-block;
+			}
+			
+			.labelLineHeight {
+				padding-left: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container-fluid" id="divMax">
+			<p id="toolbar">
+				<button type="button" class="btn btn-primary user_line_height User_margin" id="add" @click="add">新增</button>
+				<button type="button" class="btn btn-primary user_line_height User_margin" id="edit" @click="edit">修改</button>
+				<button type="button" class="btn btn-primary user_line_height User_margin" id="delete" @click="del">删除</button>
+			</p>
+			<div id="content-body">
+				<div id="reportTableDiv" class="span10">
+					<table id="reportTable">
+					 
+					</table>
+				</div>
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-20
+   	描述：任务模板-新增、修改模态框
+   -->
+			<div class="modal fade  " id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalListO" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				<div class="modal-dialog" style="width: 750px;">
+					<div class="modal-content animated bounceInDown">
+						<!-- 窗口顶部 -->
+						<div class="modal-header profile-TextLeft ">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="btnEditInter">
+                            × <!-- 关闭按钮图标 -->
+                        </button>
+							<h4 class="modal-title" id="myModalList">
+                       新增任务模板 <!-- 窗口标题 -->
+                        </h4>
+						</div>
+						<!-- 窗口中部 -->
+						<div class="modal-body profile-TextLeft ">
+							<div class="body-info row">
+								<form class="form-horizontal" id="AddRestForm" v-for="item in tableList">
+									<div class="form-group ">
+										<label for="userName" class="control-label col-md-3">策略名称：</label>
+										<div id="" class="col-md-8">
+											<input type="text" class="form-control" id="templateName" placeholder="请输入策略名称" :value="item.templateName" />
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName" class="control-label col-md-3">策略类型：</label>
+										<div id="" class="col-md-8">
+												<select class="form-control" id="templateType" name="templateType">
+												<option v-for="item in templateTypeList" v-html="item.text" :value="item.value" :selected="item.value==templateType"> </option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName" class="control-label col-md-3">任务内容类别：</label>
+										<div id="" class="col-md-8">
+											<select class="form-control" id="objectType" name="objectType">
+												<option v-for="item in objectTypeList" v-html="item.text" :value="item.value" :selected="item.value==objectType"> </option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName" class="control-label col-md-3">模板策略类：</label>
+										<div id="" class="col-md-8">
+											<input type="text" class="form-control" id="templateClass" name="templateClass" placeholder="请输入模板策略类" :value="item.templateClass"/>
+										</div>
+									</div>
+									<div class="form-group ">
+										<label for="userName" class="control-label col-md-3">受理页面url：</label>
+										<div id="" class="col-md-8">
+											<input type="url" class="form-control" id="pageUrl" name="pageUrl" placeholder="请输入受理页面url" :value="item.pageUrl" />
+										</div>
+									</div>
+									<div id="" class="form-group marginTop PersonanlRealName col-md-12 text-center">
+										<button type="submit" class="btn btn-primary " id="passThrough" @click="btnPassThrough">提交</button>
+										<button type="button" class="btn btn-default marginLeft" data-dismiss="modal" id="btnEditClose">取消</button>
+									</div>
+								</form>
+							</div>
+							<!-- 出错提示 -->
+							<div class="error-info"></div>
+						</div>
+						<!-- 窗口底部 -->
+						<div class="modal-footer" style="border-top:none;">
+							<!-- style="border-top:none;" 不显示分隔线 -->
+						</div>
+
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal -->
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-20
+   	描述  查看模态框
+   -->
+			<div class="modal fade in" id="lookModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 750px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">	
+   				            <span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;">查看</h3>
+						</div>
+						<div class="modal-body">
+							<form class="form-horizontal" id="lookForm" v-for="item in tableInfo">
+								<div class="form-group ">
+									<label for="userName" class="control-label col-md-3">策略名称：</label>
+									<div id="" class="col-md-8">
+										<p class="form-control-static" v-html="item.templateName">策略名称</p>
+									</div>
+								</div>
+								<div class="form-group ">
+									<label for="userName" class="control-label col-md-3">策略类型：</label>
+									<div id="" class="col-md-8">
+												<template v-for="item in templateTypeList" >
+													<p v-html="item.text" :value="item.value" v-if="item.value==templateType" > </p>
+													<p v-else > </p>
+												</template>
+									</div>
+								</div>
+								<div class="form-group ">
+									<label for="userName" class="control-label col-md-3">任务内容类别：</label>
+									<div id="" class="col-md-8">
+												<template v-for="item in objectTypeList" >
+													<p v-html="item.text" :value="item.value" v-if="item.value==objectType" > </p>
+													<p v-else > </p>
+												</template>
+									</div>
+								</div>
+								<div class="form-group ">
+									<label for="userName" class="control-label col-md-3">模板策略类：</label>
+									<div id="" class="col-md-8">
+										<p class="form-control-static" v-html="item.templateClass"></p>
+									</div>
+								</div>
+								<div class="form-group ">
+									<label for="userName" class="control-label col-md-3">受理页面url：</label>
+									<div id="" class="col-md-8">
+										<p class="form-control-static" v-html="item.pageUrl"></p>
+									</div>
+								</div>
+								<div id="" class="form-group marginTop text-center">
+									<button type="button" class="btn btn-primary " id="passThrough" @click="btnedit">修改</button>
+									<button type="button" class="btn btn-default marginLeft" data-dismiss="modal">取消</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--
+   	作者：yuan
+   	时间：2018-09-19
+   	描述：删除
+   -->
+			<div class="modal fade in" id="delModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog " role="document" style="width: 400px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">	
+   				<span aria-hidden="true">×</span></button>
+							<h3 class="modal-title" style="font-weight: normal;">提示</h3>
+						</div>
+						<div class="modal-body">
+							<div class="center-block text-center">
+								<img src="../../../../r/images/at.png" alt="图片"><br>
+								<div id="text">您确认删除吗？</div>
+							</div>
+						</div>
+						<div class="modal-footer" style="display: block;border-top: none;text-align: center;">
+							<button type="button" class="btn btn-primary" id="btnDeletePolicy" @click="btnDeletePolicy">确定	</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../../../r/js/modules/workflowTemplate/taskTemplate/taskTemplate.js"></script>
+	</body>
+
+</html>
