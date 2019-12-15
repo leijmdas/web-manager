@@ -78,6 +78,7 @@ $(function () {
 
         var html = ''; //<li><a href="#" ref="hyjm" name="hyjm">欢迎界面</a></li>
         for (i in data.list) {
+            console.debug(data.list[i].menuUrl);
             html += '<li class="folder"><a href=' + data.list[i].menuUrl + ' ref="ckgl" target="right" name="' + data.list[i].menuName + '">' + data.list[i].menuName + '</a></li>'; //data.Data.Rows[i].department;一级菜单内容
             html += '<ul>';
             if (data.list[i].children != "") {
