@@ -1,5 +1,5 @@
 function firstShow() {
-    $('#first-page').text(sessionStorage.getItem('nickName'));
+    // $('#first-page').text(sessionStorage.getItem('nickName'));
 };
 $(function () {
     // var loginName = U.getCookie("loginName");

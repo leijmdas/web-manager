@@ -23,8 +23,8 @@ var U = {
         localStorage.token = logSso.token;
         localStorage.refresh_token = logSso.refresh_token;
         localStorage.userType = logSso.userType;
-        localStorage.api_keyModel = JSON.stringify(logSso.api_keyModel);
-        localStorage.apiKey = logSso.api_keyModel.apiKey;
+        localStorage.apiKeyModel = JSON.stringify(logSso.apiKeyModel);
+        localStorage.apiKey = logSso.apiKeyModel.apiKey;
 
 
     },
@@ -35,7 +35,7 @@ var U = {
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("userToken");
         localStorage.removeItem("getLogSso");
-        localStorage.removeItem("api_keyModel");
+        localStorage.removeItem("apiKeyModel");
     },
     loadSsoByToken: function (sessionData) {
 
@@ -337,7 +337,7 @@ $.extend({
              */
             formData = $.extend({}, baseParams, {cmdtype: opt.cmdtype, cmd: opt.cmd, msgBody: opt.data});
         }
-        if (localStorage.api_keyModel) {
+        if (localStorage.apiKeyModel) {
             formData = $.extend(formData,
                 {
                     apiKey: localStorage.apiKey,
