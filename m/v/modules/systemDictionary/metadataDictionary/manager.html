@@ -547,14 +547,13 @@
                         <form class="form-inline row text-right" id="AdddicForm">
                             <ul>
 
-                                <li><span>字段标识</span> <input readonly type="text" class="form-control"
-                                                             v-model="editMetadataSub.fieldId" name="fieldId"></li>
-
                                 <li><span>字段名称</span> <input type="text" class="form-control"
                                                              v-model="editMetadataSub.fieldName" name="fieldName">
                                 </li>
                                 <li><span>中文名称</span> <input type="text" class="form-control"
                                                              v-model="editMetadataSub.fieldMemo" name="fieldMemo"></li>
+
+
 
                                 <li><span>字段类型</span>
                                     <select v-model="editMetadataSub.fieldType" id="fieldType" class="form-control"
@@ -564,6 +563,9 @@
                                         </template>
                                     </select>
                                 </li>
+                                <li><span>字段标识</span> <input readonly type="text" class="form-control"
+                                                             v-model="editMetadataSub.fieldId" name="fieldId"></li>
+
 
                                 <li><span>字段长度</span> <input type="number" class="form-control"
                                                              v-model="editMetadataSub.fieldSize"
