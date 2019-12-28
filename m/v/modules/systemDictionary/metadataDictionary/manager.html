@@ -330,16 +330,26 @@
                                            v-model="selectSubsysLst[editMetadataMaster.subsysId]">
                                 </div>
                             </div>
+                             <div class="form-group col-sm-6">
+                                 <label for="metadataDb" class="col-sm-3 control-label">数据库名称</label>
+                                 <div class="col-sm-9">
+                                     <select class="form-control" name="metadataDb"
+                                             v-model="editMetadataMaster.metadataDb" id="metadataDb">
+                                         <template v-for="dbName in dbNameList">
+                                             <option :value="dbName.dataName" v-html="dbName.dataName"></option>
+                                         </template>
+                                     </select>
+                                 </div>
+                             </div>
 
-                            <div class="form-group col-sm-6">
-                                <label for="metadataOrder" class="col-sm-3 control-label">排序</label>
-                                <div class="col-sm-9">
-                                    <input type="number" class="form-control" id="metadataOrder"
-                                           placeholder="请输入排序方式" name="metadataOrder"
-                                           v-model="editMetadataMaster.metadataOrder">
-                                </div>
-                            </div>
-
+                             <div class="form-group col-sm-6">
+                                 <label for="metadataAlias" class="col-sm-3 control-label">中文名称</label>
+                                 <div class="col-sm-9">
+                                     <input type="text" class="form-control"
+                                            id="metadataAlias" placeholder="请输入中文名称" name="metadataAlias"
+                                            v-model="editMetadataMaster.metadataAlias">
+                                 </div>
+                             </div>
                             <div class="form-group col-sm-6">
                                 <label for="metadataName" class="col-sm-3 control-label">元数据名称</label>
                                 <div class="col-sm-9">
@@ -348,14 +358,22 @@
                                            v-model="editMetadataMaster.metadataName">
                                 </div>
                             </div>
-                            <div class="form-group col-sm-6">
-                                <label for="metadataAlias" class="col-sm-3 control-label">中文名称</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control"
-                                           id="metadataAlias" placeholder="请输入中文名称" name="metadataAlias"
-                                           v-model="editMetadataMaster.metadataAlias">
-                                </div>
-                            </div>
+                             <div class="form-group col-sm-6">
+                                 <label for="metadataMemo" class="col-sm-3 control-label">描述</label>
+                                 <div class="col-sm-9">
+                                     <input type="text" class="form-control" id="metadataMemo" placeholder="请输入元数据描述"
+                                            name="metadataMemo"
+                                            v-model="editMetadataMaster.metadataMemo">
+                                 </div>
+                             </div>
+                             <div class="form-group col-sm-6">
+                                 <label for="metadataOrder" class="col-sm-3 control-label">排序</label>
+                                 <div class="col-sm-9">
+                                     <input type="number" class="form-control" id="metadataOrder"
+                                            placeholder="请输入排序方式" name="metadataOrder"
+                                            v-model="editMetadataMaster.metadataOrder">
+                                 </div>
+                             </div>
                              <div class="form-group  col-sm-6">
                                  <label for="mdType" class="col-sm-3 control-label">元数据类型</label>
                                  <div class="col-sm-9">
@@ -367,14 +385,7 @@
                                      </select>
                                  </div>
                              </div>
-                            <div class="form-group col-sm-6">
-                                <label for="metadataMemo" class="col-sm-3 control-label">描述</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="metadataMemo" placeholder="请输入元数据描述"
-                                           name="metadataMemo"
-                                           v-model="editMetadataMaster.metadataMemo">
-                                </div>
-                            </div>
+
                             <div class="form-group col-sm-6">
                                 <label for="metadataReadonly" class="col-sm-3 control-label">
                                     只读表
@@ -397,17 +408,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group col-sm-6">
-                                <label for="metadataDb" class="col-sm-3 control-label">归属数据库</label>
-                                <div class="col-sm-9">
-                                    <select class="form-control" name="metadataDb"
-                                            v-model="editMetadataMaster.metadataDb" id="metadataDb">
-                                        <template v-for="dbName in dbNameList">
-                                            <option :value="dbName.dataName" v-html="dbName.dataName"></option>
-                                        </template>
-                                    </select>
-                                </div>
-                            </div>
+
                             <div class="form-group col-sm-6">
                                 <label for="metadataParentid" class="col-sm-3 control-label">关联元数据</label>
                                 <div class="col-sm-9">
