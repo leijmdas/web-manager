@@ -192,12 +192,12 @@
                         <thead class="manager_table_thead">
                         <tr>
                             <th class="hide">元数据主表ID</th>
-                            <th>字段标识</th>
                             <th>排序</th>
                             <th>字段名称</th>
                             <th>中文名称</th>
                             <th>是否主键</th>
                             <th>字段类型</th>
+                            <th>字段标识</th>
                             <th>字段长度</th>
                             <th>是否显示</th>
                             <th>显示长度</th>
@@ -222,12 +222,12 @@
                         <tr @click="clickTr" @dblclick="btnEditDicField($event,item)" v-for="(item,index) in getSubList"
                             :class="index==0?'bg-blue':''">
                             <td v-html="item.metadataId" class="hide"></td>
-                            <td v-html="item.fieldId"></td>
-                            <td v-html="item.fieldOrder"></td>
+                             <td v-html="item.fieldOrder"></td>
                             <td v-html="item.fieldName"></td>
                             <td v-html="item.fieldMemo"></td>
                             <td v-html="item.fieldPk "></td>
                             <td v-html="item.fieldType"></td>
+                            <td v-html="item.fieldId"></td>
                             <td v-html="item.fieldSize"></td>
                             <td v-html="item.fieldVisible "></td>
                             <td v-html="item.fieldDisplaysize"></td>
@@ -341,7 +341,6 @@
                                      </select>
                                  </div>
                              </div>
-
                              <div class="form-group col-sm-6">
                                  <label for="metadataAlias" class="col-sm-3 control-label">中文名称</label>
                                  <div class="col-sm-9">
@@ -350,14 +349,16 @@
                                             v-model="editMetadataMaster.metadataAlias">
                                  </div>
                              </div>
-                            <div class="form-group col-sm-6">
-                                <label for="metadataName" class="col-sm-3 control-label">元数据名称</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="metadataName"
-                                           placeholder="请输入元数据名称" name="metadataName"
-                                           v-model="editMetadataMaster.metadataName">
-                                </div>
-                            </div>
+                             <div class="form-group col-sm-6">
+                                 <label for="metadataName" class="col-sm-3 control-label">元数据名称</label>
+                                 <div class="col-sm-9">
+                                     <input type="text" class="form-control" id="metadataName"
+                                            placeholder="请输入元数据名称" name="metadataName"
+                                            v-model="editMetadataMaster.metadataName">
+                                 </div>
+                             </div>
+
+
                              <div class="form-group col-sm-6">
                                  <label for="metadataMemo" class="col-sm-3 control-label">描述</label>
                                  <div class="col-sm-9">
@@ -547,12 +548,12 @@
                         <form class="form-inline row text-right" id="AdddicForm">
                             <ul>
 
+
+                                <li><span>中文名称</span> <input type="text" class="form-control"
+                                                             v-model="editMetadataSub.fieldMemo" name="fieldMemo"></li>
                                 <li><span>字段名称</span> <input type="text" class="form-control"
                                                              v-model="editMetadataSub.fieldName" name="fieldName">
                                 </li>
-                                <li><span>中文名称</span> <input type="text" class="form-control"
-                                                             v-model="editMetadataSub.fieldMemo" name="fieldMemo"></li>
-
 
 
                                 <li><span>字段类型</span>
