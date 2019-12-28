@@ -19,7 +19,7 @@ $(function () {
 
             isAdd: false,
             modalFlag: 0, //0 create 1 delete master 2 delete subfield
-            subsysId: 1,
+            subsysId: 0,
             subsysDbNames: pConst.subsysDbNames,
             typeId: 1,
             metadataId: 0,
