@@ -261,8 +261,11 @@ $.extend({
             if (message.retcode === 0) {
                 opt.success && opt.success.apply(null, [message.msgBody,message]);
             } else {
+                if(message.retcode===-1 && message.cmd==="getMenuLeftList"){
+                    window.location.href = '/login.html';
+                }
                 if(message.retcode===3) {
-                    window.location.href = '/m/v/login.html';
+                    window.location.href = '/m/login.html';
                 }else {
                     opt.fail && opt.fail.apply(null, [message.retcode, message.retmsg]);
                 }
