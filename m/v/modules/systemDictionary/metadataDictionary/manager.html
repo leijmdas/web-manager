@@ -296,7 +296,8 @@
                         </thead>
                         <tbody id="tbodySelect1">
                         <template v-for="(item,index) in selectRecords">
-                            <tr :class="item.dict_field_name!=item.db_field_name?'manager_font_red':''" @click="clickTr($event,item)" :class="index==0?'bg-blue':''">
+                            <tr :class="item.dict_field_name!=item.db_field_name?'manager_font_red':''"
+                                @click="clickTr($event,item)" :class="index==0?'bg-blue':''">
                                 <td v-show="field.fieldVisible" v-for="field in fieldNames"
                                     v-html="U.datetimeFormatString(field.fieldType,item[field.fieldName])"></td>
                             </tr>
